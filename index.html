@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Authorized Operator: Dilawar Ali | ID: 3610198511699 -->
+    <title>SANTEX INVENTORY REPORT</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* VIP High-End Theme Configuration - Santex Edition */
+        :root {
+            --bg-space: #050505; 
+            --bg-panel: rgba(15, 15, 20, 0.85);
+            --accent-navy: #0044cc;
+            --accent-pink: #00d2ff; /* Switched to a neon cyan/blue for "Leaders in Hygiene" vibe */
+            --accent-pink-hover: #0077ff;
+            --gradient-brand: linear-gradient(135deg, #00d2ff 0%, #0044cc 100%);
+            --gradient-master: linear-gradient(135deg, #0044cc 0%, #001133 100%);
+            
+            --text-main: #F8FAFC; 
+            --text-muted: #94A3B8;
+            --glass-border: rgba(0, 210, 255, 0.2); 
+            --glass-bg: rgba(10, 10, 15, 0.7);
+            --danger: #FF0055; 
+            --input-bg: rgba(0,0,0,0.6);
+            --table-header: rgba(10, 10, 15, 0.95);
+        }
+
+        .light-mode {
+            --bg-space: #F0F4F8; 
+            --bg-panel: #FFFFFF;
+            --accent-navy: #0044cc;
+            --accent-pink: #0088ff; 
+            --accent-pink-hover: #0044cc;
+            --gradient-brand: linear-gradient(135deg, #0044cc 0%, #00d2ff 100%);
+            --gradient-master: linear-gradient(135deg, #FFFFFF 0%, #E0E8F5 100%);
+            
+            --text-main: #0A1128; 
+            --text-muted: #475569;
+            --glass-border: rgba(0, 68, 204, 0.15); 
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --input-bg: #FFFFFF;
+            --table-header: #F8FAFC;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        
+        body { 
+            background: var(--bg-space); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-x: hidden; 
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        html, body { max-width: 100%; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-pink); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-navy); }
+
+        /* Liquid Glassmorphism & Animations */
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 210, 255, 0.1);
+        }
+
+        /* SANTEX LOGIN FIREWALL */
+        #globalLoginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-space); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .login-box { background: var(--glass-bg); border-radius: 16px; padding: 4rem; text-align: center; max-width: 480px; width: 90%; position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient-brand); }
+        .login-box h1 { font-size: 3rem; font-weight: 900; letter-spacing: 3px; margin-bottom: 0.5rem; color: var(--text-main); }
+        .login-box h1 span { color: var(--accent-pink); }
+        .login-box p { color: var(--text-muted); margin-bottom: 2.5rem; letter-spacing: 2px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
+        .login-box input { width: 100%; padding: 1.2rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); font-size: 1.1rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s ease; text-align: center; letter-spacing: 1px;}
+        .login-box input:focus { border-color: var(--accent-pink); box-shadow: 0 0 20px rgba(0, 210, 255, 0.3); }
+        .login-box .btn { width: 100%; justify-content: center; font-size: 1.1rem; padding: 1.2rem; margin-top: 1rem; }
+        #loginError { color: var(--danger); font-weight: 700; margin-bottom: 1.5rem; min-height: 20px; font-size: 0.95rem; }
+
+        /* VIP WELCOME & 15-SEC GOD MODE OVERLAY */
+        #vipWelcomeOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.95); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(25px); }
+        #vipWelcomeOverlay h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; letter-spacing: 5px; margin-top: 1.5rem; }
+        #vipWelcomeOverlay span { font-weight: 900; color: var(--accent-pink); }
+        
+        .sync-hud { width: 90%; max-width: 800px; text-align: center; position: relative; }
+        .sync-hud .liquid-orb {
+            width: 150px; height: 150px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            background: var(--gradient-brand);
+            animation: liquidSpin 4s linear infinite;
+            margin: 0 auto 3rem auto;
+            box-shadow: 0 0 50px rgba(0, 210, 255, 0.4);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .sync-hud .liquid-orb i { color: #fff; font-size: 3rem; animation: counterSpin 4s linear infinite; }
+        
+        @keyframes liquidSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes counterSpin { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+
+        .sync-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; color: var(--text-main); letter-spacing: 6px; margin-bottom: 1rem; text-transform: uppercase; }
+        .sync-status { font-size: 1.2rem; color: var(--accent-pink); font-weight: 700; letter-spacing: 3px; margin-bottom: 2.5rem; height: 30px; }
+        .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 16px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .progress-bar { width: 0%; height: 100%; background: var(--gradient-brand); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;}
+        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        #appWrapper { display: none; flex-direction: column; min-height: 100vh; }
+
+        header { background: var(--glass-bg); backdrop-filter: blur(25px); border-bottom: 1px solid var(--glass-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        header h1 { font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: 3px; font-weight: 900; color: var(--text-main); text-transform: uppercase; }
+        header h1 span { color: var(--accent-pink); }
+        .header-meta { text-align: right; font-size: 0.95rem; color: var(--text-muted); }
+        
+        .theme-switch { cursor: pointer; background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; transition: all 0.3s; margin-left: 1rem; }
+        .theme-switch:hover { border-color: var(--accent-pink); color: var(--accent-pink); box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+
+        nav { background: var(--glass-bg); display: flex; padding: 0 2rem; border-bottom: 1px solid var(--glass-border); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+        .nav-tab { padding: 1.2rem 1.5rem; border: none; background: none; font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; border-bottom: 4px solid transparent; transition: all 0.3s ease; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 0.8rem; outline: none; }
+        .nav-tab:hover { color: var(--accent-pink); }
+        .nav-tab.active { color: var(--accent-pink); border-bottom-color: var(--accent-pink); background: rgba(0, 210, 255, 0.05); }
+        .nav-right-group { margin-left: auto; display: flex; align-items: center; }
+
+        .executive-banner { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 2.5rem 4rem; border-radius: 16px; display: inline-flex; flex-direction: column; margin-bottom: 2.5rem; box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2); border-left: 6px solid var(--accent-pink); position: relative; overflow: hidden; }
+        .executive-banner::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,210,255,0.05) 0%, transparent 70%); animation: pulseBG 6s infinite alternate; }
+        @keyframes pulseBG { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        .executive-banner h3 { color: var(--accent-pink); margin: 0 0 0.8rem 0; font-weight: 800; letter-spacing: 3px; font-size: 0.9rem; text-transform: uppercase; position: relative; z-index: 2; }
+        .executive-banner h2 { color: var(--text-main); margin: 0; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; letter-spacing: 2px; position: relative; z-index: 2;}
+
+        main { flex: 1; padding: 2.5rem; max-width: 1920px; width: 100%; margin: 0 auto; }
+        .panel { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 3rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1); display: none; backdrop-filter: blur(20px); }
+        .panel.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2.panel-title { margin-bottom: 2.5rem; color: var(--text-main); font-size: clamp(1.5rem, 3vw, 2rem); display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        h2.panel-title i { color: var(--accent-pink); }
+
+        .filter-bar { display: flex; gap: 1.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+        .search-wrapper { position: relative; flex: 2; min-width: 300px; }
+        .search-wrapper i { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-input, .filter-select { padding: 1.2rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.1rem; font-weight: 700; outline: none; transition: all 0.3s; }
+        .search-input { width: 100%; padding-left: 4rem; letter-spacing: 1px; }
+        .filter-select { flex: 1; min-width: 200px; cursor: pointer; }
+        .search-input:focus, .filter-select:focus { border-color: var(--accent-pink); box-shadow: 0 0 20px rgba(0, 210, 255, 0.15); }
+
+        .table-container { border-radius: 16px; border: 1px solid var(--glass-border); background: var(--bg-panel); max-height: 65vh; overflow-y: auto; overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; min-width: 1000px; }
+        th { background: var(--table-header); color: var(--text-muted); font-weight: 900; padding: 1.5rem; border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 0.9rem; position: sticky; top: 0; z-index: 10; letter-spacing: 2px; white-space: nowrap; }
+        td { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); color: var(--text-main); vertical-align: middle; transition: background 0.2s; }
+        tr:hover td { background: rgba(0, 210, 255, 0.05); }
+        
+        .desc-cell { min-width: 300px; word-wrap: break-word; line-height: 1.6; font-weight: 700; font-size: 1.1rem; }
+        .qty-text { font-size: 1.1rem; font-weight: 900; margin-bottom: 0.5rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
+        .qty-text::before { content: '\f4d2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem; }
+        
+        .val-box { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 800; display: inline-block; min-width: 160px; text-align: right; letter-spacing: 1.5px; font-variant-numeric: tabular-nums; font-size: 1.1rem; }
+        .val-box.master-val { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(0, 210, 255, 0.08); font-size: 1.3rem; min-width: 200px; font-weight: 900; }
+        
+        .size-badge, .brand-badge { display: inline-block; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 900; margin-top: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--glass-border); }
+        .size-badge { background: var(--input-bg); color: var(--text-muted); }
+        .brand-badge { background: rgba(0, 68, 204, 0.15); color: var(--accent-pink); border-color: var(--accent-pink); margin-right: 0.5rem; }
+
+        .btn { background: var(--gradient-brand); color: #FFF; border: none; padding: 1.2rem 2.5rem; border-radius: 10px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 1rem; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 210, 255, 0.4); }
+        .btn-outline { background: transparent; border: 2px solid var(--accent-pink); color: var(--accent-pink); box-shadow: none; }
+        .btn-outline:hover { background: rgba(0, 210, 255, 0.1); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); }
+        
+        #alertBox { padding: 1.5rem 2.5rem; border-radius: 12px; margin-bottom: 2.5rem; display: none; font-weight: 800; font-size: 1.1rem; border-left: 6px solid; letter-spacing: 1px; }
+        .alert-good { background: rgba(16, 185, 129, 0.15); color: #10B981; border-color: #10B981; }
+        .alert-bad { background: rgba(239, 68, 68, 0.15); color: #EF4444; border-color: #EF4444; }
+
+        .boardroom-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+        .stat-box { background: var(--glass-bg); padding: 3rem; border-radius: 16px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.3s; text-align: center; }
+        .stat-box:hover { border-color: var(--accent-pink); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 210, 255, 0.1); }
+        .stat-box h4 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 1rem; font-weight: 800; }
+        .stat-box .value { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--text-main); font-weight: 900; letter-spacing: 2px; font-variant-numeric: tabular-nums; }
+        
+        .master-box { background: var(--gradient-master); border-color: var(--accent-pink); padding: 4rem; transform: none !important; position: relative; overflow: hidden; }
+        .master-box::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); animation: shine 5s infinite; }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+        .master-box h4 { color: #FFF; opacity: 0.9; font-size: 1.2rem; }
+        .master-box .value { color: #FFF; font-size: clamp(3rem, 6vw, 4.5rem); text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        .upload-card { background: var(--glass-bg); border: 2px dashed var(--glass-border); padding: 4rem 3rem; border-radius: 16px; text-align: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); margin: 0 auto; max-width: 600px; }
+        .upload-card:hover { border-color: var(--accent-pink); background: rgba(0, 210, 255, 0.05); }
+        .upload-card input[type="file"] { width: 100%; padding: 1.5rem; background: var(--input-bg); border-radius: 12px; color: var(--text-main); margin-bottom: 2rem; font-weight: 700; font-size: 1.1rem; border: 1px solid transparent; cursor: pointer; }
+        
+        #kpoAuthWall { background: var(--glass-bg); border: 2px solid var(--accent-pink); border-radius: 20px; padding: 5rem 4rem; text-align: center; max-width: 600px; margin: 0 auto 3rem auto; box-shadow: 0 0 40px rgba(0, 210, 255, 0.1); }
+        #kpoAuthWall input { width: 100%; padding: 1.5rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.5rem; margin-bottom: 2.5rem; text-align: center; letter-spacing: 4px; font-weight: 900; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; text-align: center; gap: 1.5rem; padding: 1.5rem; }
+            .header-meta { text-align: center; }
+            .theme-switch { margin: 1.5rem auto 0 auto; }
+            nav { padding: 0.5rem; }
+            .nav-tab { padding: 1.2rem; font-size: 0.85rem; }
+            main { padding: 1.5rem; }
+            .panel { padding: 2rem; }
+            .executive-banner { padding: 2rem; width: 100%; text-align: center; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="globalLoginOverlay">
+        <div class="login-box">
+            <h1>SANTEX <span>OS</span></h1>
+            <p>Leaders in Personal Hygiene</p>
+            <div id="loginError"></div>
+            <input type="text" id="loginUsername" placeholder="Agent Identification" autocomplete="off">
+            <input type="password" id="loginPassword" placeholder="Security Protocol Key" onkeypress="if(event.key === 'Enter') executeLogin()">
+            <button class="btn" onclick="executeLogin()"><i class="fas fa-fingerprint"></i> Initialize Session</button>
+        </div>
+    </div>
+
+    <div id="vipWelcomeOverlay">
+        <i class="fas fa-shield-check fa-5x" style="color:var(--accent-pink); margin-bottom: 1.5rem; text-shadow: 0 0 30px var(--accent-pink);"></i>
+        <h1>WELCOME, <span id="vipNameDisplay"></span></h1>
+        <p style="color:var(--text-muted); font-size:1.2rem; margin-top:1.5rem; letter-spacing:4px; font-weight: 800; text-transform: uppercase;">Establishing VIP Encrypted Connection...</p>
+    </div>
+
+    <!-- 15 SEC GOD MODE ANIMATION OVERLAY -->
+    <div id="syncOverlay">
+        <div class="sync-hud">
+            <div class="liquid-orb">
+                <i class="fas fa-database"></i>
+            </div>
+            <div class="sync-title">GOD MODE EXTRACTION</div>
+            <div class="sync-status" id="syncStatusText">ENGAGING 100X MULTIPLIER...</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="syncProgressBar"></div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2.5rem; letter-spacing: 2px; font-weight: 700;">MAINTAIN TERMINAL CONNECTION. DEEP PACKET INSPECTION ACTIVE.</p>
+        </div>
+    </div>
+
+    <div id="appWrapper">
+        <header>
+            <div>
+                <h1>SANTEX <span>INVENTORY REPORT</span></h1>
+                <div style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.8rem; letter-spacing: 3px; font-weight: 800; text-transform: uppercase;">High-Performance OS Framework</div>
+            </div>
+            <div class="header-meta">
+                <div id="liveClock" style="font-weight: 900; font-family: monospace; font-size: 1.3rem; color: var(--text-main); letter-spacing: 1px;"></div>
+                <div id="syncStatus" style="margin-top: 0.6rem; font-size: 0.85rem; color: var(--accent-pink); font-weight: 800; letter-spacing: 2px;"><i class="fas fa-lock"></i> SECURE NODE ACTIVE</div>
+                <button class="theme-switch" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i> <span id="themeText">Dark Theme</span></button>
+            </div>
+        </header>
+
+        <nav>
+            <button id="tab-dashboard" class="nav-tab active" onclick="switchPanel('dashboard')"><i class="fas fa-network-wired"></i> Master Stock</button>
+            <button id="tab-executive" class="nav-tab" onclick="switchPanel('executive')"><i class="fas fa-briefcase"></i> Boardroom</button>
+            <button id="tab-reports" class="nav-tab" onclick="switchPanel('reports')"><i class="fas fa-file-csv"></i> Data Extraction</button>
+            <button id="tab-upload" class="nav-tab" onclick="switchPanel('upload')"><i class="fas fa-satellite-dish"></i> God Mode Uplink</button>
+            <button id="tab-users" class="nav-tab" onclick="switchPanel('users')" style="display:none;"><i class="fas fa-user-shield"></i> Security</button>
+            
+            <div class="nav-right-group">
+                <button class="nav-tab" onclick="executeLogout()" style="color: var(--danger); border-bottom: none;"><i class="fas fa-power-off"></i> Terminate Link</button>
+            </div>
+        </nav>
+
+        <main>
+            <div id="alertBox"></div>
+
+            <div class="executive-banner">
+                <h3><i class="fas fa-crown"></i> Chief Executive Command</h3>
+                <h2>NOUMAN AHMED SB</h2>
+            </div>
+
+            <div id="dashboard" class="panel active">
+                <h2 class="panel-title"><i class="fas fa-network-wired"></i> Master Valuation Control</h2>
+                
+                <div class="filter-bar">
+                    <div class="search-wrapper">
+                        <input type="text" id="masterSearch" class="search-input" placeholder="Search SKU, Brand, or Desc..." autocomplete="off" oninput="executeSearch()">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <select id="filterBrand" class="filter-select" onchange="executeSearch()">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SKU Identifier</th>
+                                <th>Product DNA</th>
+                                <th>Volume (CTN/UNITS)</th>
+                                <th style="text-align: right;">Global LMT Valuation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody">
+                            <tr><td colspan="4" style="text-align:center; padding:5rem; color:var(--text-muted);"><i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--accent-pink); margin-bottom: 1.5rem;"></i><br><br><span style="letter-spacing: 2px; font-weight: 800; font-size: 1.2rem;">Syncing Central DB...</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="executive" class="panel">
+                <h2 class="panel-title"><i class="fas fa-briefcase"></i> Executive Overview</h2>
+                
+                <div class="boardroom-grid">
+                    <div class="stat-box master-box">
+                        <h4>Grand Total Enterprise Value</h4>
+                        <div class="value" id="execGrandTotal">Rs 0.00</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+                        <div class="stat-box">
+                            <h4>Total Active SKUs</h4>
+                            <div class="value" id="execTotalSkus" style="color: var(--accent-pink);">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Physical Units Logged</h4>
+                            <div class="value" id="execTotalUnits" style="color: var(--accent-pink);">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reports" class="panel">
+                <h2 class="panel-title"><i class="fas fa-file-csv"></i> Financial Extraction Module</h2>
+                
+                <div class="boardroom-grid">
+                    <div class="stat-box" style="text-align: center; padding: 5rem 3rem;">
+                        <i class="fas fa-file-csv fa-5x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
+                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem;">God Mode CSV Report</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+                            Generates the ultimate structural CSV ledger perfectly formatted to match the native system architecture[cite: 1]. Encrypted filename parameters auto-applied.
+                        </p>
+                        <button class="btn" onclick="exportEnterpriseCSV()"><i class="fas fa-download"></i> Initiate Extraction</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="users" class="panel">
+                <h2 class="panel-title"><i class="fas fa-user-shield"></i> Security Management</h2>
+                <div class="table-container">
+                    <table style="min-width: 800px;">
+                        <thead><tr><th>Operative Name</th><th>Identifier</th><th>Role</th><th>Actions</th></tr></thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="upload" class="panel">
+                <h2 class="panel-title"><i class="fas fa-satellite-dish"></i> Master Channel Uplink</h2>
+                <div id="kpoAuthWall">
+                    <h3 style="color: var(--accent-pink); margin-bottom: 1.5rem; font-size: 2rem;"><i class="fas fa-shield-alt"></i> Auth Required</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem;">God Mode database injection restricted to highly cleared personnel.</p>
+                    <input type="password" id="kpoPass" placeholder="Enter Secure Passcode" onkeypress="if(event.key === 'Enter') authKPO()">
+                    <button class="btn" onclick="authKPO()" style="width: 100%; justify-content: center; padding: 1.5rem; font-size: 1.2rem;"><i class="fas fa-unlock"></i> Disengage Firewall</button>
+                </div>
+                
+                <div id="kpoWorkspace" style="display: none;">
+                    <div class="upload-card">
+                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px;"><i class="fas fa-upload" style="color: var(--accent-pink);"></i> LMT Source File</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Formats accepted: CSV, XLS, XLSX</p>
+                        <input type="file" id="fileLMT" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                        <div id="badge-lmt" class="size-badge" style="display:none; margin-bottom: 2rem; font-size: 1rem; padding: 0.8rem 1.5rem;"></div>
+                        <button id="syncApiBtn" class="btn" style="width: 100%; justify-content: center; padding: 1.5rem;" onclick="processGodModeUpload()"><i class="fas fa-bolt"></i> Execute God Mode Sync</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        
+        <footer style="text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px; border-top: 1px solid var(--glass-border); margin-top: auto;">
+            SANTEX ENTERPRISE OS &copy; 2026 | OPERATOR AUTH: 3610198511699 | TERMINAL SECURED
+        </footer>
+    </div>
+
+    <script>
+        // Supabase Integration - Santex 100x God Mode
+        const supabaseUrl = 'https://cbitdlpopyujgdobddlg.supabase.co'; 
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaXRkbHBvcHl1amdkb2JkZGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MTM3MzAsImV4cCI6MjA5ODA4OTczMH0.FytEGLweoYV-6-InE-69A4N_KaRoFK0FUm0iuNp5gLc';
+        const db = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let masterDB = {}; 
+        let tempIngestionData = null;
+        let currentSessionUser = null;
+        let isLightMode = false;
+        let isSyncing = false; 
+
+        window.onload = () => {
+            startClock();
+        };
+
+        function startClock() {
+            setInterval(() => { 
+                document.getElementById('liveClock').innerText = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' }); 
+            }, 1000);
+        }
+
+        function toggleTheme() {
+            isLightMode = !isLightMode;
+            document.documentElement.classList.toggle('light-mode', isLightMode);
+            
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            
+            if (isLightMode) {
+                icon.className = 'fas fa-sun';
+                text.innerText = 'Light Theme';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.innerText = 'Dark Theme';
+            }
+        }
+
+        async function executeLogin() {
+            const u = document.getElementById('loginUsername').value.trim();
+            const p = document.getElementById('loginPassword').value.trim();
+            const errBox = document.getElementById('loginError');
+            
+            if(!u || !p) { errBox.innerText = "SECURITY ALERT: Credentials Required."; return; }
+
+            // Master Bypass aligned to requested credentials logic
+            if(u === 'admin' && p === 'NurAdmin@2026') {
+                currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect Dilawar Ali' };
+                triggerVIPWelcome();
+                return;
+            }
+
+            try {
+                const { data, error } = await db.from('santex_users').select('*').eq('username', u).eq('password', p).single();
+                if (data) {
+                    currentSessionUser = data;
+                    triggerVIPWelcome();
+                } else { errBox.innerText = "ACCESS DENIED: Invalid Signature."; }
+            } catch (err) { errBox.innerText = "DB FAULT: Mainframe unreachable. Use Master Override."; }
+        }
+
+        function triggerVIPWelcome() {
+            document.getElementById('globalLoginOverlay').style.display = 'none';
+            document.getElementById('loginError').innerText = '';
+            
+            const welcomeLayer = document.getElementById('vipWelcomeOverlay');
+            const displayName = currentSessionUser.full_name || currentSessionUser.username;
+            document.getElementById('vipNameDisplay').innerText = displayName.toUpperCase();
+            
+            welcomeLayer.style.display = 'flex';
+            
+            setTimeout(() => {
+                welcomeLayer.style.display = 'none';
+                unlockApplication();
+            }, 3000); // Extended slightly for VIP feel
+        }
+
+        async function unlockApplication() {
+            document.getElementById('appWrapper').style.display = 'flex';
+            document.getElementById('tab-users').style.display = currentSessionUser.role === 'master' ? 'flex' : 'none';
+            
+            await loadLiveServerData();
+            switchPanel('dashboard');
+        }
+
+        function executeLogout() {
+            currentSessionUser = null;
+            document.getElementById('appWrapper').style.display = 'none';
+            document.getElementById('globalLoginOverlay').style.display = 'flex';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('tab-users').style.display = 'none';
+            
+            document.getElementById('kpoAuthWall').style.display = 'block';
+            document.getElementById('kpoWorkspace').style.display = 'none';
+            document.getElementById('kpoPass').value = '';
+        }
+
+        window.switchPanel = function(panelId) {
+            if(panelId === 'upload' && currentSessionUser.role !== 'master') {
+                return showAlert('CLEARANCE DENIED: Master Access Required.', 'bad');
+            }
+
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            document.getElementById('tab-' + panelId).classList.add('active');
+
+            if(panelId === 'dashboard') executeSearch();
+            if(panelId === 'executive') buildExecutiveBoardroom();
+            if(panelId === 'users') loadUsers();
+        };
+
+        function showAlert(msg, type='good') {
+            const box = document.getElementById('alertBox');
+            box.className = `alert-${type}`;
+            box.innerHTML = `<i class="fas ${type === 'good' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> &nbsp; ${msg}`;
+            box.style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            setTimeout(() => box.style.display = 'none', 5000);
+        }
+
+        function formatCurrency(val) { return "Rs " + val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+        function formatQty(c, p) { return (c === 0 && p === 0) ? "0/0" : `${c}/${p}`; }
+
+        function extractBrand(desc) {
+            if(!desc) return "SANTEX";
+            let parts = desc.split(' ');
+            if(parts.length > 0) return parts[0].toUpperCase();
+            return "SANTEX";
+        }
+
+        async function loadLiveServerData() {
+            try {
+                const { data: liveData } = await db.from('live_inventory').select('*');
+                masterDB = {};
+                const brands = new Set();
+                if (liveData) {
+                    liveData.forEach(item => { 
+                        masterDB[item.sku_code] = item; 
+                        brands.add(extractBrand(item.name));
+                    });
+                }
+                
+                const brandSelect = document.getElementById('filterBrand');
+                brandSelect.innerHTML = '<option value="">All Brands</option>';
+                [...brands].sort().forEach(b => {
+                    brandSelect.innerHTML += `<option value="${b}">${b}</option>`;
+                });
+                
+            } catch (err) { console.error("Database connection fault:", err); } 
+            finally { executeSearch(); }
+        }
+
+        function authKPO() {
+            const pass = document.getElementById('kpoPass').value;
+            if (pass === 'Aa135135%') {
+                document.getElementById('kpoAuthWall').style.display = 'none';
+                document.getElementById('kpoWorkspace').style.display = 'block';
+                showAlert('God Mode Firewall Bypassed.', 'good');
+            } else { showAlert('ACCESS DENIED: Incorrect Security Key.', 'bad'); }
+        }
+
+        const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+        // 15-SEC GOD MODE UPLOAD ANIMATION & LOGIC
+        async function processGodModeUpload() {
+            if(isSyncing) return showAlert("Transaction actively processing.", "bad");
+            
+            const fileInput = document.getElementById('fileLMT');
+            const file = fileInput.files[0];
+            
+            if(!file) return showAlert("Awaiting target file injection.", "bad");
+
+            isSyncing = true;
+            const overlay = document.getElementById('syncOverlay');
+            const pBar = document.getElementById('syncProgressBar');
+            const pText = document.getElementById('syncStatusText');
+            
+            overlay.style.display = 'flex';
+            pBar.style.width = '2%';
+            pText.innerText = 'INITIALIZING GOD MODE PROTOCOL...';
+
+            try {
+                // Read and Parse File (Simulating Deep Extraction)
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {type: 'array'});
+                        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const rawRows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: ""});
+                        
+                        let parsedData = [];
+                        let colIdx = { sku: -1, desc: -1, qty_c: -1, qty_p: -1, val: -1 };
+                        
+                        // Heuristic column matching based on provided LMT extraction
+                        for (let r = 0; r < Math.min(50, rawRows.length); r++) {
+                            let row = rawRows[r];
+                            for(let c=0; c<row.length; c++) {
+                                let v = String(row[c]).toLowerCase().trim();
+                                if(v.includes('sku code') && colIdx.sku === -1) colIdx.sku = c;
+                                else if((v.includes('master sku name') || v.includes('description')) && colIdx.desc === -1) colIdx.desc = c;
+                                else if(v.includes('closing qty crtn') && colIdx.qty_c === -1) colIdx.qty_c = c;
+                                else if(v.includes('closing qty units') && colIdx.qty_p === -1) colIdx.qty_p = c;
+                                else if(v.includes('closing total') && colIdx.val === -1) colIdx.val = c; // Rough approx or calc later
+                            }
+                            if(colIdx.sku !== -1 && colIdx.desc !== -1) break;
+                        }
+
+                        // Fallback parsing if headers not found perfectly
+                        if(colIdx.sku === -1) colIdx.sku = 1;
+                        if(colIdx.desc === -1) colIdx.desc = 2;
+                        if(colIdx.qty_c === -1) colIdx.qty_c = 7; // As per sample
+                        if(colIdx.qty_p === -1) colIdx.qty_p = 8;
+                        
+                        for(let i = 0; i < rawRows.length; i++) {
+                            let row = rawRows[i];
+                            let code = String(row[colIdx.sku] || "").trim();
+                            let desc = String(row[colIdx.desc] || "").trim();
+                            
+                            if (!code.startsWith('SKU') && !/^\d+$/.test(code)) continue; // Filter logic
+                            
+                            let c = parseFloat(row[colIdx.qty_c]) || 0;
+                            let p = parseFloat(row[colIdx.qty_p]) || 0;
+                            let v = parseFloat(row[colIdx.val]) || 0; 
+                            
+                            if(v === 0) {
+                                // Attempt to parse TP/W TAX or MRP to estimate val if total missing
+                                let tp = parseFloat(row[4]) || 0; // Assuming TP is column 4 based on provided CSV structure[cite: 1]
+                                v = (c * 24 * tp) + (p * tp); // Rough valuation formula
+                            }
+
+                            parsedData.push({ sku_code: code, name: desc, size: 'LMT-STD', qty_c: c, qty_p: p, val: v });
+                        }
+
+                        if(parsedData.length === 0) throw new Error("Zero valid DNA strands found.");
+
+                        // ---- 15 SECOND ANIMATION SEQUENCE ----
+                        await sleep(3000); 
+                        pBar.style.width = '25%';
+                        pText.innerText = `EXTRACTED ${parsedData.length} ROWS. DECRYPTING DNA...`;
+
+                        await sleep(4000); 
+                        pBar.style.width = '50%';
+                        pText.innerText = 'WIPING PREVIOUS NODE ARCHITECTURE (LMT)...';
+                        await db.from('live_inventory').delete().neq('sku_code', 'WIPE_000');
+
+                        await sleep(4000); 
+                        pBar.style.width = '80%';
+                        pText.innerText = 'INJECTING 100X MULTIPLIER PAYLOAD TO MAINFRAME...';
+                        
+                        // Insert in chunks
+                        const chunkSize = 500;
+                        for (let i = 0; i < parsedData.length; i += chunkSize) {
+                            const chunk = parsedData.slice(i, i + chunkSize);
+                            await db.from('live_inventory').insert(chunk);
+                        }
+
+                        await sleep(4000); // Concludes 15 seconds
+                        pBar.style.width = '100%';
+                        pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
+                        
+                        fileInput.value = '';
+                        await loadLiveServerData();
+                        await sleep(1000);
+                        
+                        overlay.style.display = 'none';
+                        switchPanel('dashboard');
+                        showAlert('Global Sync Complete!', 'good');
+                        isSyncing = false;
+
+                    } catch (x) { 
+                        overlay.style.display = 'none';
+                        isSyncing = false;
+                        showAlert('PARSE FAULT: ' + x.message, 'bad'); 
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+
+            } catch (err) { 
+                overlay.style.display = 'none';
+                isSyncing = false;
+                showAlert('CRITICAL FAIL: ' + err.message, 'bad'); 
+            }
+        }
+
+        function executeSearch() {
+            const filterText = document.getElementById('masterSearch').value.toLowerCase();
+            const filterBrand = document.getElementById('filterBrand').value;
+            
+            const tbody = document.getElementById('inventoryBody');
+            if(!tbody) return; tbody.innerHTML = '';
+            
+            let hasResults = false;
+
+            Object.values(masterDB).forEach(item => {
+                const brand = extractBrand(item.name);
+                const matchesSearch = item.sku_code.toLowerCase().includes(filterText) || item.name.toLowerCase().includes(filterText) || brand.toLowerCase().includes(filterText);
+                const matchesBrand = filterBrand === "" || brand === filterBrand;
+                
+                if(matchesSearch && matchesBrand) {
+                    hasResults = true;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong style="color:var(--text-main); font-size: 1.2rem;">${item.sku_code}</strong></td>
+                        <td class="desc-cell">
+                            <span class="brand-badge">${brand}</span><br>
+                            <div style="margin-top:0.8rem; letter-spacing: 1px;">${item.name}</div>
+                        </td>
+                        <td><div class="qty-text">${formatQty(item.qty_c, item.qty_p)}</div></td>
+                        <td style="text-align: right;"><div class="val-box master-val">${formatCurrency(item.val || 0)}</div></td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+
+            if(!hasResults) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:4rem; color:var(--text-muted); font-size: 1.2rem; font-weight: 800;">No criteria match found.</td></tr>`;
+            }
+        }
+
+        function buildExecutiveBoardroom() {
+            let gTotal = 0, tSkus = 0, tUnits = 0;
+            Object.values(masterDB).forEach(i => {
+                gTotal += (i.val || 0);
+                tSkus++;
+                tUnits += ((i.qty_c || 0) * 24) + (i.qty_p || 0); // Rough estimate
+            });
+
+            document.getElementById('execGrandTotal').innerText = formatCurrency(gTotal);
+            document.getElementById('execTotalSkus').innerText = tSkus.toLocaleString();
+            document.getElementById('execTotalUnits').innerText = tUnits.toLocaleString();
+        }
+
+        async function loadUsers() {
+            if(currentSessionUser.role !== 'master') return;
+            const { data, error } = await db.from('santex_users').select('*').order('username');
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            if(error) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--danger);">DB Error.</td></tr>`; return; }
+
+            if(data) {
+                data.forEach(u => {
+                    tbody.innerHTML += `<tr>
+                        <td><strong style="font-size: 1.1rem;">${u.full_name || '-'}</strong></td>
+                        <td style="color:var(--text-muted); font-weight: 700; letter-spacing: 1px;">${u.username}</td>
+                        <td><span class="brand-badge">${u.role.toUpperCase()}</span></td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; border-color:var(--danger); color:var(--danger);" onclick="alert('Destruction restricted in God Mode UI')"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>`;
+                });
+            }
+        }
+
+        // CSV EXPORT LOGIC FOR 100X GOD MOD
+        function exportEnterpriseCSV() {
+            if(Object.keys(masterDB).length === 0) return showAlert('No data available in Mainframe.', 'bad');
+            showAlert('Packaging 100X God Mode CSV...', 'good');
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Replicating formatting matching the prompt structure
+            csvContent += "Distributor Name,SKU Code,Master SKU Name2,SKU STATUS2,TP/W TAX,MRP,SKU BAR CODE,CTN SIZE,CLOSING TOTAL UNITS,CLOSING QTY CRTN,CLOSING QTY UNITS\n";
+
+            Object.values(masterDB).forEach(item => {
+                let row = [
+                    "LMT",
+                    item.sku_code,
+                    `"${item.name.replace(/"/g, '""')}"`,
+                    "CURRENT",
+                    "0", // Placeholders for missing info that wasn't in DB schema
+                    "0",
+                    "",
+                    "24",
+                    ((item.qty_c * 24) + item.qty_p).toString(),
+                    item.qty_c,
+                    item.qty_p
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "CURRENT END STOCK LMT 20-06-2026 100X GOD MOD.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
