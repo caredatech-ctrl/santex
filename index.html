@@ -110,7 +110,7 @@
         .sync-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; color: var(--text-main); letter-spacing: 6px; margin-bottom: 1rem; text-transform: uppercase; }
         .sync-status { font-size: 1.2rem; color: var(--accent-pink); font-weight: 700; letter-spacing: 3px; margin-bottom: 1rem; height: 30px; }
         
-        /* AI Log Box for 15s Animation */
+        /* New AI Log Box for 15s Animation */
         #aiAnalysisLog { font-family: monospace; font-size: 0.9rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
 
         .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 16px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
@@ -398,16 +398,22 @@
         let isLightMode = false;
         let isSyncing = false; 
 
-        // AUTO-LOGOUT FIX: Restores active session on F5 Refresh
-        window.onload = () => {
+        // 1. AUTO-LOGOUT FIX: DOMContentLoaded Event ensuring session lock is permanent across refreshes
+        document.addEventListener("DOMContentLoaded", () => {
             startClock();
-            const storedSession = localStorage.getItem('santexSession');
-            if(storedSession) {
-                currentSessionUser = JSON.parse(storedSession);
-                document.getElementById('globalLoginOverlay').style.display = 'none';
-                unlockApplication();
+            try {
+                const storedSession = localStorage.getItem('santexSessionVIP');
+                if(storedSession) {
+                    currentSessionUser = JSON.parse(storedSession);
+                    if(currentSessionUser && currentSessionUser.username) {
+                        document.getElementById('globalLoginOverlay').style.display = 'none';
+                        unlockApplication();
+                    }
+                }
+            } catch(e) {
+                console.error("Session Cache cleared to prevent fault.");
             }
-        };
+        });
 
         function startClock() {
             setInterval(() => { 
@@ -440,7 +446,7 @@
 
             if(u === 'admin' && p === 'NurAdmin@2026') {
                 currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect' };
-                localStorage.setItem('santexSession', JSON.stringify(currentSessionUser));
+                localStorage.setItem('santexSessionVIP', JSON.stringify(currentSessionUser));
                 triggerVIPWelcome();
                 return;
             }
@@ -449,7 +455,7 @@
                 const { data, error } = await db.from('santex_users').select('*').eq('username', u).eq('password', p).single();
                 if (data) {
                     currentSessionUser = data;
-                    localStorage.setItem('santexSession', JSON.stringify(currentSessionUser));
+                    localStorage.setItem('santexSessionVIP', JSON.stringify(currentSessionUser));
                     triggerVIPWelcome();
                 } else { errBox.innerText = "ACCESS DENIED: Invalid Signature."; }
             } catch (err) { errBox.innerText = "DB FAULT: Mainframe unreachable. Use Master Override."; }
@@ -481,7 +487,7 @@
 
         function executeLogout() {
             currentSessionUser = null;
-            localStorage.removeItem('santexSession'); // Destroys session
+            localStorage.removeItem('santexSessionVIP'); // Destroys session
             document.getElementById('appWrapper').style.display = 'none';
             document.getElementById('globalLoginOverlay').style.display = 'flex';
             document.getElementById('loginPassword').value = '';
@@ -513,7 +519,7 @@
             box.innerHTML = `<i class="fas ${type === 'good' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> &nbsp; ${msg}`;
             box.style.display = 'block';
             window.scrollTo({top: 0, behavior: 'smooth'});
-            setTimeout(() => box.style.display = 'none', 5000);
+            setTimeout(() => box.style.display = 'none', 6000);
         }
 
         function formatCurrency(val) { return "Rs " + val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
@@ -549,6 +555,7 @@
                 
             } catch (err) { 
                 console.error("Database connection fault:", err); 
+                showAlert("DB READ FAULT: " + err.message, "bad");
             } finally { 
                 executeSearch(); 
                 buildExecutiveBoardroom(); 
@@ -566,7 +573,7 @@
 
         const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-        // BULLETPROOF PARSING LOGIC: Exclusively calibrated for 'Current End Stock(1).csv'
+        // 2. BULLETPROOF PARSING LOGIC: Uses offset heuristics independent of exact headers
         async function processGodModeUpload() {
             if(isSyncing) return showAlert("Transaction actively processing.", "bad");
             
@@ -588,6 +595,7 @@
             const aiPhrases = [
                 "> AI INGESTING RAW LMT DATA MATRIX...",
                 "> ISOLATING MASTER SKU DNA STRANDS...",
+                "> BYPASSING DUAL-HEADER ARCHITECTURE...",
                 "> ANALYZING CTN/UNIT VOLUMETRICS...",
                 "> APPLYING HEURISTIC VALUATION ALGORITHMS...",
                 "> CROSS-REFERENCING SANTEX GLOBAL LEDGER...",
@@ -608,93 +616,85 @@
                         const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, {type: 'array'});
                         const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                        
+                        // Parse strictly as array of arrays to preserve exact positioning
                         const rawRows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: ""});
                         
                         let aggregatedData = {};
                         
-                        // ABSOLUTE FALLBACK ARRAY INDICES FOR YOUR CSV STRUCTURE
-                        let colIdx = { sku: 6, desc: 7, qty_c: 19, qty_p: 20, val: 23, tp: 21 }; 
-
-                        // Intelligent Header Discovery
-                        let foundHeader = false;
-                        let startRow = 2; // Typically Row 0 and Row 1 are stacked headers in your file
-
-                        for (let r = 0; r < Math.min(15, rawRows.length); r++) {
-                            let row = rawRows[r];
-                            if (!row) continue;
-                            
-                            for(let c = 0; c < row.length; c++) {
-                                let v = String(row[c]).toLowerCase().trim();
-                                if(v === 'sku code') {
-                                    colIdx.sku = c;
-                                    foundHeader = true;
-                                    startRow = r + 2; 
-                                }
-                                else if(v === 'sku name' || v === 'master sku name') colIdx.desc = c;
-                                else if(v === 'closing quantity') colIdx.qty_c = c; 
-                                else if(v === 'total value inc tax' || v === 'total value exc tax') colIdx.val = c;
-                                else if(v === 'unit   price' || v === 'unit price') colIdx.tp = c;
-                            }
-                            
-                            if(foundHeader) {
-                                colIdx.qty_p = colIdx.qty_c + 1; // Units are placed physically next to Cartons
-                                break;
-                            }
-                        }
-
-                        // Data Extraction Loop
-                        for(let i = startRow; i < rawRows.length; i++) {
+                        // Indestructible Data Extraction Loop bypassing Headers completely
+                        for(let i = 0; i < rawRows.length; i++) {
                             let row = rawRows[i];
-                            if (!row || row.length < Math.max(colIdx.sku, colIdx.desc)) continue;
-
-                            let code = String(row[colIdx.sku] || "").trim();
-                            let desc = String(row[colIdx.desc] || "").trim();
+                            if(!row) continue;
                             
-                            // High-Tolerance Filter
-                            if (!code || code === 'nan' || code === 'NaN' || code.toLowerCase().includes('sku')) continue;
-                            if (!desc || desc.toLowerCase().includes('total') || code.length < 3) continue;
-
-                            let c = parseFloat(String(row[colIdx.qty_c] || "0").replace(/,/g, '')) || 0;
-                            let p = parseFloat(String(row[colIdx.qty_p] || "0").replace(/,/g, '')) || 0;
-                            let v = parseFloat(String(row[colIdx.val] || "0").replace(/,/g, '')) || 0; 
-                            let tp = parseFloat(String(row[colIdx.tp] || "0").replace(/,/g, '')) || 0;
-                            
-                            if(v === 0) {
-                                v = (c * 24 * tp) + (p * tp); // Approximates value using Standard 24 CTN sizing
+                            // Flexible SKU finder for this exact row
+                            let skuIndex = -1;
+                            for(let c=0; c<row.length; c++) {
+                                // Looks for cell containing SKU followed by digits (e.g. SKU00458)
+                                if(String(row[c]).trim().match(/^SKU\d{4,}/i)) {
+                                    skuIndex = c; 
+                                    break;
+                                }
                             }
+                            
+                            if(skuIndex !== -1) {
+                                let code = String(row[skuIndex]).trim().toUpperCase();
+                                let desc = String(row[skuIndex+1] || "").trim(); // Desc is immediately next to SKU
+                                
+                                // The numbers are at fixed horizontal offsets from the SKU code in 'Current End Stock(1).csv'
+                                // SKU is Index 6. Carton is Index 19 (+13 offset).
+                                let c = parseFloat(String(row[skuIndex+13] || "0").replace(/,/g, '')) || 0;
+                                let p = parseFloat(String(row[skuIndex+14] || "0").replace(/,/g, '')) || 0;
+                                let tp = parseFloat(String(row[skuIndex+15] || "0").replace(/,/g, '')) || 0;
+                                let v = parseFloat(String(row[skuIndex+17] || "0").replace(/,/g, '')) || 0;
+                                
+                                // Valuation Fallback in case of missing explicit totals
+                                if(v === 0 && tp > 0) {
+                                    v = (c * 24 * tp) + (p * tp);
+                                }
 
-                            // Merges quantities to eliminate Primary Key Conflicts
-                            if (aggregatedData[code]) {
-                                aggregatedData[code].qty_c += c;
-                                aggregatedData[code].qty_p += p;
-                                aggregatedData[code].val += v;
-                            } else {
-                                aggregatedData[code] = { sku_code: code, name: desc, size: 'LMT-STD', qty_c: c, qty_p: p, val: v };
+                                if (aggregatedData[code]) {
+                                    aggregatedData[code].qty_c += c;
+                                    aggregatedData[code].qty_p += p;
+                                    aggregatedData[code].val += v;
+                                } else {
+                                    aggregatedData[code] = { 
+                                        sku_code: code, 
+                                        name: desc, 
+                                        size: 'LMT-STD', 
+                                        qty_c: c, 
+                                        qty_p: p, 
+                                        val: v 
+                                    };
+                                }
                             }
                         }
 
                         let finalPayload = Object.values(aggregatedData);
 
-                        if(finalPayload.length === 0) throw new Error("Zero valid DNA strands found. Please verify column positioning.");
+                        if(finalPayload.length === 0) throw new Error("Zero valid DNA strands found. Please verify file integrity.");
 
-                        // 15-SEC ANIMATION SEQUENCE
+                        // 15-SEC HIGH END ANIMATION SEQUENCE
                         await sleep(3500); 
                         pBar.style.width = '30%';
-                        pText.innerText = `AI EXTRACTED & AGGREGATED ${finalPayload.length} UNIQUE ROWS. DECRYPTING...`;
+                        pText.innerText = `AI EXTRACTED & AGGREGATED ${finalPayload.length} UNIQUE SKUS. DECRYPTING...`;
 
                         await sleep(4000); 
                         pBar.style.width = '65%';
                         pText.innerText = 'WIPING PREVIOUS NODE ARCHITECTURE (LMT)...';
-                        await db.from('live_inventory').delete().neq('sku_code', 'WIPE_000');
+                        const { error: delErr } = await db.from('live_inventory').delete().neq('sku_code', 'WIPE_000');
+                        if (delErr) throw new Error("Database DB Wipe Blocked: " + delErr.message);
 
                         await sleep(4500); 
                         pBar.style.width = '85%';
                         pText.innerText = 'INJECTING 100X MULTIPLIER PAYLOAD TO MAINFRAME...';
                         
+                        // Push securely avoiding Primary Key collisons with explicit Insert
                         const chunkSize = 500;
                         for (let i = 0; i < finalPayload.length; i += chunkSize) {
                             const chunk = finalPayload.slice(i, i + chunkSize);
-                            await db.from('live_inventory').upsert(chunk, { onConflict: 'sku_code' });
+                            const { error: insErr } = await db.from('live_inventory').insert(chunk);
+                            if(insErr) throw new Error("Payload Rejection: " + insErr.message);
                         }
 
                         await sleep(3000); 
@@ -704,19 +704,19 @@
                         pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
                         
                         fileInput.value = '';
-                        await loadLiveServerData(); // Pushes data straight to the Dashboard
+                        await loadLiveServerData(); // Repopulates Dashboard UI
                         await sleep(1500);
                         
                         overlay.style.display = 'none';
                         switchPanel('dashboard');
-                        showAlert(`Global Sync Complete! Extracted ${finalPayload.length} valid SKUs.`, 'good');
+                        showAlert(`Global Sync Complete! AI mapped & extracted ${finalPayload.length} precision rows.`, 'good');
                         isSyncing = false;
 
                     } catch (x) { 
                         clearInterval(aiInterval);
                         overlay.style.display = 'none';
                         isSyncing = false;
-                        showAlert('PARSE FAULT: ' + x.message, 'bad'); 
+                        showAlert('AI EXTRACTION FAULT: ' + x.message, 'bad'); 
                     }
                 };
                 reader.readAsArrayBuffer(file);
@@ -729,7 +729,7 @@
             }
         }
 
-        // PUSHES TO DASHBOARD AUTOMATICALLY
+        // AUTO-RENDERS DASHBOARD DATA
         function executeSearch() {
             const filterText = document.getElementById('masterSearch').value.toLowerCase();
             const filterBrand = document.getElementById('filterBrand').value;
@@ -805,7 +805,7 @@
             }
         }
 
-        // PERFECTLY FORMATTED EXPORT FOR LMT NATIVE SYSTEMS
+        // EXPORT FOR LMT NATIVE SYSTEMS
         function exportEnterpriseCSV() {
             if(Object.keys(masterDB).length === 0) return showAlert('No data available in Mainframe.', 'bad');
             showAlert('Packaging 100X God Mode CSV...', 'good');
