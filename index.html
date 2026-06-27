@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Authorized Master Operator -->
     <title>SANTEX INVENTORY REPORT</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -109,7 +110,7 @@
         .sync-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; color: var(--text-main); letter-spacing: 6px; margin-bottom: 1rem; text-transform: uppercase; }
         .sync-status { font-size: 1.2rem; color: var(--accent-pink); font-weight: 700; letter-spacing: 3px; margin-bottom: 1rem; height: 30px; }
         
-        /* New AI Log Box for 15s Animation */
+        /* AI Log Box for 15s Animation */
         #aiAnalysisLog { font-family: monospace; font-size: 0.9rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
 
         .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 16px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
@@ -397,7 +398,7 @@
         let isLightMode = false;
         let isSyncing = false; 
 
-        // 1. Fixed Auto-Logout on Refresh: Implement LocalStorage Session
+        // AUTO-LOGOUT FIX: Restores active session on F5 Refresh
         window.onload = () => {
             startClock();
             const storedSession = localStorage.getItem('santexSession');
@@ -480,7 +481,7 @@
 
         function executeLogout() {
             currentSessionUser = null;
-            localStorage.removeItem('santexSession'); // Clear Session Storage
+            localStorage.removeItem('santexSession'); // Destroys session
             document.getElementById('appWrapper').style.display = 'none';
             document.getElementById('globalLoginOverlay').style.display = 'flex';
             document.getElementById('loginPassword').value = '';
@@ -550,7 +551,7 @@
                 console.error("Database connection fault:", err); 
             } finally { 
                 executeSearch(); 
-                buildExecutiveBoardroom(); // Sync UI Automatically 
+                buildExecutiveBoardroom(); 
             }
         }
 
@@ -565,7 +566,7 @@
 
         const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-        // 2. PERFECTED 15-SEC GOD MODE UPLOAD & HEURISTIC AI EXTRACTION ALGORITHM
+        // BULLETPROOF PARSING LOGIC: Exclusively calibrated for 'Current End Stock(1).csv'
         async function processGodModeUpload() {
             if(isSyncing) return showAlert("Transaction actively processing.", "bad");
             
@@ -610,54 +611,59 @@
                         const rawRows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: ""});
                         
                         let aggregatedData = {};
-                        let colIdx = { sku: -1, desc: -1, qty_c: -1, qty_p: -1, val: -1, tp: -1 };
                         
-                        // Extremely Resilient Fuzzy Header Scanner
-                        let headerRowIdx = -1;
-                        for (let r = 0; r < Math.min(50, rawRows.length); r++) {
+                        // ABSOLUTE FALLBACK ARRAY INDICES FOR YOUR CSV STRUCTURE
+                        let colIdx = { sku: 6, desc: 7, qty_c: 19, qty_p: 20, val: 23, tp: 21 }; 
+
+                        // Intelligent Header Discovery
+                        let foundHeader = false;
+                        let startRow = 2; // Typically Row 0 and Row 1 are stacked headers in your file
+
+                        for (let r = 0; r < Math.min(15, rawRows.length); r++) {
                             let row = rawRows[r];
-                            for(let c=0; c<row.length; c++) {
-                                let v = String(row[c]).toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
-                                if((v.includes('sku code') || v === 'sku') && colIdx.sku === -1) colIdx.sku = c;
-                                else if((v.includes('master sku') || v.includes('description') || v.includes('name') || v.includes('product')) && colIdx.desc === -1) colIdx.desc = c;
-                                else if((v.includes('qty crtn') || v.includes('carton') || v === 'ctn' || v.includes('closing qty c')) && colIdx.qty_c === -1) colIdx.qty_c = c;
-                                else if((v.includes('qty units') || v === 'units' || v.includes('closing qty u')) && colIdx.qty_p === -1) colIdx.qty_p = c;
-                                else if((v.includes('closing total') || v.includes('total val')) && colIdx.val === -1) colIdx.val = c;
-                                else if((v.includes('tp') || v.includes('mrp') || v.includes('tax')) && colIdx.tp === -1) colIdx.tp = c;
+                            if (!row) continue;
+                            
+                            for(let c = 0; c < row.length; c++) {
+                                let v = String(row[c]).toLowerCase().trim();
+                                if(v === 'sku code') {
+                                    colIdx.sku = c;
+                                    foundHeader = true;
+                                    startRow = r + 2; 
+                                }
+                                else if(v === 'sku name' || v === 'master sku name') colIdx.desc = c;
+                                else if(v === 'closing quantity') colIdx.qty_c = c; 
+                                else if(v === 'total value inc tax' || v === 'total value exc tax') colIdx.val = c;
+                                else if(v === 'unit   price' || v === 'unit price') colIdx.tp = c;
                             }
-                            if(colIdx.sku !== -1 && colIdx.desc !== -1 && colIdx.qty_c !== -1) { headerRowIdx = r; break; }
+                            
+                            if(foundHeader) {
+                                colIdx.qty_p = colIdx.qty_c + 1; // Units are placed physically next to Cartons
+                                break;
+                            }
                         }
 
-                        // Perfect Fallbacks corresponding exactly to standard LMT PDF -> CSV export formats
-                        if(colIdx.sku === -1) colIdx.sku = 1;
-                        if(colIdx.desc === -1) colIdx.desc = 2;
-                        if(colIdx.tp === -1) colIdx.tp = 4;
-                        if(colIdx.qty_c === -1) colIdx.qty_c = 9;
-                        if(colIdx.qty_p === -1) colIdx.qty_p = 10;
-                        
-                        let startRow = headerRowIdx !== -1 ? headerRowIdx + 1 : 1; 
-                        
+                        // Data Extraction Loop
                         for(let i = startRow; i < rawRows.length; i++) {
                             let row = rawRows[i];
-                            if (!row || row.length < 3) continue;
+                            if (!row || row.length < Math.max(colIdx.sku, colIdx.desc)) continue;
 
                             let code = String(row[colIdx.sku] || "").trim();
                             let desc = String(row[colIdx.desc] || "").trim();
                             
-                            // Highly forgiving filter to capture actual SKU data and reject garbage headers/footers
-                            if (!code || !desc || desc.toLowerCase().includes('total') || code.toLowerCase().includes('code') || code.toLowerCase().includes('sku')) continue;
+                            // High-Tolerance Filter
+                            if (!code || code === 'nan' || code === 'NaN' || code.toLowerCase().includes('sku')) continue;
+                            if (!desc || desc.toLowerCase().includes('total') || code.length < 3) continue;
+
+                            let c = parseFloat(String(row[colIdx.qty_c] || "0").replace(/,/g, '')) || 0;
+                            let p = parseFloat(String(row[colIdx.qty_p] || "0").replace(/,/g, '')) || 0;
+                            let v = parseFloat(String(row[colIdx.val] || "0").replace(/,/g, '')) || 0; 
+                            let tp = parseFloat(String(row[colIdx.tp] || "0").replace(/,/g, '')) || 0;
                             
-                            let c = parseFloat(String(row[colIdx.qty_c]).replace(/,/g, '')) || 0;
-                            let p = parseFloat(String(row[colIdx.qty_p]).replace(/,/g, '')) || 0;
-                            let v = parseFloat(String(row[colIdx.val]).replace(/,/g, '')) || 0; 
-                            let tp = parseFloat(String(row[colIdx.tp]).replace(/,/g, '')) || 0;
-                            
-                            // Native Valuation Fallback Formula
                             if(v === 0) {
-                                v = (c * 24 * tp) + (p * tp); // Approximates 24 CTN sizing dynamically
+                                v = (c * 24 * tp) + (p * tp); // Approximates value using Standard 24 CTN sizing
                             }
 
-                            // 3. Duplicate SKU Protection: Aggregates duplicate rows to prevent Supabase PK conflicts
+                            // Merges quantities to eliminate Primary Key Conflicts
                             if (aggregatedData[code]) {
                                 aggregatedData[code].qty_c += c;
                                 aggregatedData[code].qty_p += p;
@@ -669,9 +675,9 @@
 
                         let finalPayload = Object.values(aggregatedData);
 
-                        if(finalPayload.length === 0) throw new Error("Zero valid DNA strands found. Review file structure.");
+                        if(finalPayload.length === 0) throw new Error("Zero valid DNA strands found. Please verify column positioning.");
 
-                        // 15-SEC HIGH END ANIMATION SEQUENCE
+                        // 15-SEC ANIMATION SEQUENCE
                         await sleep(3500); 
                         pBar.style.width = '30%';
                         pText.innerText = `AI EXTRACTED & AGGREGATED ${finalPayload.length} UNIQUE ROWS. DECRYPTING...`;
@@ -685,7 +691,6 @@
                         pBar.style.width = '85%';
                         pText.innerText = 'INJECTING 100X MULTIPLIER PAYLOAD TO MAINFRAME...';
                         
-                        // Push to Supabase utilizing strict UPSERT to absolutely prevent mapping collisions
                         const chunkSize = 500;
                         for (let i = 0; i < finalPayload.length; i += chunkSize) {
                             const chunk = finalPayload.slice(i, i + chunkSize);
@@ -699,12 +704,12 @@
                         pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
                         
                         fileInput.value = '';
-                        await loadLiveServerData(); // Will Auto-refresh UI components!
+                        await loadLiveServerData(); // Pushes data straight to the Dashboard
                         await sleep(1500);
                         
                         overlay.style.display = 'none';
                         switchPanel('dashboard');
-                        showAlert(`Global Sync Complete! AI extracted ${finalPayload.length} precise SKUs.`, 'good');
+                        showAlert(`Global Sync Complete! Extracted ${finalPayload.length} valid SKUs.`, 'good');
                         isSyncing = false;
 
                     } catch (x) { 
@@ -724,7 +729,7 @@
             }
         }
 
-        // 4. Fixed Render: Safely extracts values ensuring they exist
+        // PUSHES TO DASHBOARD AUTOMATICALLY
         function executeSearch() {
             const filterText = document.getElementById('masterSearch').value.toLowerCase();
             const filterBrand = document.getElementById('filterBrand').value;
@@ -761,7 +766,7 @@
             });
 
             if(!hasResults) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:4rem; color:var(--text-muted); font-size: 1.2rem; font-weight: 800;">No criteria match found in Database.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:4rem; color:var(--text-muted); font-size: 1.2rem; font-weight: 800;">No criteria match found in Database. Upload DNA Payload to Populate.</td></tr>`;
             }
         }
 
