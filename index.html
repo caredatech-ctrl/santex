@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Authorized Master Operator -->
-    <title>SANTEX INVENTORY REPORT</title>
+    <!-- Authorized Master Operator Session -->
+    <title>SANTEX ENTERPRISE OS</title>
     
+    <!-- Core Engine Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- PDF Generation Libraries -->
+    <!-- VIP PDF Generation Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -20,21 +21,21 @@
     <style>
         /* VIP High-End Theme Configuration - Santex Edition */
         :root {
-            --bg-space: #050505; 
-            --bg-panel: rgba(15, 15, 20, 0.85);
-            --accent-navy: #0044cc;
-            --accent-pink: #00d2ff; 
-            --accent-pink-hover: #0077ff;
-            --gradient-brand: linear-gradient(135deg, #00d2ff 0%, #0044cc 100%);
-            --gradient-master: linear-gradient(135deg, #0044cc 0%, #001133 100%);
+            --bg-space: #030305; 
+            --bg-panel: rgba(12, 12, 18, 0.85);
+            --accent-navy: #0033aa;
+            --accent-pink: #00e5ff; 
+            --accent-pink-hover: #0099ff;
+            --gradient-brand: linear-gradient(135deg, #00e5ff 0%, #0033aa 100%);
+            --gradient-master: linear-gradient(135deg, #0033aa 0%, #000a1a 100%);
             
             --text-main: #F8FAFC; 
-            --text-muted: #94A3B8;
-            --glass-border: rgba(0, 210, 255, 0.2); 
-            --glass-bg: rgba(10, 10, 15, 0.7);
+            --text-muted: #8B9BB4;
+            --glass-border: rgba(0, 229, 255, 0.25); 
+            --glass-bg: rgba(8, 8, 12, 0.75);
             --danger: #FF0055; 
-            --input-bg: rgba(0,0,0,0.6);
-            --table-header: rgba(10, 10, 15, 0.95);
+            --input-bg: rgba(0,0,0,0.7);
+            --table-header: rgba(10, 10, 15, 0.98);
         }
 
         .light-mode {
@@ -48,8 +49,8 @@
             
             --text-main: #0A1128; 
             --text-muted: #475569;
-            --glass-border: rgba(0, 68, 204, 0.15); 
-            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 68, 204, 0.2); 
+            --glass-bg: rgba(255, 255, 255, 0.9);
             --input-bg: #FFFFFF;
             --table-header: #F8FAFC;
         }
@@ -74,136 +75,136 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-navy); }
 
         .glass-panel {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 210, 255, 0.1);
+            box-shadow: 0 10px 40px 0 rgba(0, 229, 255, 0.15);
         }
 
         /* SANTEX LOGIN FIREWALL */
         #globalLoginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-space); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .login-box { background: var(--glass-bg); border-radius: 16px; padding: 4rem; text-align: center; max-width: 480px; width: 90%; position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .login-box { background: var(--glass-bg); border-radius: 20px; padding: 4rem; text-align: center; max-width: 480px; width: 90%; position: relative; overflow: hidden; transition: all 0.3s ease; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0, 229, 255, 0.1); }
         .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient-brand); }
-        .login-box h1 { font-size: 3rem; font-weight: 900; letter-spacing: 3px; margin-bottom: 0.5rem; color: var(--text-main); }
+        .login-box h1 { font-size: 3.2rem; font-weight: 900; letter-spacing: 4px; margin-bottom: 0.5rem; color: var(--text-main); }
         .login-box h1 span { color: var(--accent-pink); }
-        .login-box p { color: var(--text-muted); margin-bottom: 2.5rem; letter-spacing: 2px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
-        .login-box input { width: 100%; padding: 1.2rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); font-size: 1.1rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s ease; text-align: center; letter-spacing: 1px;}
-        .login-box input:focus { border-color: var(--accent-pink); box-shadow: 0 0 20px rgba(0, 210, 255, 0.3); }
+        .login-box p { color: var(--text-muted); margin-bottom: 2.5rem; letter-spacing: 3px; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; }
+        .login-box input { width: 100%; padding: 1.2rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); font-size: 1.2rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s ease; text-align: center; letter-spacing: 2px;}
+        .login-box input:focus { border-color: var(--accent-pink); box-shadow: 0 0 25px rgba(0, 229, 255, 0.3); }
         .login-box .btn { width: 100%; justify-content: center; font-size: 1.1rem; padding: 1.2rem; margin-top: 1rem; }
-        #loginError { color: var(--danger); font-weight: 700; margin-bottom: 1.5rem; min-height: 20px; font-size: 0.95rem; }
+        #loginError { color: var(--danger); font-weight: 800; margin-bottom: 1.5rem; min-height: 20px; font-size: 1rem; letter-spacing: 1px;}
 
         /* VIP WELCOME & 15-SEC GOD MODE OVERLAY */
-        #vipWelcomeOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.95); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(25px); }
-        #vipWelcomeOverlay h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; letter-spacing: 5px; margin-top: 1.5rem; }
+        #vipWelcomeOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3,3,5,0.98); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(30px); }
+        #vipWelcomeOverlay h1 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 300; letter-spacing: 6px; margin-top: 1.5rem; }
         #vipWelcomeOverlay span { font-weight: 900; color: var(--accent-pink); }
         
         .sync-hud { width: 90%; max-width: 800px; text-align: center; position: relative; }
         .sync-hud .liquid-orb {
-            width: 150px; height: 150px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            width: 160px; height: 160px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
             background: var(--gradient-brand);
             animation: liquidSpin 4s linear infinite;
             margin: 0 auto 3rem auto;
-            box-shadow: 0 0 50px rgba(0, 210, 255, 0.4);
+            box-shadow: 0 0 60px rgba(0, 229, 255, 0.5);
             display: flex; justify-content: center; align-items: center;
         }
-        .sync-hud .liquid-orb i { color: #fff; font-size: 3rem; animation: counterSpin 4s linear infinite; }
+        .sync-hud .liquid-orb i { color: #fff; font-size: 3.5rem; animation: counterSpin 4s linear infinite; }
         
         @keyframes liquidSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes counterSpin { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
-        .sync-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; color: var(--text-main); letter-spacing: 6px; margin-bottom: 1rem; text-transform: uppercase; }
-        .sync-status { font-size: 1.2rem; color: var(--accent-pink); font-weight: 700; letter-spacing: 3px; margin-bottom: 1rem; height: 30px; }
+        .sync-title { font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 900; color: var(--text-main); letter-spacing: 8px; margin-bottom: 1rem; text-transform: uppercase; }
+        .sync-status { font-size: 1.3rem; color: var(--accent-pink); font-weight: 800; letter-spacing: 4px; margin-bottom: 1rem; height: 30px; }
         
-        /* AI Log Box for 15s Animation */
-        #aiAnalysisLog { font-family: monospace; font-size: 0.9rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+        /* New AI Log Box for 15s Animation */
+        #aiAnalysisLog { font-family: monospace; font-size: 1rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
 
-        .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 16px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .progress-bar { width: 0%; height: 100%; background: var(--gradient-brand); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;}
-        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); animation: shimmer 2s infinite; }
+        .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 18px; overflow: hidden; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
+        .progress-bar { width: 0%; height: 100%; background: var(--gradient-brand); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;}
+        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.5s infinite; }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
         #appWrapper { display: none; flex-direction: column; min-height: 100vh; }
 
-        header { background: var(--glass-bg); backdrop-filter: blur(25px); border-bottom: 1px solid var(--glass-border); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        header h1 { font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: 3px; font-weight: 900; color: var(--text-main); text-transform: uppercase; }
+        header { background: var(--glass-bg); backdrop-filter: blur(30px); border-bottom: 1px solid var(--glass-border); padding: 1.8rem 2.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 30px rgba(0,0,0,0.5); }
+        header h1 { font-size: clamp(1.5rem, 3vw, 2.4rem); letter-spacing: 4px; font-weight: 900; color: var(--text-main); text-transform: uppercase; }
         header h1 span { color: var(--accent-pink); }
-        .header-meta { text-align: right; font-size: 0.95rem; color: var(--text-muted); }
+        .header-meta { text-align: right; font-size: 1rem; color: var(--text-muted); }
         
-        .theme-switch { cursor: pointer; background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; transition: all 0.3s; margin-left: 1rem; }
-        .theme-switch:hover { border-color: var(--accent-pink); color: var(--accent-pink); box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+        .theme-switch { cursor: pointer; background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 800; transition: all 0.3s; margin-left: 1.5rem; }
+        .theme-switch:hover { border-color: var(--accent-pink); color: var(--accent-pink); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
 
-        nav { background: var(--glass-bg); display: flex; padding: 0 2rem; border-bottom: 1px solid var(--glass-border); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
-        .nav-tab { padding: 1.2rem 1.5rem; border: none; background: none; font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; border-bottom: 4px solid transparent; transition: all 0.3s ease; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 0.8rem; outline: none; }
+        nav { background: var(--glass-bg); display: flex; padding: 0 2.5rem; border-bottom: 1px solid var(--glass-border); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+        .nav-tab { padding: 1.5rem 1.8rem; border: none; background: none; font-size: 0.95rem; font-weight: 900; color: var(--text-muted); cursor: pointer; border-bottom: 4px solid transparent; transition: all 0.3s ease; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 0.8rem; outline: none; }
         .nav-tab:hover { color: var(--accent-pink); }
-        .nav-tab.active { color: var(--accent-pink); border-bottom-color: var(--accent-pink); background: rgba(0, 210, 255, 0.05); }
+        .nav-tab.active { color: var(--accent-pink); border-bottom-color: var(--accent-pink); background: rgba(0, 229, 255, 0.08); }
         .nav-right-group { margin-left: auto; display: flex; align-items: center; }
 
-        .executive-banner { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 2.5rem 4rem; border-radius: 16px; display: inline-flex; flex-direction: column; margin-bottom: 2.5rem; box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2); border-left: 6px solid var(--accent-pink); position: relative; overflow: hidden; }
-        .executive-banner::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,210,255,0.05) 0%, transparent 70%); animation: pulseBG 6s infinite alternate; }
+        .executive-banner { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 3rem 4.5rem; border-radius: 20px; display: inline-flex; flex-direction: column; margin-bottom: 3rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); border-left: 8px solid var(--accent-pink); position: relative; overflow: hidden; }
+        .executive-banner::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%); animation: pulseBG 6s infinite alternate; }
         @keyframes pulseBG { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-        .executive-banner h3 { color: var(--accent-pink); margin: 0 0 0.8rem 0; font-weight: 800; letter-spacing: 3px; font-size: 0.9rem; text-transform: uppercase; position: relative; z-index: 2; }
-        .executive-banner h2 { color: var(--text-main); margin: 0; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; letter-spacing: 2px; position: relative; z-index: 2;}
+        .executive-banner h3 { color: var(--accent-pink); margin: 0 0 1rem 0; font-weight: 900; letter-spacing: 4px; font-size: 1rem; text-transform: uppercase; position: relative; z-index: 2; }
+        .executive-banner h2 { color: var(--text-main); margin: 0; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 900; letter-spacing: 3px; position: relative; z-index: 2;}
 
-        main { flex: 1; padding: 2.5rem; max-width: 1920px; width: 100%; margin: 0 auto; }
-        .panel { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 3rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1); display: none; backdrop-filter: blur(20px); }
-        .panel.active { display: block; animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        main { flex: 1; padding: 3rem; max-width: 1920px; width: 100%; margin: 0 auto; }
+        .panel { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 24px; padding: 3.5rem; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2); display: none; backdrop-filter: blur(25px); }
+        .panel.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2.panel-title { margin-bottom: 2.5rem; color: var(--text-main); font-size: clamp(1.5rem, 3vw, 2rem); display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        h2.panel-title { margin-bottom: 3rem; color: var(--text-main); font-size: clamp(1.8rem, 3vw, 2.2rem); display: flex; align-items: center; gap: 1.2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
         h2.panel-title i { color: var(--accent-pink); }
 
-        .filter-bar { display: flex; gap: 1.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
-        .search-wrapper { position: relative; flex: 2; min-width: 300px; }
-        .search-wrapper i { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .search-input, .filter-select { padding: 1.2rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.1rem; font-weight: 700; outline: none; transition: all 0.3s; }
-        .search-input { width: 100%; padding-left: 4rem; letter-spacing: 1px; }
-        .filter-select { flex: 1; min-width: 200px; cursor: pointer; }
-        .search-input:focus, .filter-select:focus { border-color: var(--accent-pink); box-shadow: 0 0 20px rgba(0, 210, 255, 0.15); }
+        .filter-bar { display: flex; gap: 1.5rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .search-wrapper { position: relative; flex: 2; min-width: 350px; }
+        .search-wrapper i { position: absolute; left: 1.8rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem;}
+        .search-input, .filter-select { padding: 1.5rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.1rem; font-weight: 800; outline: none; transition: all 0.3s; }
+        .search-input { width: 100%; padding-left: 4.5rem; letter-spacing: 1px; }
+        .filter-select { flex: 1; min-width: 250px; cursor: pointer; }
+        .search-input:focus, .filter-select:focus { border-color: var(--accent-pink); box-shadow: 0 0 25px rgba(0, 229, 255, 0.2); }
 
         .table-container { border-radius: 16px; border: 1px solid var(--glass-border); background: var(--bg-panel); max-height: 65vh; overflow-y: auto; overflow-x: auto; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; min-width: 1000px; }
-        th { background: var(--table-header); color: var(--text-muted); font-weight: 900; padding: 1.5rem; border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 0.9rem; position: sticky; top: 0; z-index: 10; letter-spacing: 2px; white-space: nowrap; }
-        td { padding: 1.5rem; border-bottom: 1px solid var(--glass-border); color: var(--text-main); vertical-align: middle; transition: background 0.2s; }
-        tr:hover td { background: rgba(0, 210, 255, 0.05); }
+        th { background: var(--table-header); color: var(--text-muted); font-weight: 900; padding: 1.8rem; border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 1rem; position: sticky; top: 0; z-index: 10; letter-spacing: 2px; white-space: nowrap; }
+        td { padding: 1.8rem; border-bottom: 1px solid var(--glass-border); color: var(--text-main); vertical-align: middle; transition: background 0.2s; }
+        tr:hover td { background: rgba(0, 229, 255, 0.05); }
         
-        .desc-cell { min-width: 300px; word-wrap: break-word; line-height: 1.6; font-weight: 700; font-size: 1.1rem; }
-        .qty-text { font-size: 1.1rem; font-weight: 900; margin-bottom: 0.5rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
-        .qty-text::before { content: '\f4d2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--accent-pink); font-size: 0.9rem; }
+        .desc-cell { min-width: 350px; word-wrap: break-word; line-height: 1.6; font-weight: 700; font-size: 1.2rem; }
+        .qty-text { font-size: 1.2rem; font-weight: 900; margin-bottom: 0.6rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; }
+        .qty-text::before { content: '\f4d2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--accent-pink); font-size: 1rem; }
         
-        .val-box { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 800; display: inline-block; min-width: 160px; text-align: right; letter-spacing: 1.5px; font-variant-numeric: tabular-nums; font-size: 1.1rem; }
-        .val-box.master-val { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(0, 210, 255, 0.08); font-size: 1.3rem; min-width: 200px; font-weight: 900; }
+        .val-box { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 1rem 1.5rem; border-radius: 10px; font-weight: 900; display: inline-block; min-width: 180px; text-align: right; letter-spacing: 2px; font-variant-numeric: tabular-nums; font-size: 1.2rem; }
+        .val-box.master-val { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(0, 229, 255, 0.1); font-size: 1.4rem; min-width: 220px; font-weight: 900; box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);}
         
-        .size-badge, .brand-badge { display: inline-block; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 900; margin-top: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--glass-border); }
+        .size-badge, .brand-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 900; margin-top: 0.8rem; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--glass-border); }
         .size-badge { background: var(--input-bg); color: var(--text-muted); }
-        .brand-badge { background: rgba(0, 68, 204, 0.15); color: var(--accent-pink); border-color: var(--accent-pink); margin-right: 0.5rem; }
+        .brand-badge { background: rgba(0, 51, 170, 0.2); color: var(--accent-pink); border-color: var(--accent-pink); margin-right: 0.8rem; }
 
-        .btn { background: var(--gradient-brand); color: #FFF; border: none; padding: 1.2rem 2.5rem; border-radius: 10px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 1rem; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.2); }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 210, 255, 0.4); }
+        .btn { background: var(--gradient-brand); color: #FFF; border: none; padding: 1.5rem 3rem; border-radius: 12px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 3px; transition: all 0.3s; box-shadow: 0 6px 20px rgba(0, 229, 255, 0.25); }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 229, 255, 0.4); }
         .btn-outline { background: transparent; border: 2px solid var(--accent-pink); color: var(--accent-pink); box-shadow: none; }
-        .btn-outline:hover { background: rgba(0, 210, 255, 0.1); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); }
+        .btn-outline:hover { background: rgba(0, 229, 255, 0.1); box-shadow: 0 0 25px rgba(0, 229, 255, 0.25); }
         
-        #alertBox { padding: 1.5rem 2.5rem; border-radius: 12px; margin-bottom: 2.5rem; display: none; font-weight: 800; font-size: 1.1rem; border-left: 6px solid; letter-spacing: 1px; }
+        #alertBox { padding: 1.8rem 3rem; border-radius: 14px; margin-bottom: 3rem; display: none; font-weight: 900; font-size: 1.2rem; border-left: 8px solid; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .alert-good { background: rgba(16, 185, 129, 0.15); color: #10B981; border-color: #10B981; }
         .alert-bad { background: rgba(239, 68, 68, 0.15); color: #EF4444; border-color: #EF4444; }
 
-        .boardroom-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
-        .stat-box { background: var(--glass-bg); padding: 3rem; border-radius: 16px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.3s; text-align: center; }
-        .stat-box:hover { border-color: var(--accent-pink); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 210, 255, 0.1); }
-        .stat-box h4 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 1rem; font-weight: 800; }
-        .stat-box .value { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--text-main); font-weight: 900; letter-spacing: 2px; font-variant-numeric: tabular-nums; }
+        .boardroom-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .stat-box { background: var(--glass-bg); padding: 4rem; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; }
+        .stat-box:hover { border-color: var(--accent-pink); transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0, 229, 255, 0.15); }
+        .stat-box h4 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; font-weight: 900; }
+        .stat-box .value { font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--text-main); font-weight: 900; letter-spacing: 3px; font-variant-numeric: tabular-nums; }
         
-        .master-box { background: var(--gradient-master); border-color: var(--accent-pink); padding: 4rem; transform: none !important; position: relative; overflow: hidden; }
+        .master-box { background: var(--gradient-master); border-color: var(--accent-pink); padding: 5rem; transform: none !important; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0, 229, 255, 0.15); }
         .master-box::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); animation: shine 5s infinite; }
         @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-        .master-box h4 { color: #FFF; opacity: 0.9; font-size: 1.2rem; }
-        .master-box .value { color: #FFF; font-size: clamp(3rem, 6vw, 4.5rem); text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .master-box h4 { color: #FFF; opacity: 0.9; font-size: 1.4rem; }
+        .master-box .value { color: #FFF; font-size: clamp(3.5rem, 7vw, 5.5rem); text-shadow: 0 15px 40px rgba(0,0,0,0.6); }
 
-        .upload-card { background: var(--glass-bg); border: 2px dashed var(--glass-border); padding: 4rem 3rem; border-radius: 16px; text-align: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); margin: 0 auto; max-width: 600px; }
-        .upload-card:hover { border-color: var(--accent-pink); background: rgba(0, 210, 255, 0.05); }
-        .upload-card input[type="file"] { width: 100%; padding: 1.5rem; background: var(--input-bg); border-radius: 12px; color: var(--text-main); margin-bottom: 2rem; font-weight: 700; font-size: 1.1rem; border: 1px solid transparent; cursor: pointer; }
+        .upload-card { background: var(--glass-bg); border: 2px dashed var(--glass-border); padding: 5rem 4rem; border-radius: 20px; text-align: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); margin: 0 auto; max-width: 700px; }
+        .upload-card:hover { border-color: var(--accent-pink); background: rgba(0, 229, 255, 0.05); }
+        .upload-card input[type="file"] { width: 100%; padding: 1.8rem; background: var(--input-bg); border-radius: 12px; color: var(--text-main); margin-bottom: 2.5rem; font-weight: 800; font-size: 1.2rem; border: 1px solid transparent; cursor: pointer; }
         
-        #kpoAuthWall { background: var(--glass-bg); border: 2px solid var(--accent-pink); border-radius: 20px; padding: 5rem 4rem; text-align: center; max-width: 600px; margin: 0 auto 3rem auto; box-shadow: 0 0 40px rgba(0, 210, 255, 0.1); }
-        #kpoAuthWall input { width: 100%; padding: 1.5rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.5rem; margin-bottom: 2.5rem; text-align: center; letter-spacing: 4px; font-weight: 900; }
+        #kpoAuthWall { background: var(--glass-bg); border: 2px solid var(--accent-pink); border-radius: 24px; padding: 6rem 5rem; text-align: center; max-width: 700px; margin: 0 auto 3rem auto; box-shadow: 0 0 50px rgba(0, 229, 255, 0.15); }
+        #kpoAuthWall input { width: 100%; padding: 1.8rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.8rem; margin-bottom: 3rem; text-align: center; letter-spacing: 6px; font-weight: 900; }
 
         @media (max-width: 768px) {
             header { flex-direction: column; text-align: center; gap: 1.5rem; padding: 1.5rem; }
@@ -221,6 +222,7 @@
 </head>
 <body>
 
+    <!-- SECURE LOGIN FIREWALL -->
     <div id="globalLoginOverlay">
         <div class="login-box">
             <h1>SANTEX <span>OS</span></h1>
@@ -228,14 +230,15 @@
             <div id="loginError"></div>
             <input type="text" id="loginUsername" placeholder="Agent Identification" autocomplete="off">
             <input type="password" id="loginPassword" placeholder="Security Protocol Key" onkeypress="if(event.key === 'Enter') executeLogin()">
-            <button class="btn" onclick="executeLogin()"><i class="fas fa-fingerprint"></i> Initialize Session</button>
+            <button class="btn" onclick="executeLogin()"><i class="fas fa-fingerprint"></i> Initialize VIP Session</button>
         </div>
     </div>
 
+    <!-- VIP WELCOME ANIMATION -->
     <div id="vipWelcomeOverlay">
-        <i class="fas fa-shield-check fa-5x" style="color:var(--accent-pink); margin-bottom: 1.5rem; text-shadow: 0 0 30px var(--accent-pink);"></i>
+        <i class="fas fa-shield-check fa-5x" style="color:var(--accent-pink); margin-bottom: 1.5rem; text-shadow: 0 0 40px var(--accent-pink);"></i>
         <h1>WELCOME, <span id="vipNameDisplay"></span></h1>
-        <p style="color:var(--text-muted); font-size:1.2rem; margin-top:1.5rem; letter-spacing:4px; font-weight: 800; text-transform: uppercase;">Establishing VIP Encrypted Connection...</p>
+        <p style="color:var(--text-muted); font-size:1.4rem; margin-top:1.5rem; letter-spacing:6px; font-weight: 900; text-transform: uppercase;">Establishing VIP Encrypted Connection...</p>
     </div>
 
     <!-- 15 SEC GOD MODE ANIMATION OVERLAY W/ AI ANALYSIS -->
@@ -252,7 +255,7 @@
             <div class="progress-container">
                 <div class="progress-bar" id="syncProgressBar"></div>
             </div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 2.5rem; letter-spacing: 2px; font-weight: 700;">MAINTAIN TERMINAL CONNECTION. DEEP PACKET INSPECTION ACTIVE.</p>
+            <p style="color: var(--text-muted); font-size: 1rem; margin-top: 3rem; letter-spacing: 3px; font-weight: 800;">MAINTAIN TERMINAL CONNECTION. DEEP PACKET INSPECTION ACTIVE.</p>
         </div>
     </div>
 
@@ -260,11 +263,11 @@
         <header>
             <div>
                 <h1>SANTEX <span>INVENTORY REPORT</span></h1>
-                <div style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.8rem; letter-spacing: 3px; font-weight: 800; text-transform: uppercase;">High-Performance OS Framework</div>
+                <div style="color: var(--text-muted); font-size: 1rem; margin-top: 0.8rem; letter-spacing: 4px; font-weight: 900; text-transform: uppercase;">VIP Enterprise OS Framework</div>
             </div>
             <div class="header-meta">
-                <div id="liveClock" style="font-weight: 900; font-family: monospace; font-size: 1.3rem; color: var(--text-main); letter-spacing: 1px;"></div>
-                <div id="syncStatus" style="margin-top: 0.6rem; font-size: 0.85rem; color: var(--accent-pink); font-weight: 800; letter-spacing: 2px;"><i class="fas fa-lock"></i> SECURE NODE ACTIVE</div>
+                <div id="liveClock" style="font-weight: 900; font-family: monospace; font-size: 1.4rem; color: var(--text-main); letter-spacing: 1px;"></div>
+                <div id="syncStatus" style="margin-top: 0.6rem; font-size: 0.9rem; color: var(--accent-pink); font-weight: 900; letter-spacing: 3px;"><i class="fas fa-lock"></i> SECURE NODE ACTIVE</div>
                 <button class="theme-switch" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i> <span id="themeText">Dark Theme</span></button>
             </div>
         </header>
@@ -313,7 +316,7 @@
                             </tr>
                         </thead>
                         <tbody id="inventoryBody">
-                            <tr><td colspan="4" style="text-align:center; padding:5rem; color:var(--text-muted);"><i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--accent-pink); margin-bottom: 1.5rem;"></i><br><br><span style="letter-spacing: 2px; font-weight: 800; font-size: 1.2rem;">Syncing Central DB...</span></td></tr>
+                            <tr><td colspan="4" style="text-align:center; padding:6rem; color:var(--text-muted);"><i class="fas fa-circle-notch fa-spin fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i><br><br><span style="letter-spacing: 3px; font-weight: 900; font-size: 1.4rem;">Syncing Central DB...</span></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -327,7 +330,7 @@
                         <h4>Grand Total Enterprise Value</h4>
                         <div class="value" id="execGrandTotal">Rs 0.00</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem;">
                         <div class="stat-box">
                             <h4>Total Active SKUs</h4>
                             <div class="value" id="execTotalSkus" style="color: var(--accent-pink);">0</div>
@@ -344,20 +347,20 @@
                 <h2 class="panel-title"><i class="fas fa-file-invoice"></i> Financial Extraction Module</h2>
                 
                 <div class="boardroom-grid" style="grid-template-columns: 1fr 1fr;">
-                    <div class="stat-box" style="text-align: center; padding: 4rem 2rem;">
-                        <i class="fas fa-file-csv fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">God Mode CSV</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">
+                    <div class="stat-box" style="text-align: center; padding: 5rem 3rem;">
+                        <i class="fas fa-file-csv fa-5x" style="color: var(--accent-pink); margin-bottom: 2.5rem;"></i>
+                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 900;">God Mode CSV</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; line-height: 1.8;">
                             Generates the ultimate structural CSV ledger perfectly formatted to match the native system architecture.
                         </p>
                         <button class="btn" style="width: 100%; justify-content: center;" onclick="exportEnterpriseCSV()"><i class="fas fa-download"></i> Extract CSV</button>
                     </div>
 
-                    <div class="stat-box" style="text-align: center; padding: 4rem 2rem;">
-                        <i class="fas fa-file-pdf fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">VIP Enterprise PDF</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">
-                            Auto-paginated Portrait A4 document. 100X Dark Theme. Contains Master Architect stamp, timestamps, and full sumations.
+                    <div class="stat-box" style="text-align: center; padding: 5rem 3rem;">
+                        <i class="fas fa-file-pdf fa-5x" style="color: var(--accent-pink); margin-bottom: 2.5rem;"></i>
+                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 900;">VIP Enterprise PDF</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; line-height: 1.8;">
+                            Auto-paginated A4 Portrait document. 100% Dark Theme. Contains Master Architect stamp, timestamps, and full sumations.
                         </p>
                         <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportEnterprisePDF()"><i class="fas fa-file-pdf"></i> Generate VIP PDF</button>
                     </div>
@@ -377,26 +380,26 @@
             <div id="upload" class="panel">
                 <h2 class="panel-title"><i class="fas fa-satellite-dish"></i> Master Channel Uplink</h2>
                 <div id="kpoAuthWall">
-                    <h3 style="color: var(--accent-pink); margin-bottom: 1.5rem; font-size: 2rem;"><i class="fas fa-shield-alt"></i> Auth Required</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem;">God Mode database injection restricted to highly cleared personnel.</p>
+                    <h3 style="color: var(--accent-pink); margin-bottom: 2rem; font-size: 2.5rem;"><i class="fas fa-shield-alt"></i> Auth Required</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 4rem; font-size: 1.2rem; line-height: 1.6;">God Mode database injection restricted to highly cleared personnel.</p>
                     <input type="password" id="kpoPass" placeholder="Enter Secure Passcode" onkeypress="if(event.key === 'Enter') authKPO()">
-                    <button class="btn" onclick="authKPO()" style="width: 100%; justify-content: center; padding: 1.5rem; font-size: 1.2rem;"><i class="fas fa-unlock"></i> Disengage Firewall</button>
+                    <button class="btn" onclick="authKPO()" style="width: 100%; justify-content: center; padding: 1.8rem; font-size: 1.3rem;"><i class="fas fa-unlock"></i> Disengage Firewall</button>
                 </div>
                 
                 <div id="kpoWorkspace" style="display: none;">
                     <div class="upload-card">
-                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px;"><i class="fas fa-upload" style="color: var(--accent-pink);"></i> LMT Source File</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Formats accepted: CSV, XLS, XLSX</p>
+                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px;"><i class="fas fa-upload" style="color: var(--accent-pink);"></i> LMT Source File</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1.1rem;">Formats accepted: CSV, XLS, XLSX</p>
                         <input type="file" id="fileLMT" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                        <div id="badge-lmt" class="size-badge" style="display:none; margin-bottom: 2rem; font-size: 1rem; padding: 0.8rem 1.5rem;"></div>
-                        <button id="syncApiBtn" class="btn" style="width: 100%; justify-content: center; padding: 1.5rem;" onclick="processGodModeUpload()"><i class="fas fa-bolt"></i> Execute God Mode Sync</button>
+                        <div id="badge-lmt" class="size-badge" style="display:none; margin-bottom: 2.5rem; font-size: 1.1rem; padding: 1rem 2rem;"></div>
+                        <button id="syncApiBtn" class="btn" style="width: 100%; justify-content: center; padding: 1.8rem;" onclick="processGodModeUpload()"><i class="fas fa-bolt"></i> Execute God Mode Sync</button>
                     </div>
                 </div>
             </div>
 
         </main>
         
-        <footer style="text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px; border-top: 1px solid var(--glass-border); margin-top: auto;">
+        <footer style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; letter-spacing: 3px; border-top: 1px solid var(--glass-border); margin-top: auto; font-weight: 800;">
             SANTEX ENTERPRISE OS &copy; 2026 | TERMINAL SECURED
         </footer>
     </div>
@@ -587,7 +590,7 @@
 
         const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-        // 1000% WORKING - PERFECTED 15-SEC GOD MODE UPLOAD W/ WIPE-REPLACE ALGORITHM
+        // 1000% WORKING - PERFECTED 15-SEC GOD MODE UPLOAD W/ AUTO-VANISH ALGORITHM
         async function processGodModeUpload() {
             if(isSyncing) return showAlert("Transaction actively processing.", "bad");
             
@@ -630,20 +633,16 @@
                         const workbook = XLSX.read(data, {type: 'array'});
                         const sheet = workbook.Sheets[workbook.SheetNames[0]];
                         
-                        // Parse strictly as array of arrays to preserve exact positioning
                         const rawRows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: ""});
-                        
                         let aggregatedData = {};
                         
-                        // Indestructible Data Extraction Loop bypassing Headers completely
+                        // Robust Data Extraction Loop bypassing Headers completely
                         for(let i = 0; i < rawRows.length; i++) {
                             let row = rawRows[i];
                             if(!row) continue;
                             
-                            // Flexible SKU finder for this exact row
                             let skuIndex = -1;
                             for(let c=0; c<row.length; c++) {
-                                // Looks for cell containing SKU followed by digits (e.g. SKU00458)
                                 if(String(row[c]).trim().match(/^SKU\d{4,}/i)) {
                                     skuIndex = c; 
                                     break;
@@ -652,7 +651,7 @@
                             
                             if(skuIndex !== -1) {
                                 let code = String(row[skuIndex]).trim().toUpperCase();
-                                let desc = String(row[skuIndex+1] || "").trim(); // Desc is immediately next to SKU
+                                let desc = String(row[skuIndex+1] || "").trim(); 
                                 
                                 // Standard Fallback offsets for Current End Stock(1).csv
                                 let c = parseFloat(String(row[skuIndex+13] || "0").replace(/,/g, '')) || 0;
@@ -660,7 +659,6 @@
                                 let tp = parseFloat(String(row[skuIndex+15] || "0").replace(/,/g, '')) || 0;
                                 let v = parseFloat(String(row[skuIndex+17] || "0").replace(/,/g, '')) || 0;
                                 
-                                // Valuation Fallback in case of missing explicit totals
                                 if(v === 0 && tp > 0) {
                                     v = (c * 24 * tp) + (p * tp);
                                 }
@@ -695,7 +693,7 @@
                         pBar.style.width = '65%';
                         pText.innerText = 'AUTO-VANISHING OLD DATA. PREPARING CLEAN SLATE...';
                         
-                        // NEW SYSTEM: Automatically vanish old data safely.
+                        // PERMANENT AUTO-VANISH SYSTEM: Wipes database clean for new injection
                         const { error: delErr } = await db.from('live_inventory').delete().neq('sku_code', 'ABSOLUTE_ZERO_WIPE_BYPASS');
                         if (delErr) throw new Error("Database Wipe Blocked: " + delErr.message);
 
@@ -703,7 +701,6 @@
                         pBar.style.width = '85%';
                         pText.innerText = 'INJECTING NEW 100X PAYLOAD TO MAINFRAME...';
                         
-                        // Push securely avoiding Primary Key collisons with explicit Insert
                         const chunkSize = 500;
                         for (let i = 0; i < finalPayload.length; i += chunkSize) {
                             const chunk = finalPayload.slice(i, i + chunkSize);
@@ -718,7 +715,7 @@
                         pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
                         
                         fileInput.value = '';
-                        await loadLiveServerData(); // Repopulates Dashboard UI automatically
+                        await loadLiveServerData(); 
                         await sleep(1500);
                         
                         overlay.style.display = 'none';
@@ -819,13 +816,11 @@
             }
         }
 
-        // CSV EXPORT FOR LMT NATIVE SYSTEMS
         function exportEnterpriseCSV() {
             if(Object.keys(masterDB).length === 0) return showAlert('No data available in Mainframe.', 'bad');
             showAlert('Packaging 100X God Mode CSV...', 'good');
             
             let csvContent = "data:text/csv;charset=utf-8,";
-            
             csvContent += "Distributor Name,SKU Code,Master SKU Name2,SKU STATUS2,TP/W TAX,MRP,SKU BAR CODE,CTN SIZE,CLOSING TOTAL UNITS,CLOSING QTY CRTN,CLOSING QTY UNITS\n";
 
             Object.values(masterDB).forEach(item => {
@@ -833,17 +828,8 @@
                 let qtyP = parseFloat(item.qty_p) || 0;
 
                 let row = [
-                    "LMT",
-                    item.sku_code,
-                    `"${item.name.replace(/"/g, '""')}"`,
-                    "CURRENT",
-                    "0", 
-                    "0",
-                    "",
-                    "24",
-                    ((qtyC * 24) + qtyP).toString(),
-                    qtyC,
-                    qtyP
+                    "LMT", item.sku_code, `"${item.name.replace(/"/g, '""')}"`, "CURRENT", "0", "0", "", "24",
+                    ((qtyC * 24) + qtyP).toString(), qtyC, qtyP
                 ];
                 csvContent += row.join(",") + "\n";
             });
@@ -857,13 +843,15 @@
             document.body.removeChild(link);
         }
 
-        // FULL FLEDGE ENTERPRISE PDF EXPORT - VIP DARK THEME (PORTRAIT)
+        // ============================================================================
+        // FULL FLEDGE ENTERPRISE PDF EXPORT - VIP DARK THEME (PORTRAIT) NO OVERFLOW
+        // ============================================================================
         function exportEnterprisePDF() {
             if(Object.keys(masterDB).length === 0) return showAlert('No data available to export.', 'bad');
             showAlert('Generating Enterprise A4 PDF...', 'good');
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4'); // 'p' for Portrait Shape A4
+            const doc = new jsPDF('p', 'mm', 'a4'); // 'p' explicitly forces Portrait Shape A4
             
             const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' });
             const architectName = currentSessionUser && currentSessionUser.full_name ? currentSessionUser.full_name : "Master Architect";
@@ -885,7 +873,7 @@
                 grandTotal += val;
                 totalCartons += qtyC;
                 totalLoosePcs += qtyP;
-                totalPcsOverall += (qtyC * 24) + qtyP; // 24 Multiplier based on God Mode
+                totalPcsOverall += (qtyC * 24) + qtyP; // 24 Multiplier Fallback
 
                 tableRows.push([
                     item.sku_code, 
@@ -896,21 +884,22 @@
                 ]);
             });
 
-            const pageWidth = doc.internal.pageSize.width;
-            const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width; // 210mm
+            const pageHeight = doc.internal.pageSize.height; // 297mm
 
             // AutoTable Engine configured for Dark Theme VIP
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
                 startY: 45,
+                margin: { top: 45, right: 14, bottom: 25, left: 14 },
                 theme: 'grid',
                 styles: { 
                     fontSize: 8, 
                     cellPadding: 3, 
                     textColor: [240, 240, 240], 
                     fillColor: [15, 15, 20],
-                    lineColor: [0, 100, 200], // Darker blue grid
+                    lineColor: [0, 80, 180], // Dark blue grid
                     lineWidth: 0.1,
                     font: "helvetica", 
                     overflow: 'linebreak' 
@@ -921,13 +910,14 @@
                     fontStyle: 'bold', 
                     textTransform: 'uppercase' 
                 },
-                alternateRowStyles: { fillColor: [10, 10, 15] },
+                alternateRowStyles: { fillColor: [8, 8, 12] },
                 columnStyles: { 
-                    0: { cellWidth: 25 }, // SKU
-                    1: { cellWidth: 'auto' }, // Desc auto fills remaining
+                    // Strictly controlling widths prevents any text overflow off the page
+                    0: { cellWidth: 22 }, // SKU
+                    1: { cellWidth: 80 }, // Desc
                     2: { halign: 'center', cellWidth: 15 }, // CTN
                     3: { halign: 'center', cellWidth: 15 }, // PCS
-                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 210, 255], cellWidth: 35 } // VAL
+                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 229, 255], cellWidth: 40 } // VAL
                 },
                 willDrawPage: function (data) {
                     // Absolute Dark VIP Background Fill
@@ -939,12 +929,12 @@
                     doc.rect(0, 0, pageWidth, 35, 'F');
                     
                     // Accent Line
-                    doc.setDrawColor(0, 210, 255);
+                    doc.setDrawColor(0, 229, 255);
                     doc.setLineWidth(1);
                     doc.line(0, 35, pageWidth, 35);
 
                     // VIP COMPANY HEADER 
-                    doc.setTextColor(0, 210, 255); 
+                    doc.setTextColor(0, 229, 255); 
                     doc.setFont("helvetica", "bold");
                     doc.setFontSize(22);
                     doc.text("SANTEX ENTERPRISES", 14, 16);
@@ -953,7 +943,7 @@
                     doc.setFontSize(12);
                     doc.text("MASTER INVENTORY REPORT", 14, 24);
                     
-                    doc.setTextColor(180, 180, 180);
+                    doc.setTextColor(150, 150, 150);
                     doc.setFontSize(8);
                     doc.text(`MASTER ARCHITECT: ${architectName.toUpperCase()}`, 14, 30);
                 },
@@ -970,33 +960,35 @@
             // VIP Summary Block at the End of the Report
             let finalY = doc.lastAutoTable.finalY + 10;
             
-            // Check if there is enough space at the bottom for the summary block
-            if(finalY > pageHeight - 40) {
+            // Check if there is enough space at the bottom for the summary block, if not add page
+            if(finalY > pageHeight - 45) {
                 doc.addPage();
-                finalY = 45; // Starts directly below new header
+                finalY = 45; 
             }
             
+            // Summary Block Background
             doc.setFillColor(15, 15, 20);
-            doc.setDrawColor(0, 210, 255);
+            doc.setDrawColor(0, 229, 255);
             doc.setLineWidth(0.5);
-            doc.rect(14, finalY, pageWidth - 28, 30, 'FD'); // Filled Rectangle with border
+            doc.rect(14, finalY, pageWidth - 28, 32, 'FD'); // Filled Rectangle with border
 
-            doc.setTextColor(0, 210, 255);
-            doc.setFontSize(11);
+            // Summary Block Text
+            doc.setTextColor(0, 229, 255);
+            doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
-            doc.text("ENTERPRISE INVENTORY TOTALS", 20, finalY + 8);
+            doc.text("ENTERPRISE INVENTORY TOTALS", 20, finalY + 9);
             
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(9);
             doc.setFont("helvetica", "normal");
-            doc.text(`TOTAL CARTONS (CTN): ${totalCartons}`, 20, finalY + 16);
-            doc.text(`LOOSE PIECES (PCS): ${totalLoosePcs}`, 80, finalY + 16);
-            doc.text(`OVERALL UNITS: ${totalPcsOverall}`, 140, finalY + 16);
+            doc.text(`TOTAL CARTON QTY: ${totalCartons}`, 20, finalY + 18);
+            doc.text(`LOOSE PCS QTY: ${totalLoosePcs}`, 80, finalY + 18);
+            doc.text(`TOTAL PCS QTY: ${totalPcsOverall}`, 140, finalY + 18);
             
-            doc.setTextColor(0, 210, 255);
-            doc.setFontSize(11);
+            doc.setTextColor(0, 229, 255);
+            doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
-            doc.text(`GRAND VALUATION: PKR ${formatCurrency(grandTotal).replace('Rs ', '')}`, 20, finalY + 25);
+            doc.text(`GRAND VALUATION: PKR ${formatCurrency(grandTotal).replace('Rs ', '')}`, 20, finalY + 28);
 
             doc.save(`SANTEX_VIP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
         }
