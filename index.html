@@ -74,9 +74,16 @@
         ::-webkit-scrollbar-thumb { background: var(--accent-pink); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-navy); }
 
+        .glass-panel {
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px 0 rgba(0, 229, 255, 0.15);
+        }
+
         /* SANTEX LOGIN FIREWALL */
         #globalLoginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-space); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .login-box { background: var(--glass-bg); border-radius: 20px; padding: 4rem; text-align: center; max-width: 480px; width: 90%; position: relative; overflow: hidden; transition: all 0.3s ease; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0, 229, 255, 0.1); backdrop-filter: blur(25px); }
+        .login-box { background: var(--glass-bg); border-radius: 20px; padding: 4rem; text-align: center; max-width: 480px; width: 90%; position: relative; overflow: hidden; transition: all 0.3s ease; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0, 229, 255, 0.1); }
         .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient-brand); }
         .login-box h1 { font-size: 3.2rem; font-weight: 900; letter-spacing: 4px; margin-bottom: 0.5rem; color: var(--text-main); }
         .login-box h1 span { color: var(--accent-pink); }
@@ -108,7 +115,7 @@
         .sync-title { font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 900; color: var(--text-main); letter-spacing: 8px; margin-bottom: 1rem; text-transform: uppercase; }
         .sync-status { font-size: 1.3rem; color: var(--accent-pink); font-weight: 800; letter-spacing: 4px; margin-bottom: 1rem; height: 30px; }
         
-        /* AI Log Box for 15s Animation */
+        /* New AI Log Box for 15s Animation */
         #aiAnalysisLog { font-family: monospace; font-size: 1rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
 
         .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 18px; overflow: hidden; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
@@ -155,17 +162,17 @@
         .search-input:focus, .filter-select:focus { border-color: var(--accent-pink); box-shadow: 0 0 25px rgba(0, 229, 255, 0.2); }
 
         .table-container { border-radius: 16px; border: 1px solid var(--glass-border); background: var(--bg-panel); max-height: 65vh; overflow-y: auto; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; min-width: 1200px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; min-width: 1000px; }
         th { background: var(--table-header); color: var(--text-muted); font-weight: 900; padding: 1.8rem; border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 1rem; position: sticky; top: 0; z-index: 10; letter-spacing: 2px; white-space: nowrap; }
         td { padding: 1.8rem; border-bottom: 1px solid var(--glass-border); color: var(--text-main); vertical-align: middle; transition: background 0.2s; }
         tr:hover td { background: rgba(0, 229, 255, 0.05); }
         
-        .desc-cell { min-width: 300px; word-wrap: break-word; line-height: 1.6; font-weight: 700; font-size: 1.1rem; }
-        .qty-text { font-size: 1.1rem; font-weight: 900; margin-bottom: 0.6rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; }
+        .desc-cell { min-width: 350px; word-wrap: break-word; line-height: 1.6; font-weight: 700; font-size: 1.2rem; }
+        .qty-text { font-size: 1.2rem; font-weight: 900; margin-bottom: 0.6rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; }
         .qty-text::before { content: '\f4d2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--accent-pink); font-size: 1rem; }
         
-        .val-box { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 900; display: inline-block; text-align: right; letter-spacing: 1px; font-variant-numeric: tabular-nums; font-size: 1rem; }
-        .val-box.master-val { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(0, 229, 255, 0.1); font-size: 1.2rem; font-weight: 900; box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);}
+        .val-box { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 1rem 1.5rem; border-radius: 10px; font-weight: 900; display: inline-block; min-width: 180px; text-align: right; letter-spacing: 2px; font-variant-numeric: tabular-nums; font-size: 1.2rem; }
+        .val-box.master-val { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(0, 229, 255, 0.1); font-size: 1.4rem; min-width: 220px; font-weight: 900; box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);}
         
         .size-badge, .brand-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 900; margin-top: 0.8rem; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--glass-border); }
         .size-badge { background: var(--input-bg); color: var(--text-muted); }
@@ -183,14 +190,14 @@
         .boardroom-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 3rem; }
         .stat-box { background: var(--glass-bg); padding: 4rem; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; }
         .stat-box:hover { border-color: var(--accent-pink); transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0, 229, 255, 0.15); }
-        .stat-box h4 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 1.5rem; font-weight: 900; }
-        .stat-box .value { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--text-main); font-weight: 900; letter-spacing: 3px; font-variant-numeric: tabular-nums; }
+        .stat-box h4 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; font-weight: 900; }
+        .stat-box .value { font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--text-main); font-weight: 900; letter-spacing: 3px; font-variant-numeric: tabular-nums; }
         
         .master-box { background: var(--gradient-master); border-color: var(--accent-pink); padding: 5rem; transform: none !important; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0, 229, 255, 0.15); }
         .master-box::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); animation: shine 5s infinite; }
         @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-        .master-box h4 { color: #FFF; opacity: 0.9; font-size: 1.2rem; }
-        .master-box .value { color: #FFF; font-size: clamp(3rem, 6vw, 4.5rem); text-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        .master-box h4 { color: #FFF; opacity: 0.9; font-size: 1.4rem; }
+        .master-box .value { color: #FFF; font-size: clamp(3.5rem, 7vw, 5.5rem); text-shadow: 0 15px 40px rgba(0,0,0,0.6); }
 
         .upload-card { background: var(--glass-bg); border: 2px dashed var(--glass-border); padding: 5rem 4rem; border-radius: 20px; text-align: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); margin: 0 auto; max-width: 700px; }
         .upload-card:hover { border-color: var(--accent-pink); background: rgba(0, 229, 255, 0.05); }
@@ -302,10 +309,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 15%;">SKU Identifier</th>
-                                <th style="width: 35%;">Product DNA</th>
-                                <th style="width: 25%;">Opening Stock</th>
-                                <th style="width: 25%;">Closing Stock</th>
+                                <th>SKU Identifier</th>
+                                <th>Product DNA</th>
+                                <th>Volume (CTN/UNITS)</th>
+                                <th style="text-align: right;">Global LMT Valuation</th>
                             </tr>
                         </thead>
                         <tbody id="inventoryBody">
@@ -320,20 +327,16 @@
                 
                 <div class="boardroom-grid">
                     <div class="stat-box master-box">
-                        <h4>Grand Total Closing Value</h4>
+                        <h4>Grand Total Enterprise Value</h4>
                         <div class="value" id="execGrandTotal">Rs 0.00</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem;">
                         <div class="stat-box">
                             <h4>Total Active SKUs</h4>
                             <div class="value" id="execTotalSkus" style="color: var(--accent-pink);">0</div>
                         </div>
                         <div class="stat-box">
-                            <h4>Total Opening Value</h4>
-                            <div class="value" id="execOpVal" style="color: var(--text-main);">Rs 0.00</div>
-                        </div>
-                        <div class="stat-box">
-                            <h4>Total Closing Units</h4>
+                            <h4>Physical Units Logged</h4>
                             <div class="value" id="execTotalUnits" style="color: var(--accent-pink);">0</div>
                         </div>
                     </div>
@@ -348,7 +351,7 @@
                         <i class="fas fa-file-csv fa-5x" style="color: var(--accent-pink); margin-bottom: 2.5rem;"></i>
                         <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 900;">God Mode CSV</h3>
                         <p style="color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; line-height: 1.8;">
-                            Generates the ultimate structural CSV ledger perfectly formatted to match native system architecture.
+                            Generates the ultimate structural CSV ledger perfectly formatted to match the native system architecture.
                         </p>
                         <button class="btn" style="width: 100%; justify-content: center;" onclick="exportEnterpriseCSV()"><i class="fas fa-download"></i> Extract CSV</button>
                     </div>
@@ -357,7 +360,7 @@
                         <i class="fas fa-file-pdf fa-5x" style="color: var(--accent-pink); margin-bottom: 2.5rem;"></i>
                         <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 900;">VIP Enterprise PDF</h3>
                         <p style="color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; line-height: 1.8;">
-                            Auto-paginated A4 Landscape document. 100% Dark Theme. Contains Master Architect stamp, timestamps, and full Opening/Closing stock layout.
+                            Auto-paginated A4 Portrait document. 100% Dark Theme. Contains Master Architect stamp, timestamps, and full sumations.
                         </p>
                         <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportEnterprisePDF()"><i class="fas fa-file-pdf"></i> Generate VIP PDF</button>
                     </div>
@@ -385,7 +388,7 @@
                 
                 <div id="kpoWorkspace" style="display: none;">
                     <div class="upload-card">
-                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px;"><i class="fas fa-upload" style="color: var(--accent-pink);"></i> Master Source File</h3>
+                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px;"><i class="fas fa-upload" style="color: var(--accent-pink);"></i> LMT Source File</h3>
                         <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1.1rem;">Formats accepted: CSV, XLS, XLSX</p>
                         <input type="file" id="fileLMT" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                         <div id="badge-lmt" class="size-badge" style="display:none; margin-bottom: 2.5rem; font-size: 1.1rem; padding: 1rem 2rem;"></div>
@@ -397,7 +400,7 @@
         </main>
         
         <footer style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; letter-spacing: 3px; border-top: 1px solid var(--glass-border); margin-top: auto; font-weight: 800;">
-            SANTEX ENTERPRISES | OS &copy; 2026 | TERMINAL SECURED
+            SANTEX ENTERPRISE OS &copy; 2026 | TERMINAL SECURED
         </footer>
     </div>
 
@@ -541,7 +544,7 @@
 
         function extractBrand(desc) {
             if(!desc) return "SANTEX";
-            let parts = desc.split(',');
+            let parts = desc.split(' ');
             if(parts.length > 0) return parts[0].toUpperCase();
             return "SANTEX";
         }
@@ -607,9 +610,9 @@
             pText.innerText = 'INITIALIZING GOD MODE PROTOCOL...';
 
             const aiPhrases = [
-                "> AI INGESTING RAW DATA MATRIX...",
+                "> AI INGESTING RAW LMT DATA MATRIX...",
                 "> ISOLATING MASTER SKU DNA STRANDS...",
-                "> MAPPING OPENING & CLOSING STOCK DELTAS...",
+                "> BYPASSING DUAL-HEADER ARCHITECTURE...",
                 "> ANALYZING CTN/UNIT VOLUMETRICS...",
                 "> APPLYING HEURISTIC VALUATION ALGORITHMS...",
                 "> PURGING ORPHAN RECORDS & ANOMALIES...",
@@ -633,15 +636,14 @@
                         const rawRows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: ""});
                         let aggregatedData = {};
                         
-                        // Robust Data Extraction Loop using strict structural offsets
+                        // Robust Data Extraction Loop bypassing Headers completely
                         for(let i = 0; i < rawRows.length; i++) {
                             let row = rawRows[i];
                             if(!row) continue;
                             
                             let skuIndex = -1;
                             for(let c=0; c<row.length; c++) {
-                                // Scans row for cell containing an SKU identifier
-                                if(String(row[c]).trim().match(/^[0-9]{5,}|SKU/i)) {
+                                if(String(row[c]).trim().match(/^SKU\d{4,}/i)) {
                                     skuIndex = c; 
                                     break;
                                 }
@@ -651,42 +653,28 @@
                                 let code = String(row[skuIndex]).trim().toUpperCase();
                                 let desc = String(row[skuIndex+1] || "").trim(); 
                                 
-                                if (!code || !desc || desc.toLowerCase().includes('total') || code.toLowerCase().includes('code')) continue;
-
-                                // Dynamically offsets to grab opening & closing stock variables based on your exact file format
-                                let opC = parseFloat(String(row[skuIndex+3] || "0").replace(/,/g, '')) || 0;
-                                let opP = parseFloat(String(row[skuIndex+4] || "0").replace(/,/g, '')) || 0;
-                                let clC = parseFloat(String(row[skuIndex+12] || "0").replace(/,/g, '')) || 0;
-                                let clP = parseFloat(String(row[skuIndex+13] || "0").replace(/,/g, '')) || 0;
-                                
+                                // Standard Fallback offsets for Current End Stock(1).csv
+                                let c = parseFloat(String(row[skuIndex+13] || "0").replace(/,/g, '')) || 0;
+                                let p = parseFloat(String(row[skuIndex+14] || "0").replace(/,/g, '')) || 0;
                                 let tp = parseFloat(String(row[skuIndex+15] || "0").replace(/,/g, '')) || 0;
-                                let clVal = parseFloat(String(row[skuIndex+17] || "0").replace(/,/g, '')) || 0;
-
-                                // Generate Opening Value
-                                let opVal = (opC * 24 * tp) + (opP * tp);
-
-                                if(clVal === 0 && tp > 0) {
-                                    clVal = (clC * 24 * tp) + (clP * tp);
+                                let v = parseFloat(String(row[skuIndex+17] || "0").replace(/,/g, '')) || 0;
+                                
+                                if(v === 0 && tp > 0) {
+                                    v = (c * 24 * tp) + (p * tp);
                                 }
 
                                 if (aggregatedData[code]) {
-                                    aggregatedData[code].op_c += opC;
-                                    aggregatedData[code].op_p += opP;
-                                    aggregatedData[code].op_val += opVal;
-                                    aggregatedData[code].qty_c += clC;
-                                    aggregatedData[code].qty_p += clP;
-                                    aggregatedData[code].val += clVal;
+                                    aggregatedData[code].qty_c += c;
+                                    aggregatedData[code].qty_p += p;
+                                    aggregatedData[code].val += v;
                                 } else {
                                     aggregatedData[code] = { 
                                         sku_code: code, 
                                         name: desc, 
-                                        size: 'STD', 
-                                        op_c: opC,
-                                        op_p: opP,
-                                        op_val: opVal,
-                                        qty_c: clC, 
-                                        qty_p: clP, 
-                                        val: clVal 
+                                        size: 'LMT-STD', 
+                                        qty_c: c, 
+                                        qty_p: p, 
+                                        val: v 
                                     };
                                 }
                             }
@@ -716,7 +704,6 @@
                         const chunkSize = 500;
                         for (let i = 0; i < finalPayload.length; i += chunkSize) {
                             const chunk = finalPayload.slice(i, i + chunkSize);
-                            // Push securely avoiding Primary Key collisons with explicit Insert
                             const { error: insErr } = await db.from('live_inventory').insert(chunk);
                             if(insErr) throw new Error("Payload Rejection: " + insErr.message);
                         }
@@ -728,7 +715,7 @@
                         pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
                         
                         fileInput.value = '';
-                        await loadLiveServerData(); // Repopulates Dashboard UI automatically
+                        await loadLiveServerData(); 
                         await sleep(1500);
                         
                         overlay.style.display = 'none';
@@ -753,7 +740,7 @@
             }
         }
 
-        // AUTO-RENDERS DASHBOARD DATA WITH OPENING AND CLOSING STOCK
+        // AUTO-RENDERS DASHBOARD DATA
         function executeSearch() {
             const filterText = document.getElementById('masterSearch').value.toLowerCase();
             const filterBrand = document.getElementById('filterBrand').value;
@@ -772,13 +759,9 @@
                     hasResults = true;
                     const tr = document.createElement('tr');
                     
-                    let opC = parseFloat(item.op_c) || 0;
-                    let opP = parseFloat(item.op_p) || 0;
-                    let opVal = parseFloat(item.op_val) || 0;
-
-                    let clC = parseFloat(item.qty_c) || 0;
-                    let clP = parseFloat(item.qty_p) || 0;
-                    let clVal = parseFloat(item.val) || 0;
+                    let qtyC = parseFloat(item.qty_c) || 0;
+                    let qtyP = parseFloat(item.qty_p) || 0;
+                    let val = parseFloat(item.val) || 0;
 
                     tr.innerHTML = `
                         <td><strong style="color:var(--text-main); font-size: 1.2rem;">${item.sku_code}</strong></td>
@@ -786,16 +769,8 @@
                             <span class="brand-badge">${brand}</span><br>
                             <div style="margin-top:0.8rem; letter-spacing: 1px;">${item.name}</div>
                         </td>
-                        <td>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">OPENING STOCK</div>
-                            <div class="qty-text">${formatQty(opC, opP)}</div>
-                            <div class="val-box" style="min-width: 140px; font-size: 1rem; margin-bottom: 1rem;">${formatCurrency(opVal)}</div>
-                        </td>
-                        <td>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem;">CLOSING STOCK</div>
-                            <div class="qty-text" style="color: var(--accent-pink);">${formatQty(clC, clP)}</div>
-                            <div class="val-box master-val" style="min-width: 180px; font-size: 1.2rem;">${formatCurrency(clVal)}</div>
-                        </td>
+                        <td><div class="qty-text">${formatQty(qtyC, qtyP)}</div></td>
+                        <td style="text-align: right;"><div class="val-box master-val">${formatCurrency(val)}</div></td>
                     `;
                     tbody.appendChild(tr);
                 }
@@ -807,16 +782,14 @@
         }
 
         function buildExecutiveBoardroom() {
-            let gTotal = 0, gOpTotal = 0, tSkus = 0, tUnits = 0;
+            let gTotal = 0, tSkus = 0, tUnits = 0;
             Object.values(masterDB).forEach(i => {
                 gTotal += (parseFloat(i.val) || 0);
-                gOpTotal += (parseFloat(i.op_val) || 0);
                 tSkus++;
                 tUnits += ((parseFloat(i.qty_c) || 0) * 24) + (parseFloat(i.qty_p) || 0); 
             });
 
             document.getElementById('execGrandTotal').innerText = formatCurrency(gTotal);
-            document.getElementById('execOpVal').innerText = formatCurrency(gOpTotal);
             document.getElementById('execTotalSkus').innerText = tSkus.toLocaleString();
             document.getElementById('execTotalUnits').innerText = tUnits.toLocaleString();
         }
@@ -848,20 +821,15 @@
             showAlert('Packaging 100X God Mode CSV...', 'good');
             
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Distributor Name,SKU Code,Master SKU Name,OP QTY CRTN,OP QTY UNITS,OP TOTAL VAL,CL QTY CRTN,CL QTY UNITS,CL TOTAL VAL\n";
+            csvContent += "Distributor Name,SKU Code,Master SKU Name2,SKU STATUS2,TP/W TAX,MRP,SKU BAR CODE,CTN SIZE,CLOSING TOTAL UNITS,CLOSING QTY CRTN,CLOSING QTY UNITS\n";
 
             Object.values(masterDB).forEach(item => {
-                let opC = parseFloat(item.op_c) || 0;
-                let opP = parseFloat(item.op_p) || 0;
-                let opVal = parseFloat(item.op_val) || 0;
-                
-                let clC = parseFloat(item.qty_c) || 0;
-                let clP = parseFloat(item.qty_p) || 0;
-                let clVal = parseFloat(item.val) || 0;
+                let qtyC = parseFloat(item.qty_c) || 0;
+                let qtyP = parseFloat(item.qty_p) || 0;
 
                 let row = [
-                    "SANTEX", item.sku_code, `"${item.name.replace(/"/g, '""')}"`, 
-                    opC, opP, opVal, clC, clP, clVal
+                    "LMT", item.sku_code, `"${item.name.replace(/"/g, '""')}"`, "CURRENT", "0", "0", "", "24",
+                    ((qtyC * 24) + qtyP).toString(), qtyC, qtyP
                 ];
                 csvContent += row.join(",") + "\n";
             });
@@ -869,27 +837,27 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `SANTEX_ENTERPRISE_EXPORT_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `CURRENT_END_STOCK_LMT_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         // ============================================================================
-        // FULL FLEDGE ENTERPRISE PDF EXPORT - VIP DARK THEME (LANDSCAPE) NO OVERFLOW
+        // FULL FLEDGE ENTERPRISE PDF EXPORT - VIP DARK THEME (PORTRAIT) NO OVERFLOW
         // ============================================================================
         function exportEnterprisePDF() {
             if(Object.keys(masterDB).length === 0) return showAlert('No data available to export.', 'bad');
             showAlert('Generating Enterprise A4 PDF...', 'good');
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4'); // 'l' explicitly forces Landscape Shape A4
+            const doc = new jsPDF('p', 'mm', 'a4'); // 'p' explicitly forces Portrait Shape A4
             
             const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' });
             const architectName = currentSessionUser && currentSessionUser.full_name ? currentSessionUser.full_name : "Master Architect";
 
-            // Prepare Data Table mapped directly to prompt requirements
-            const tableColumn = ["SKU Code", "Brand", "Product Description", "OP Qty", "OP Val", "CL Qty", "CL Val"];
+            // Prepare Data Table
+            const tableColumn = ["SKU", "Product DNA Description", "CTN", "PCS", "Valuation (PKR)"];
             const tableRows = [];
             
             let grandTotal = 0;
@@ -898,32 +866,26 @@
             let totalPcsOverall = 0;
 
             Object.values(masterDB).forEach(item => {
-                let opC = parseFloat(item.op_c) || 0;
-                let opP = parseFloat(item.op_p) || 0;
-                let opVal = parseFloat(item.op_val) || 0;
-
-                let clC = parseFloat(item.qty_c) || 0;
-                let clP = parseFloat(item.qty_p) || 0;
-                let clVal = parseFloat(item.val) || 0;
+                let qtyC = parseFloat(item.qty_c) || 0;
+                let qtyP = parseFloat(item.qty_p) || 0;
+                let val = parseFloat(item.val) || 0;
                 
-                grandTotal += clVal;
-                totalCartons += clC;
-                totalLoosePcs += clP;
-                totalPcsOverall += (clC * 24) + clP; 
+                grandTotal += val;
+                totalCartons += qtyC;
+                totalLoosePcs += qtyP;
+                totalPcsOverall += (qtyC * 24) + qtyP; // 24 Multiplier Fallback
 
                 tableRows.push([
                     item.sku_code, 
-                    extractBrand(item.name),
                     item.name, 
-                    `${opC}/${opP}`, 
-                    formatCurrency(opVal).replace('Rs ', ''),
-                    `${clC}/${clP}`, 
-                    formatCurrency(clVal).replace('Rs ', '')
+                    qtyC.toString(), 
+                    qtyP.toString(), 
+                    formatCurrency(val).replace('Rs ', '')
                 ]);
             });
 
-            const pageWidth = doc.internal.pageSize.width; // 297mm
-            const pageHeight = doc.internal.pageSize.height; // 210mm
+            const pageWidth = doc.internal.pageSize.width; // 210mm
+            const pageHeight = doc.internal.pageSize.height; // 297mm
 
             // AutoTable Engine configured for Dark Theme VIP
             doc.autoTable({
@@ -934,10 +896,10 @@
                 theme: 'grid',
                 styles: { 
                     fontSize: 8, 
-                    cellPadding: 4, 
+                    cellPadding: 3, 
                     textColor: [240, 240, 240], 
                     fillColor: [15, 15, 20],
-                    lineColor: [0, 80, 180], 
+                    lineColor: [0, 80, 180], // Dark blue grid
                     lineWidth: 0.1,
                     font: "helvetica", 
                     overflow: 'linebreak' 
@@ -950,13 +912,12 @@
                 },
                 alternateRowStyles: { fillColor: [8, 8, 12] },
                 columnStyles: { 
-                    0: { cellWidth: 25 }, // SKU
-                    1: { cellWidth: 25 }, // Brand
-                    2: { cellWidth: 100 }, // Desc
-                    3: { halign: 'center', cellWidth: 20 }, // OP Qty
-                    4: { halign: 'right', cellWidth: 32 }, // OP Val
-                    5: { halign: 'center', cellWidth: 20 }, // CL Qty
-                    6: { halign: 'right', fontStyle: 'bold', textColor: [0, 229, 255], cellWidth: 35 } // CL Val
+                    // Strictly controlling widths prevents any text overflow off the page
+                    0: { cellWidth: 22 }, // SKU
+                    1: { cellWidth: 80 }, // Desc
+                    2: { halign: 'center', cellWidth: 15 }, // CTN
+                    3: { halign: 'center', cellWidth: 15 }, // PCS
+                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 229, 255], cellWidth: 40 } // VAL
                 },
                 willDrawPage: function (data) {
                     // Absolute Dark VIP Background Fill
@@ -976,11 +937,11 @@
                     doc.setTextColor(0, 229, 255); 
                     doc.setFont("helvetica", "bold");
                     doc.setFontSize(22);
-                    doc.text("SANTEX ENTERPRISES | MASTER OS", 14, 16);
+                    doc.text("SANTEX ENTERPRISES", 14, 16);
                     
                     doc.setTextColor(255, 255, 255); 
-                    doc.setFontSize(10);
-                    doc.text(`Chief Executive: NOUMAN AHMED SB | Generated: ${timestamp}`, 14, 24);
+                    doc.setFontSize(12);
+                    doc.text("MASTER INVENTORY REPORT", 14, 24);
                     
                     doc.setTextColor(150, 150, 150);
                     doc.setFontSize(8);
@@ -1009,25 +970,25 @@
             doc.setFillColor(15, 15, 20);
             doc.setDrawColor(0, 229, 255);
             doc.setLineWidth(0.5);
-            doc.rect(14, finalY, pageWidth - 28, 32, 'FD');
+            doc.rect(14, finalY, pageWidth - 28, 32, 'FD'); // Filled Rectangle with border
 
             // Summary Block Text
             doc.setTextColor(0, 229, 255);
             doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
-            doc.text("ENTERPRISE CLOSING TOTALS", 20, finalY + 9);
+            doc.text("ENTERPRISE INVENTORY TOTALS", 20, finalY + 9);
             
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(9);
             doc.setFont("helvetica", "normal");
-            doc.text(`TOTAL CLOSING CARTONS (CTN): ${totalCartons}`, 20, finalY + 18);
-            doc.text(`LOOSE PIECES (PCS): ${totalLoosePcs}`, 100, finalY + 18);
-            doc.text(`OVERALL CLOSING UNITS: ${totalPcsOverall}`, 180, finalY + 18);
+            doc.text(`TOTAL CARTON QTY: ${totalCartons}`, 20, finalY + 18);
+            doc.text(`LOOSE PCS QTY: ${totalLoosePcs}`, 80, finalY + 18);
+            doc.text(`TOTAL PCS QTY: ${totalPcsOverall}`, 140, finalY + 18);
             
             doc.setTextColor(0, 229, 255);
             doc.setFontSize(12);
             doc.setFont("helvetica", "bold");
-            doc.text(`GRAND CLOSING VALUATION: PKR ${formatCurrency(grandTotal).replace('Rs ', '')}`, 20, finalY + 28);
+            doc.text(`GRAND VALUATION: PKR ${formatCurrency(grandTotal).replace('Rs ', '')}`, 20, finalY + 28);
 
             doc.save(`SANTEX_VIP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
         }
