@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Authorized Master Operator -->
     <title>SANTEX INVENTORY REPORT</title>
     
+    <!-- Core Engine Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- PDF Generation Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -110,7 +114,6 @@
         .sync-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; color: var(--text-main); letter-spacing: 6px; margin-bottom: 1rem; text-transform: uppercase; }
         .sync-status { font-size: 1.2rem; color: var(--accent-pink); font-weight: 700; letter-spacing: 3px; margin-bottom: 1rem; height: 30px; }
         
-        /* New AI Log Box for 15s Animation */
         #aiAnalysisLog { font-family: monospace; font-size: 0.9rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
 
         .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 16px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
@@ -211,6 +214,7 @@
             .panel { padding: 2rem; }
             .executive-banner { padding: 2rem; width: 100%; text-align: center; }
             .btn { width: 100%; justify-content: center; }
+            .boardroom-grid { grid-template-columns: 1fr !important; }
         }
     </style>
 </head>
@@ -267,7 +271,7 @@
         <nav>
             <button id="tab-dashboard" class="nav-tab active" onclick="switchPanel('dashboard')"><i class="fas fa-network-wired"></i> Master Stock</button>
             <button id="tab-executive" class="nav-tab" onclick="switchPanel('executive')"><i class="fas fa-briefcase"></i> Boardroom</button>
-            <button id="tab-reports" class="nav-tab" onclick="switchPanel('reports')"><i class="fas fa-file-csv"></i> Data Extraction</button>
+            <button id="tab-reports" class="nav-tab" onclick="switchPanel('reports')"><i class="fas fa-file-invoice"></i> Data Extraction</button>
             <button id="tab-upload" class="nav-tab" onclick="switchPanel('upload')"><i class="fas fa-satellite-dish"></i> God Mode Uplink</button>
             <button id="tab-users" class="nav-tab" onclick="switchPanel('users')" style="display:none;"><i class="fas fa-user-shield"></i> Security</button>
             
@@ -336,16 +340,25 @@
             </div>
 
             <div id="reports" class="panel">
-                <h2 class="panel-title"><i class="fas fa-file-csv"></i> Financial Extraction Module</h2>
+                <h2 class="panel-title"><i class="fas fa-file-invoice"></i> Financial Extraction Module</h2>
                 
-                <div class="boardroom-grid">
-                    <div class="stat-box" style="text-align: center; padding: 5rem 3rem;">
-                        <i class="fas fa-file-csv fa-5x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem;">God Mode CSV Report</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;">
-                            Generates the ultimate structural CSV ledger perfectly formatted to match the native system architecture. Encrypted filename parameters auto-applied.
+                <div class="boardroom-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="stat-box" style="text-align: center; padding: 4rem 2rem;">
+                        <i class="fas fa-file-csv fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
+                        <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">God Mode CSV</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">
+                            Generates the ultimate structural CSV ledger perfectly formatted to match the native system architecture.
                         </p>
-                        <button class="btn" onclick="exportEnterpriseCSV()"><i class="fas fa-download"></i> Initiate Extraction</button>
+                        <button class="btn" style="width: 100%; justify-content: center;" onclick="exportEnterpriseCSV()"><i class="fas fa-download"></i> Extract CSV</button>
+                    </div>
+
+                    <div class="stat-box" style="text-align: center; padding: 4rem 2rem;">
+                        <i class="fas fa-file-pdf fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
+                        <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Enterprise PDF</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">
+                            Auto-paginated A4 document authorized for board meetings. Contains Master Architect stamp and exact timestamps.
+                        </p>
+                        <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportEnterprisePDF()"><i class="fas fa-file-pdf"></i> Generate PDF</button>
                     </div>
                 </div>
             </div>
@@ -398,7 +411,7 @@
         let isLightMode = false;
         let isSyncing = false; 
 
-        // 1. AUTO-LOGOUT FIX: DOMContentLoaded Event ensuring session lock is permanent across refreshes
+        // AUTO-LOGOUT FIX: Restores active session on F5 Refresh perfectly
         document.addEventListener("DOMContentLoaded", () => {
             startClock();
             try {
@@ -411,7 +424,7 @@
                     }
                 }
             } catch(e) {
-                console.error("Session Cache cleared to prevent fault.");
+                console.error("Session Cache clear.");
             }
         });
 
@@ -445,7 +458,7 @@
             if(!u || !p) { errBox.innerText = "SECURITY ALERT: Credentials Required."; return; }
 
             if(u === 'admin' && p === 'NurAdmin@2026') {
-                currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect' };
+                currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect Dilawar Ali' };
                 localStorage.setItem('santexSessionVIP', JSON.stringify(currentSessionUser));
                 triggerVIPWelcome();
                 return;
@@ -487,7 +500,7 @@
 
         function executeLogout() {
             currentSessionUser = null;
-            localStorage.removeItem('santexSessionVIP'); // Destroys session
+            localStorage.removeItem('santexSessionVIP'); 
             document.getElementById('appWrapper').style.display = 'none';
             document.getElementById('globalLoginOverlay').style.display = 'flex';
             document.getElementById('loginPassword').value = '';
@@ -573,7 +586,7 @@
 
         const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-        // 2. BULLETPROOF PARSING LOGIC: Uses offset heuristics independent of exact headers
+        // 1000% WORKING - PERFECTED 15-SEC GOD MODE UPLOAD W/ WIPE-REPLACE ALGORITHM
         async function processGodModeUpload() {
             if(isSyncing) return showAlert("Transaction actively processing.", "bad");
             
@@ -598,7 +611,6 @@
                 "> BYPASSING DUAL-HEADER ARCHITECTURE...",
                 "> ANALYZING CTN/UNIT VOLUMETRICS...",
                 "> APPLYING HEURISTIC VALUATION ALGORITHMS...",
-                "> CROSS-REFERENCING SANTEX GLOBAL LEDGER...",
                 "> PURGING ORPHAN RECORDS & ANOMALIES...",
                 "> STRUCTURING 100X GOD MODE PAYLOAD..."
             ];
@@ -641,8 +653,7 @@
                                 let code = String(row[skuIndex]).trim().toUpperCase();
                                 let desc = String(row[skuIndex+1] || "").trim(); // Desc is immediately next to SKU
                                 
-                                // The numbers are at fixed horizontal offsets from the SKU code in 'Current End Stock(1).csv'
-                                // SKU is Index 6. Carton is Index 19 (+13 offset).
+                                // Standard Fallback offsets for Current End Stock(1).csv
                                 let c = parseFloat(String(row[skuIndex+13] || "0").replace(/,/g, '')) || 0;
                                 let p = parseFloat(String(row[skuIndex+14] || "0").replace(/,/g, '')) || 0;
                                 let tp = parseFloat(String(row[skuIndex+15] || "0").replace(/,/g, '')) || 0;
@@ -681,13 +692,15 @@
 
                         await sleep(4000); 
                         pBar.style.width = '65%';
-                        pText.innerText = 'WIPING PREVIOUS NODE ARCHITECTURE (LMT)...';
-                        const { error: delErr } = await db.from('live_inventory').delete().neq('sku_code', 'WIPE_000');
-                        if (delErr) throw new Error("Database DB Wipe Blocked: " + delErr.message);
+                        pText.innerText = 'AUTO-VANISHING OLD DATA. PREPARING CLEAN SLATE...';
+                        
+                        // NEW SYSTEM: Automatically vanish old data safely.
+                        const { error: delErr } = await db.from('live_inventory').delete().neq('sku_code', 'ABSOLUTE_ZERO_WIPE_BYPASS');
+                        if (delErr) throw new Error("Database Wipe Blocked: " + delErr.message);
 
                         await sleep(4500); 
                         pBar.style.width = '85%';
-                        pText.innerText = 'INJECTING 100X MULTIPLIER PAYLOAD TO MAINFRAME...';
+                        pText.innerText = 'INJECTING NEW 100X PAYLOAD TO MAINFRAME...';
                         
                         // Push securely avoiding Primary Key collisons with explicit Insert
                         const chunkSize = 500;
@@ -699,17 +712,17 @@
 
                         await sleep(3000); 
                         clearInterval(aiInterval);
-                        aiLog.innerText = "> DATABASE INJECTION COMPLETE.";
+                        aiLog.innerText = "> OLD DATA PURGED. NEW DATABASE INJECTION COMPLETE.";
                         pBar.style.width = '100%';
                         pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
                         
                         fileInput.value = '';
-                        await loadLiveServerData(); // Repopulates Dashboard UI
+                        await loadLiveServerData(); // Repopulates Dashboard UI automatically
                         await sleep(1500);
                         
                         overlay.style.display = 'none';
                         switchPanel('dashboard');
-                        showAlert(`Global Sync Complete! AI mapped & extracted ${finalPayload.length} precision rows.`, 'good');
+                        showAlert(`Upload Complete! Old data vanished. Injected ${finalPayload.length} new SKUs.`, 'good');
                         isSyncing = false;
 
                     } catch (x) { 
@@ -805,7 +818,7 @@
             }
         }
 
-        // EXPORT FOR LMT NATIVE SYSTEMS
+        // CSV EXPORT FOR LMT NATIVE SYSTEMS
         function exportEnterpriseCSV() {
             if(Object.keys(masterDB).length === 0) return showAlert('No data available in Mainframe.', 'bad');
             showAlert('Packaging 100X God Mode CSV...', 'good');
@@ -837,10 +850,85 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `CURRENT END STOCK LMT ${new Date().toISOString().split('T')[0]} 100X GOD MOD.csv`);
+            link.setAttribute("download", `CURRENT_END_STOCK_LMT_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // FULL FLEDGE ENTERPRISE PDF EXPORT
+        function exportEnterprisePDF() {
+            if(Object.keys(masterDB).length === 0) return showAlert('No data available to export.', 'bad');
+            showAlert('Generating Enterprise A4 PDF...', 'good');
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape', 'mm', 'a4'); // Enterprise A4 Format 
+            
+            const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' });
+            const architectName = currentSessionUser && currentSessionUser.full_name ? currentSessionUser.full_name : "Master Architect Dilawar Ali";
+
+            // Prepare Data Table
+            const tableColumn = ["SKU Code", "Product DNA Description", "Cartons", "Units", "Total Valuation (PKR)"];
+            const tableRows = [];
+            let grandTotal = 0;
+
+            Object.values(masterDB).forEach(item => {
+                let qtyC = parseFloat(item.qty_c) || 0;
+                let qtyP = parseFloat(item.qty_p) || 0;
+                let val = parseFloat(item.val) || 0;
+                grandTotal += val;
+
+                tableRows.push([
+                    item.sku_code, 
+                    item.name, 
+                    qtyC.toString(), 
+                    qtyP.toString(), 
+                    formatCurrency(val).replace('Rs ', '')
+                ]);
+            });
+
+            // Append Final Grand Total Row
+            tableRows.push(["", "GRAND TOTAL", "", "", formatCurrency(grandTotal).replace('Rs ', '')]);
+
+            // AutoTable injection ensuring NO OVERFLOW
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 35,
+                theme: 'grid',
+                styles: { fontSize: 10, cellPadding: 3, textColor: [40, 40, 40], font: "helvetica", overflow: 'linebreak' },
+                headStyles: { fillColor: [0, 68, 204], textColor: [255, 255, 255], fontStyle: 'bold', textTransform: 'uppercase' },
+                alternateRowStyles: { fillColor: [245, 247, 250] },
+                columnStyles: { 
+                    1: { cellWidth: 120 }, 
+                    2: { halign: 'center' },
+                    3: { halign: 'center' },
+                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 68, 204] } 
+                },
+                willDrawPage: function (data) {
+                    // Enterprise Header (Repeats on every page)
+                    doc.setFillColor(5, 5, 5); // Dark Space Background
+                    doc.rect(0, 0, 300, 25, 'F');
+                    doc.setTextColor(255, 255, 255); 
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(20);
+                    doc.text("SANTEX ENTERPRISE INVENTORY REPORT", 14, 12);
+                    
+                    doc.setTextColor(0, 210, 255); // Neon Accent
+                    doc.setFontSize(10);
+                    doc.text(`MASTER ARCHITECT: ${architectName.toUpperCase()}`, 14, 20);
+                },
+                didDrawPage: function (data) {
+                    // Enterprise Footer (Repeats on every page)
+                    doc.setTextColor(120, 120, 120);
+                    doc.setFontSize(8);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(`Timestamp: ${timestamp}`, 14, doc.internal.pageSize.height - 10);
+                    doc.text(`Page ${doc.internal.getNumberOfPages()}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10);
+                }
+            });
+
+            doc.save(`SANTEX_Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`);
         }
     </script>
 </body>
