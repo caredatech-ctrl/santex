@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Authorized Master Operator -->
     <title>SANTEX INVENTORY REPORT</title>
     
-    <!-- Core Engine Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- PDF Generation Scripts -->
+    <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -114,6 +114,7 @@
         .sync-title { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; color: var(--text-main); letter-spacing: 6px; margin-bottom: 1rem; text-transform: uppercase; }
         .sync-status { font-size: 1.2rem; color: var(--accent-pink); font-weight: 700; letter-spacing: 3px; margin-bottom: 1rem; height: 30px; }
         
+        /* AI Log Box for 15s Animation */
         #aiAnalysisLog { font-family: monospace; font-size: 0.9rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
 
         .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 16px; overflow: hidden; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
@@ -354,11 +355,11 @@
 
                     <div class="stat-box" style="text-align: center; padding: 4rem 2rem;">
                         <i class="fas fa-file-pdf fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Enterprise PDF</h3>
+                        <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">VIP Enterprise PDF</h3>
                         <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.6;">
-                            Auto-paginated A4 document authorized for board meetings. Contains Master Architect stamp and exact timestamps.
+                            Auto-paginated Portrait A4 document. 100X Dark Theme. Contains Master Architect stamp, timestamps, and full sumations.
                         </p>
-                        <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportEnterprisePDF()"><i class="fas fa-file-pdf"></i> Generate PDF</button>
+                        <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportEnterprisePDF()"><i class="fas fa-file-pdf"></i> Generate VIP PDF</button>
                     </div>
                 </div>
             </div>
@@ -458,7 +459,7 @@
             if(!u || !p) { errBox.innerText = "SECURITY ALERT: Credentials Required."; return; }
 
             if(u === 'admin' && p === 'NurAdmin@2026') {
-                currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect Dilawar Ali' };
+                currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect' };
                 localStorage.setItem('santexSessionVIP', JSON.stringify(currentSessionUser));
                 triggerVIPWelcome();
                 return;
@@ -856,27 +857,35 @@
             document.body.removeChild(link);
         }
 
-        // FULL FLEDGE ENTERPRISE PDF EXPORT
+        // FULL FLEDGE ENTERPRISE PDF EXPORT - VIP DARK THEME (PORTRAIT)
         function exportEnterprisePDF() {
             if(Object.keys(masterDB).length === 0) return showAlert('No data available to export.', 'bad');
             showAlert('Generating Enterprise A4 PDF...', 'good');
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape', 'mm', 'a4'); // Enterprise A4 Format 
+            const doc = new jsPDF('p', 'mm', 'a4'); // 'p' for Portrait Shape A4
             
             const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' });
-            const architectName = currentSessionUser && currentSessionUser.full_name ? currentSessionUser.full_name : "Master Architect Dilawar Ali";
+            const architectName = currentSessionUser && currentSessionUser.full_name ? currentSessionUser.full_name : "Master Architect";
 
             // Prepare Data Table
-            const tableColumn = ["SKU Code", "Product DNA Description", "Cartons", "Units", "Total Valuation (PKR)"];
+            const tableColumn = ["SKU", "Product DNA Description", "CTN", "PCS", "Valuation (PKR)"];
             const tableRows = [];
+            
             let grandTotal = 0;
+            let totalCartons = 0;
+            let totalLoosePcs = 0;
+            let totalPcsOverall = 0;
 
             Object.values(masterDB).forEach(item => {
                 let qtyC = parseFloat(item.qty_c) || 0;
                 let qtyP = parseFloat(item.qty_p) || 0;
                 let val = parseFloat(item.val) || 0;
+                
                 grandTotal += val;
+                totalCartons += qtyC;
+                totalLoosePcs += qtyP;
+                totalPcsOverall += (qtyC * 24) + qtyP; // 24 Multiplier based on God Mode
 
                 tableRows.push([
                     item.sku_code, 
@@ -887,48 +896,109 @@
                 ]);
             });
 
-            // Append Final Grand Total Row
-            tableRows.push(["", "GRAND TOTAL", "", "", formatCurrency(grandTotal).replace('Rs ', '')]);
+            const pageWidth = doc.internal.pageSize.width;
+            const pageHeight = doc.internal.pageSize.height;
 
-            // AutoTable injection ensuring NO OVERFLOW
+            // AutoTable Engine configured for Dark Theme VIP
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
-                startY: 35,
+                startY: 45,
                 theme: 'grid',
-                styles: { fontSize: 10, cellPadding: 3, textColor: [40, 40, 40], font: "helvetica", overflow: 'linebreak' },
-                headStyles: { fillColor: [0, 68, 204], textColor: [255, 255, 255], fontStyle: 'bold', textTransform: 'uppercase' },
-                alternateRowStyles: { fillColor: [245, 247, 250] },
+                styles: { 
+                    fontSize: 8, 
+                    cellPadding: 3, 
+                    textColor: [240, 240, 240], 
+                    fillColor: [15, 15, 20],
+                    lineColor: [0, 100, 200], // Darker blue grid
+                    lineWidth: 0.1,
+                    font: "helvetica", 
+                    overflow: 'linebreak' 
+                },
+                headStyles: { 
+                    fillColor: [0, 68, 204], 
+                    textColor: [255, 255, 255], 
+                    fontStyle: 'bold', 
+                    textTransform: 'uppercase' 
+                },
+                alternateRowStyles: { fillColor: [10, 10, 15] },
                 columnStyles: { 
-                    1: { cellWidth: 120 }, 
-                    2: { halign: 'center' },
-                    3: { halign: 'center' },
-                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 68, 204] } 
+                    0: { cellWidth: 25 }, // SKU
+                    1: { cellWidth: 'auto' }, // Desc auto fills remaining
+                    2: { halign: 'center', cellWidth: 15 }, // CTN
+                    3: { halign: 'center', cellWidth: 15 }, // PCS
+                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 210, 255], cellWidth: 35 } // VAL
                 },
                 willDrawPage: function (data) {
-                    // Enterprise Header (Repeats on every page)
-                    doc.setFillColor(5, 5, 5); // Dark Space Background
-                    doc.rect(0, 0, 300, 25, 'F');
-                    doc.setTextColor(255, 255, 255); 
-                    doc.setFont("helvetica", "bold");
-                    doc.setFontSize(20);
-                    doc.text("SANTEX ENTERPRISE INVENTORY REPORT", 14, 12);
+                    // Absolute Dark VIP Background Fill
+                    doc.setFillColor(5, 5, 5); 
+                    doc.rect(0, 0, pageWidth, pageHeight, 'F');
                     
-                    doc.setTextColor(0, 210, 255); // Neon Accent
-                    doc.setFontSize(10);
-                    doc.text(`MASTER ARCHITECT: ${architectName.toUpperCase()}`, 14, 20);
+                    // VIP Header Background Strip
+                    doc.setFillColor(15, 15, 20);
+                    doc.rect(0, 0, pageWidth, 35, 'F');
+                    
+                    // Accent Line
+                    doc.setDrawColor(0, 210, 255);
+                    doc.setLineWidth(1);
+                    doc.line(0, 35, pageWidth, 35);
+
+                    // VIP COMPANY HEADER 
+                    doc.setTextColor(0, 210, 255); 
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(22);
+                    doc.text("SANTEX ENTERPRISES", 14, 16);
+                    
+                    doc.setTextColor(255, 255, 255); 
+                    doc.setFontSize(12);
+                    doc.text("MASTER INVENTORY REPORT", 14, 24);
+                    
+                    doc.setTextColor(180, 180, 180);
+                    doc.setFontSize(8);
+                    doc.text(`MASTER ARCHITECT: ${architectName.toUpperCase()}`, 14, 30);
                 },
                 didDrawPage: function (data) {
-                    // Enterprise Footer (Repeats on every page)
-                    doc.setTextColor(120, 120, 120);
+                    // VIP Footer Details
+                    doc.setTextColor(100, 100, 100);
                     doc.setFontSize(8);
                     doc.setFont("helvetica", "normal");
-                    doc.text(`Timestamp: ${timestamp}`, 14, doc.internal.pageSize.height - 10);
-                    doc.text(`Page ${doc.internal.getNumberOfPages()}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10);
+                    doc.text(`Timestamp: ${timestamp}`, 14, pageHeight - 10);
+                    doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageWidth - 25, pageHeight - 10);
                 }
             });
 
-            doc.save(`SANTEX_Inventory_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+            // VIP Summary Block at the End of the Report
+            let finalY = doc.lastAutoTable.finalY + 10;
+            
+            // Check if there is enough space at the bottom for the summary block
+            if(finalY > pageHeight - 40) {
+                doc.addPage();
+                finalY = 45; // Starts directly below new header
+            }
+            
+            doc.setFillColor(15, 15, 20);
+            doc.setDrawColor(0, 210, 255);
+            doc.setLineWidth(0.5);
+            doc.rect(14, finalY, pageWidth - 28, 30, 'FD'); // Filled Rectangle with border
+
+            doc.setTextColor(0, 210, 255);
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text("ENTERPRISE INVENTORY TOTALS", 20, finalY + 8);
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "normal");
+            doc.text(`TOTAL CARTONS (CTN): ${totalCartons}`, 20, finalY + 16);
+            doc.text(`LOOSE PIECES (PCS): ${totalLoosePcs}`, 80, finalY + 16);
+            doc.text(`OVERALL UNITS: ${totalPcsOverall}`, 140, finalY + 16);
+            
+            doc.setTextColor(0, 210, 255);
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text(`GRAND VALUATION: PKR ${formatCurrency(grandTotal).replace('Rs ', '')}`, 20, finalY + 25);
+
+            doc.save(`SANTEX_VIP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
         }
     </script>
 </body>
