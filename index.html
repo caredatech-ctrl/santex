@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SANTEX ENTERPRISE OS | MASTER GRADE</title>
+    <title>SANTEX ENTERPRISE OS | EXECUTIVE TIER</title>
     
     <!-- Core Engine Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -12,24 +12,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* MASTER GRADE THEME CONFIGURATION */
+        /* EXECUTIVE GRADE THEME CONFIGURATION */
         :root {
-            --bg-deep: #050507; 
-            --bg-panel: rgba(12, 12, 16, 0.6);
+            --bg-deep: #020203; 
+            --bg-panel: rgba(12, 12, 16, 0.65);
             --accent-primary: #00ffcc; 
-            --accent-secondary: #0055ff;
+            --accent-gold: #d4af37;
             --danger: #ff0055;
             
             --text-light: #ffffff; 
-            --text-dim: #6c7a9c;
+            --text-dim: #8b9bb4;
             --glass-border: rgba(0, 255, 204, 0.15); 
-            --input-bg: rgba(0, 0, 0, 0.5);
+            --glass-gold: rgba(212, 175, 55, 0.2);
+            --input-bg: rgba(0, 0, 0, 0.7);
             
-            --gradient-master: linear-gradient(135deg, #00ffcc 0%, #002288 100%);
-            --glow-primary: 0 0 30px rgba(0, 255, 204, 0.2);
+            --gradient-master: linear-gradient(135deg, #00ffcc 0%, #0044cc 100%);
+            --glow-primary: 0 0 40px rgba(0, 255, 204, 0.1);
+            --glow-gold: 0 0 50px rgba(212, 175, 55, 0.15);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
@@ -37,214 +39,224 @@
         body { 
             background: var(--bg-deep); color: var(--text-light); min-height: 100vh; 
             display: flex; flex-direction: column; overflow: hidden; 
-            background-image: radial-gradient(circle at 50% 0%, rgba(0, 85, 255, 0.05) 0%, transparent 70%);
+            background-image: radial-gradient(circle at 50% -10%, rgba(0, 255, 204, 0.05) 0%, transparent 60%);
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
         ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
 
-        /* ULTRA-SMOOTH ANIMATIONS */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulseBorder { 0% { border-color: rgba(0,255,204,0.1); } 50% { border-color: rgba(0,255,204,0.5); } 100% { border-color: rgba(0,255,204,0.1); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        @keyframes pulseBorder { 0% { border-color: rgba(0,255,204,0.1); } 50% { border-color: rgba(0,255,204,0.5); box-shadow: 0 0 25px rgba(0,255,204,0.15); } 100% { border-color: rgba(0,255,204,0.1); } }
         @keyframes spinSlow { 100% { transform: rotate(360deg); } }
-        @keyframes glitchText {
-            0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
-            14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
-            15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
-            49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
-            50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
-            99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
-            100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); }
-        }
 
-        /* --- 1. FIREWALL LOGIN --- */
+        /* --- FIREWALL LOGIN --- */
         #loginOverlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .login-card { background: rgba(10,10,15,0.8); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 4rem; border-radius: 24px; text-align: center; width: 100%; max-width: 500px; box-shadow: var(--glow-primary); animation: fadeUp 1s ease-out, pulseBorder 4s infinite; }
-        .login-card h1 { font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 2.5rem; letter-spacing: 4px; margin-bottom: 0.5rem; }
+        .login-card { background: rgba(8,8,12,0.9); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); padding: 5rem 4.5rem; border-radius: 20px; text-align: center; width: 100%; max-width: 520px; animation: fadeUp 1s ease-out, pulseBorder 4s infinite; }
+        .login-card h1 { font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 2.5rem; letter-spacing: 5px; margin-bottom: 0.5rem; }
         .login-card h1 span { color: var(--accent-primary); }
-        .login-card p { color: var(--text-dim); letter-spacing: 2px; font-weight: 600; font-size: 0.9rem; margin-bottom: 3rem; text-transform: uppercase; }
+        .login-card p { color: var(--text-dim); letter-spacing: 4px; font-weight: 700; font-size: 0.85rem; margin-bottom: 4rem; text-transform: uppercase; }
 
-        input, select { width: 100%; padding: 1.2rem 1.5rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-light); font-size: 1.1rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s; font-weight: 600; letter-spacing: 1px; }
-        input:focus, select:focus { border-color: var(--accent-primary); box-shadow: inset 0 0 10px rgba(0,255,204,0.1); }
+        input, select { width: 100%; padding: 1.2rem 1.5rem; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text-light); font-size: 1.1rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s; font-weight: 600; letter-spacing: 1px; }
+        input:focus, select:focus { border-color: var(--accent-primary); box-shadow: inset 0 0 15px rgba(0,255,204,0.1); background: rgba(0,0,0,0.9); }
         
-        .btn { background: var(--gradient-master); color: #000; border: none; padding: 1.2rem 2rem; border-radius: 12px; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 1rem; transition: all 0.3s; width: 100%; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,255,204,0.3); }
-        .btn-outline { background: transparent; border: 1px solid var(--accent-primary); color: var(--accent-primary); }
+        .btn { background: var(--gradient-master); color: #000; border: none; padding: 1.4rem 2rem; border-radius: 10px; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 1rem; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; box-shadow: 0 10px 25px rgba(0,255,204,0.2); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,255,204,0.4); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent-primary); color: var(--accent-primary); box-shadow: none; }
         .btn-outline:hover { background: rgba(0,255,204,0.1); }
-        .btn-danger { background: rgba(255,0,85,0.1); border: 1px solid var(--danger); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: #fff; }
+        .btn-danger { background: rgba(255,0,85,0.1); border: 1px solid var(--danger); color: var(--danger); box-shadow: none; }
+        .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 10px 30px rgba(255,0,85,0.3); }
 
-        /* --- 2. CINEMATIC WELCOME SEQUENCE --- */
+        /* --- CINEMATIC WELCOME --- */
         #welcomeSequence { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .cyber-circle { width: 200px; height: 200px; border: 2px dashed var(--accent-secondary); border-radius: 50%; display: flex; justify-content: center; align-items: center; animation: spinSlow 10s linear infinite; margin-bottom: 3rem; position: relative; }
+        .cyber-circle { width: 200px; height: 200px; border: 2px dashed rgba(0,255,204,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; animation: spinSlow 12s linear infinite; margin-bottom: 3rem; position: relative; }
         .cyber-circle::before { content: ''; position: absolute; width: 160px; height: 160px; border: 2px solid var(--accent-primary); border-radius: 50%; border-top-color: transparent; border-bottom-color: transparent; animation: spinSlow 4s linear infinite reverse; }
-        .cyber-circle i { font-size: 4rem; color: var(--accent-primary); animation: spinSlow 10s linear infinite reverse; }
-        .glitch-text { font-family: 'Syncopate', sans-serif; font-size: 4rem; font-weight: 700; color: #fff; letter-spacing: 8px; animation: glitchText 3s infinite; }
-        .init-log { font-family: monospace; color: var(--accent-primary); font-size: 1.2rem; margin-top: 2rem; letter-spacing: 4px; height: 30px; font-weight: 800; }
+        .cyber-circle i { font-size: 4rem; color: var(--accent-primary); animation: spinSlow 12s linear infinite reverse; text-shadow: 0 0 20px var(--accent-primary); }
+        .glitch-text { font-family: 'Syncopate', sans-serif; font-size: 3.5rem; font-weight: 700; color: #fff; letter-spacing: 12px; }
+        .init-log { font-family: monospace; color: var(--accent-primary); font-size: 1.2rem; margin-top: 2rem; letter-spacing: 3px; font-weight: 700; }
 
-        /* --- 3. MASTER OS LAYOUT --- */
-        #appCore { display: none; flex-direction: column; height: 100vh; overflow: hidden; animation: fadeUp 1s ease-out; }
+        /* --- MASTER OS LAYOUT --- */
+        #appCore { display: none; flex-direction: column; height: 100vh; overflow: hidden; animation: fadeUp 0.8s ease-out; }
         
-        header { background: rgba(5,5,8,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-family: 'Syncopate', sans-serif; font-size: 1.8rem; letter-spacing: 3px; font-weight: 700; }
+        header { background: rgba(5,5,8,0.98); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.5rem 3.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        header h1 { font-family: 'Syncopate', sans-serif; font-size: 1.8rem; letter-spacing: 3px; font-weight: 700; display: flex; align-items: center; gap: 1rem; }
         header h1 span { color: var(--accent-primary); }
-        .sys-clock { font-family: monospace; font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); letter-spacing: 2px; }
+        .sys-clock { font-family: monospace; font-size: 1.2rem; font-weight: 900; color: var(--text-light); letter-spacing: 2px; text-align: right; }
 
-        nav { background: rgba(10,10,15,0.9); padding: 0 3rem; border-bottom: 1px solid var(--glass-border); display: flex; gap: 1rem; overflow-x: auto; }
-        .nav-btn { padding: 1.5rem 2rem; background: transparent; border: none; color: var(--text-dim); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; display: flex; align-items: center; gap: 0.8rem; }
-        .nav-btn:hover, .nav-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background: rgba(0,255,204,0.05); }
+        nav { background: rgba(10,10,12,0.95); padding: 0 3.5rem; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; gap: 0.5rem; overflow-x: auto; z-index: 90; }
+        .nav-btn { padding: 1.5rem 2rem; background: transparent; border: none; color: var(--text-dim); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; display: flex; align-items: center; gap: 0.8rem; white-space: nowrap; }
+        .nav-btn:hover, .nav-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background: linear-gradient(to top, rgba(0,255,204,0.05) 0%, transparent 100%); }
 
-        main { flex: 1; padding: 3rem; overflow-y: auto; }
-        .panel { display: none; animation: fadeUp 0.5s ease-out; max-width: 1600px; margin: 0 auto; }
+        main { flex: 1; padding: 3.5rem; overflow-y: auto; overflow-x: hidden; }
+        .panel { display: none; animation: fadeUp 0.4s ease-out; max-width: 1600px; margin: 0 auto; }
         .panel.active { display: block; }
 
-        h2.panel-title { font-family: 'Syncopate', sans-serif; font-size: 2rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; color: #fff; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
+        h2.panel-title { font-family: 'Syncopate', sans-serif; font-size: 2rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1.2rem; color: #fff; letter-spacing: 3px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem; }
         h2.panel-title i { color: var(--accent-primary); }
 
-        /* GRIDS & TABLES */
-        .boardroom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
-        .stat-box { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 3rem; text-align: center; backdrop-filter: blur(10px); transition: 0.3s; }
-        .stat-box:hover { border-color: var(--accent-primary); transform: translateY(-5px); box-shadow: var(--glow-primary); }
-        .stat-box h4 { color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1rem; font-weight: 800; }
-        .stat-box .val { font-size: 3rem; font-weight: 900; color: #fff; font-family: 'Syncopate', sans-serif; }
+        /* EXECUTIVE BOARDROOM GRIDS */
+        .boardroom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 3.5rem; }
+        .stat-box { background: var(--bg-panel); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 3.5rem 2.5rem; text-align: center; backdrop-filter: blur(20px); transition: 0.4s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .stat-box:hover { border-color: var(--glass-border); transform: translateY(-5px); box-shadow: var(--glow-primary); }
+        .stat-box h4 { color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; font-weight: 800; }
+        
+        .val { font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 900; color: #fff; font-family: 'Syncopate', sans-serif; line-height: 1.1; width: 100%; word-break: break-word; }
+        
+        /* MILLIONS FORMATTING SPECIFIC */
+        .master-valuation-box { background: linear-gradient(180deg, rgba(212,175,55,0.05) 0%, rgba(10,10,15,0.8) 100%); border-color: var(--glass-gold); grid-column: 1 / -1; padding: 5rem 3rem; }
+        .master-valuation-box:hover { border-color: var(--accent-gold); box-shadow: var(--glow-gold); }
+        .val-millions { font-size: clamp(3rem, 5vw, 5rem); color: var(--accent-gold); text-shadow: 0 0 30px rgba(212,175,55,0.3); font-family: 'Syncopate', sans-serif; font-weight: 900; }
+        .val-exact { font-size: 1.1rem; color: var(--text-dim); margin-top: 1rem; letter-spacing: 3px; font-weight: 700; font-family: monospace; }
 
-        .table-wrap { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(10px); }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: rgba(0,0,0,0.5); padding: 1.5rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; }
-        td { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 1rem; }
+        /* TABLES */
+        .table-wrap { background: var(--bg-panel); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; backdrop-filter: blur(20px); }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 900px; }
+        th { background: rgba(0,0,0,0.6); padding: 1.5rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; position: sticky; top: 0; backdrop-filter: blur(10px); }
+        td { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-weight: 600; font-size: 1.05rem; }
         tr:hover td { background: rgba(0,255,204,0.05); }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-        .glass-container { background: rgba(0,0,0,0.3); border: 1px dashed var(--glass-border); padding: 3rem; border-radius: 16px; margin-bottom: 3rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+        .glass-container { background: rgba(0,0,0,0.3); border: 1px dashed rgba(255,255,255,0.1); padding: 4rem; border-radius: 20px; margin-bottom: 3.5rem; }
 
         /* ALERTS */
-        #alertMaster { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: rgba(10,10,15,0.95); border-left: 4px solid var(--accent-primary); padding: 1.5rem 2rem; border-radius: 8px; color: #fff; font-weight: 800; letter-spacing: 1px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 1rem; animation: fadeUp 0.3s forwards; }
+        #alertMaster { position: fixed; top: 25px; right: 25px; z-index: 99999; display: flex; flex-direction: column; gap: 15px; }
+        .toast { background: rgba(10,10,12,0.98); border-left: 4px solid var(--accent-primary); padding: 1.5rem 2rem; border-radius: 8px; color: #fff; font-weight: 800; letter-spacing: 1px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 1.2rem; animation: fadeUp 0.3s forwards; font-size: 1rem; border: 1px solid rgba(255,255,255,0.05); }
         .toast.error { border-left-color: var(--danger); color: var(--danger); }
         
         /* DATA UPLOAD HUD */
-        #syncHUD { display: none; text-align: center; padding: 4rem 0; }
-        .progress-track { width: 100%; max-width: 600px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin: 2rem auto; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: var(--gradient-master); transition: width 0.3s; }
+        #syncHUD { display: none; text-align: center; padding: 5rem 0; }
+        .progress-track { width: 100%; max-width: 800px; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; margin: 3rem auto; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: var(--gradient-master); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 20px rgba(0,255,204,0.5); }
+        
+        @media(max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 1rem; text-align: center; }
+            .sys-clock { text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- SYSTEM ALERTS -->
+    <!-- ALERTS -->
     <div id="alertMaster"></div>
 
     <!-- 1. LOGIN FIREWALL -->
     <div id="loginOverlay">
         <div class="login-card">
             <h1>SANTEX <span>OS</span></h1>
-            <p>Master Grade Executive Node</p>
+            <p>Executive Command Framework</p>
             <input type="text" id="authUsername" placeholder="Agent Designation" autocomplete="off">
             <input type="password" id="authPassword" placeholder="Decryption Key" onkeypress="if(event.key==='Enter') executeAuth()">
-            <button class="btn" onclick="executeAuth()"><i class="fas fa-fingerprint"></i> Initialize Connect</button>
+            <button class="btn" onclick="executeAuth()"><i class="fas fa-fingerprint"></i> Authenticate Session</button>
         </div>
     </div>
 
     <!-- 2. CINEMATIC WELCOME SEQUENCE -->
     <div id="welcomeSequence">
         <div class="cyber-circle"><i class="fas fa-shield-alt"></i></div>
-        <div class="glitch-text">ACCESS GRANTED</div>
-        <div class="init-log" id="initLogText">> UPLINK ESTABLISHED...</div>
+        <div class="glitch-text">AUTHORIZATION CONFIRMED</div>
+        <div class="init-log" id="initLogText">> SECURING UPLINK...</div>
     </div>
 
     <!-- 3. MASTER OS CORE -->
     <div id="appCore">
         <header>
             <div>
-                <h1>SANTEX <span>MASTER</span></h1>
-                <div style="color: var(--text-dim); font-size: 0.8rem; letter-spacing: 4px; font-weight: 800; margin-top:0.3rem;">Automated Enterprise Framework</div>
+                <h1>SANTEX <span>EXECUTIVE</span></h1>
+                <div style="color: var(--text-dim); font-size: 0.8rem; letter-spacing: 5px; font-weight: 800; margin-top:0.4rem; text-transform: uppercase;">Supreme Valuation Architecture</div>
             </div>
-            <div style="text-align: right;">
+            <div>
                 <div class="sys-clock" id="liveClock">00:00:00 PKT</div>
-                <div style="color: var(--text-dim); font-size: 0.8rem; font-weight: 800; letter-spacing: 2px; margin-top:0.3rem;">SESSION: <span id="sessUser" style="color:var(--accent-primary);"></span></div>
+                <div style="color: var(--text-dim); font-size: 0.75rem; font-weight: 800; letter-spacing: 3px; margin-top:0.5rem; text-align: right; text-transform: uppercase;">AGENT: <span id="sessUser" style="color:var(--accent-primary);"></span></div>
             </div>
         </header>
 
         <nav>
-            <button class="nav-btn active" id="tab-dash" onclick="switchPanel('dash')"><i class="fas fa-cube"></i> Live Matrix</button>
-            <button class="nav-btn" id="tab-extract" onclick="switchPanel('extract')"><i class="fas fa-file-pdf"></i> Master PDF</button>
-            <button class="nav-btn" id="tab-uplink" onclick="switchPanel('uplink')"><i class="fas fa-satellite-dish"></i> God Mode Uplink</button>
+            <button class="nav-btn active" id="tab-boardroom" onclick="switchPanel('boardroom')"><i class="fas fa-chart-line"></i> Boardroom Overview</button>
+            <button class="nav-btn" id="tab-matrix" onclick="switchPanel('matrix')"><i class="fas fa-database"></i> Live Ledger</button>
+            <button class="nav-btn" id="tab-extract" onclick="switchPanel('extract')"><i class="fas fa-file-pdf"></i> Document Extraction</button>
+            <button class="nav-btn" id="tab-uplink" onclick="switchPanel('uplink')"><i class="fas fa-satellite-dish"></i> Mainframe Uplink</button>
             
-            <!-- MASTER ONLY TABS -->
             <button class="nav-btn" id="tab-crud" onclick="switchPanel('crud')" style="display:none;"><i class="fas fa-user-shield"></i> Operatives</button>
-            <button class="nav-btn" id="tab-logs" onclick="switchPanel('logs')" style="display:none;"><i class="fas fa-terminal"></i> Sys Logs</button>
+            <button class="nav-btn" id="tab-logs" onclick="switchPanel('logs')" style="display:none;"><i class="fas fa-terminal"></i> Security Ledger</button>
             
-            <button class="nav-btn" onclick="terminateSession()" style="margin-left:auto; color:var(--danger);"><i class="fas fa-power-off"></i> Terminate</button>
+            <button class="nav-btn" onclick="terminateSession()" style="margin-left:auto; color:var(--danger); border-bottom: none;"><i class="fas fa-power-off"></i> Terminate Link</button>
         </nav>
 
         <main>
-            <!-- DASHBOARD PANEL -->
-            <div id="dash" class="panel active">
-                <h2 class="panel-title"><i class="fas fa-cube"></i> Master Inventory Matrix</h2>
+            <!-- 1. EXECUTIVE BOARDROOM -->
+            <div id="boardroom" class="panel active">
+                <h2 class="panel-title"><i class="fas fa-chart-line"></i> Global Analytics</h2>
                 
                 <div class="boardroom-grid">
-                    <div class="stat-box" style="background: rgba(0, 255, 204, 0.05); border-color: var(--accent-primary);">
-                        <h4>Global Enterprise Valuation</h4>
-                        <div class="val" id="valTotal" style="color: var(--accent-primary);">Rs 0</div>
+                    <!-- Millions Formatting Display for CEOs -->
+                    <div class="stat-box master-valuation-box">
+                        <h4 style="color: var(--accent-gold);">Grand Enterprise Valuation</h4>
+                        <div class="val-millions" id="valTotalMillions">RS 0.00 M</div>
+                        <div class="val-exact" id="valTotalExact">Exact: 0.00</div>
                     </div>
                     <div class="stat-box">
                         <h4>Active SKU Variants</h4>
                         <div class="val" id="skuTotal">0</div>
                     </div>
                     <div class="stat-box">
-                        <h4>Total Physical Units</h4>
+                        <h4>Total Physical Stock</h4>
                         <div class="val" id="unitTotal">0</div>
                     </div>
                 </div>
+            </div>
 
+            <!-- 2. LIVE MATRIX -->
+            <div id="matrix" class="panel">
+                <h2 class="panel-title"><i class="fas fa-database"></i> Live SKU Matrix</h2>
                 <div class="table-wrap">
-                    <div style="padding: 1.5rem; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--glass-border);">
-                        <input type="text" id="searchMatrix" placeholder="Search Matrix (SKU / Name)..." oninput="renderMatrix()" style="margin:0;">
+                    <div style="padding: 1.5rem 2rem; background: rgba(0,0,0,0.8); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <input type="text" id="searchMatrix" placeholder="Deep Search Array (SKU / Name)..." oninput="renderMatrix()" style="margin:0; background: rgba(255,255,255,0.05); border: none;">
                     </div>
-                    <div style="max-height: 50vh; overflow-y: auto;">
+                    <div style="max-height: 60vh; overflow-y: auto;">
                         <table>
-                            <thead><tr><th>DNA Identifier</th><th>SKU Description</th><th>Volume Layout</th><th style="text-align:right;">Calculated Val</th></tr></thead>
+                            <thead><tr><th>DNA Identifier</th><th>SKU Description</th><th>Volume Layout</th><th style="text-align:right;">Calculated Valuation</th></tr></thead>
                             <tbody id="matrixBody"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- PDF EXTRACTION PANEL -->
+            <!-- 3. PDF EXTRACTION -->
             <div id="extract" class="panel">
-                <h2 class="panel-title"><i class="fas fa-file-pdf"></i> A4 Executive Extraction</h2>
-                <div class="glass-container" style="text-align:center; max-width: 800px; margin: 0 auto;">
+                <h2 class="panel-title"><i class="fas fa-file-pdf"></i> Executive Document Compilation</h2>
+                <div class="glass-container" style="text-align:center; max-width: 900px; margin: 0 auto; padding: 6rem 4rem;">
                     <i class="fas fa-print fa-4x" style="color: var(--accent-primary); margin-bottom: 2rem;"></i>
-                    <h3 style="font-family:'Syncopate',sans-serif; font-size:1.5rem; margin-bottom:1rem;">GENERATE VIP REPORT</h3>
-                    <p style="color:var(--text-dim); line-height: 1.8; margin-bottom: 3rem; font-weight:600;">System will automatically format data into a highly secured, pagination-perfected A4 portrait PDF utilizing Dark Grid architecture.</p>
-                    <button class="btn" style="width: auto; padding: 1.5rem 4rem;" onclick="generateMasterPDF()"><i class="fas fa-download"></i> EXPORT TO PDF</button>
+                    <h3 style="font-family:'Syncopate',sans-serif; font-size:1.8rem; margin-bottom:1.5rem; letter-spacing: 4px;">GENERATE VIP REPORT</h3>
+                    <p style="color:var(--text-dim); line-height: 1.8; margin-bottom: 3.5rem; font-weight:600;">System compiles and paginates raw data into a highly secured, strict A4 portrait PDF utilizing deep dark-grid aesthetics appropriate for boardroom distribution.</p>
+                    <button class="btn" style="width: auto; padding: 1.5rem 4rem;" onclick="generateMasterPDF()"><i class="fas fa-download"></i> EXPORT SECURE PDF</button>
                 </div>
             </div>
 
-            <!-- GOD MODE UPLINK (UPLOAD) -->
+            <!-- 4. GOD MODE UPLINK (NO PW REQUIRED) -->
             <div id="uplink" class="panel">
-                <h2 class="panel-title"><i class="fas fa-satellite-dish"></i> Mainframe Injection</h2>
+                <h2 class="panel-title"><i class="fas fa-satellite-dish"></i> Mainframe Data Injection</h2>
                 
-                <div id="uploadZone" class="glass-container" style="text-align:center; max-width: 800px; margin: 0 auto;">
-                    <i class="fas fa-cloud-upload-alt fa-4x" style="color: var(--text-dim); margin-bottom: 2rem;"></i>
-                    <p style="color:var(--text-dim); margin-bottom: 2rem; font-weight:600;">Inject raw LMT source arrays (.csv, .xlsx). The system will autonomously parse, compute valuations, wipe the old database, and deploy the new payload.</p>
-                    <input type="file" id="filePayload" accept=".csv, .xlsx" style="max-width: 400px; margin: 0 auto 2rem auto; display:block;">
-                    <button class="btn" style="width: auto;" onclick="executeGodModeInjection()"><i class="fas fa-bolt"></i> ENGAGE OVERRIDE</button>
+                <div id="uploadZone" class="glass-container" style="text-align:center; max-width: 900px; margin: 0 auto; padding: 6rem 4rem;">
+                    <i class="fas fa-cloud-upload-alt fa-4x" style="color: var(--text-dim); margin-bottom: 2.5rem;"></i>
+                    <p style="color:var(--text-dim); margin-bottom: 3rem; font-weight:600; line-height: 1.6;">Upload raw LMT source files (.csv, .xlsx). The architecture autonomously parses variables, calculates valuations, performs a database purge, and safely injects the new payload.</p>
+                    <input type="file" id="filePayload" accept=".csv, .xlsx" style="max-width: 450px; margin: 0 auto 3rem auto; display:block; background:rgba(0,0,0,0.5);">
+                    <button class="btn" style="width: auto; padding: 1.5rem 4rem;" onclick="executeGodModeInjection()"><i class="fas fa-bolt"></i> ENGAGE OVERRIDE</button>
                 </div>
 
                 <div id="syncHUD">
-                    <h3 style="font-family:'Syncopate',sans-serif; font-size:2rem; color:var(--accent-primary); margin-bottom: 1rem;">UPLINK IN PROGRESS</h3>
-                    <div class="init-log" id="syncLog">> PARSING EXCEL BUNDLE...</div>
+                    <h3 style="font-family:'Syncopate',sans-serif; font-size:2rem; color:var(--accent-primary); margin-bottom: 1.5rem; letter-spacing: 5px;">UPLINK ENGAGED</h3>
+                    <div class="init-log" id="syncLog">> INGESTING DATA ARRAYS...</div>
                     <div class="progress-track"><div class="progress-fill" id="syncFill"></div></div>
                 </div>
             </div>
 
-            <!-- MASTER CRUD (USERS) -->
+            <!-- 5. MASTER CRUD (USERS) -->
             <div id="crud" class="panel">
                 <h2 class="panel-title"><i class="fas fa-user-shield"></i> Operative Authority Control</h2>
                 
                 <div class="glass-container">
-                    <h3 style="margin-bottom: 1.5rem; color: var(--accent-primary); font-family:'Syncopate',sans-serif;">PROVISION / MODIFY</h3>
+                    <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-family:'Syncopate',sans-serif; letter-spacing: 2px;">PROVISION / MODIFY</h3>
                     <input type="hidden" id="crudId">
                     <div class="form-grid">
                         <input type="text" id="crudName" placeholder="Full Designation (Name)">
@@ -256,9 +268,9 @@
                             <option value="master">Master Architect (Full Access)</option>
                         </select>
                     </div>
-                    <div style="display:flex; gap:1rem;">
-                        <button class="btn" style="width:auto;" onclick="commitOperative()"><i class="fas fa-save"></i> COMMIT RECORD</button>
-                        <button class="btn btn-outline" style="width:auto;" onclick="resetCrud()"><i class="fas fa-eraser"></i> RESET</button>
+                    <div style="display:flex; gap:1.5rem;">
+                        <button class="btn" style="width:auto; padding: 1.2rem 2.5rem;" onclick="commitOperative()"><i class="fas fa-save"></i> COMMIT RECORD</button>
+                        <button class="btn btn-outline" style="width:auto; padding: 1.2rem 2.5rem;" onclick="resetCrud()"><i class="fas fa-eraser"></i> RESET</button>
                     </div>
                 </div>
 
@@ -270,14 +282,16 @@
                 </div>
             </div>
 
-            <!-- SYSTEM LOGS -->
+            <!-- 6. SYSTEM LOGS -->
             <div id="logs" class="panel">
                 <h2 class="panel-title"><i class="fas fa-terminal"></i> Immutable Security Ledger</h2>
                 <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Timestamp (PKT)</th><th>Operative ID</th><th>Action Logged</th></tr></thead>
-                        <tbody id="logsBody"></tbody>
-                    </table>
+                    <div style="max-height: 60vh; overflow-y: auto;">
+                        <table>
+                            <thead><tr><th>Timestamp (PKT)</th><th>Operative ID</th><th>Action Logged</th></tr></thead>
+                            <tbody id="logsBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -286,7 +300,7 @@
 
     <script>
         // ==========================================
-        // 1. SUPABASE AUTOMATION INIT (ZERO MANUAL)
+        // 1. SUPABASE INIT
         // ==========================================
         const supabaseUrl = 'https://cbitdlpopyujgdobddlg.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaXRkbHBvcHl1amdkb2JkZGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MTM3MzAsImV4cCI6MjA5ODA4OTczMH0.FytEGLweoYV-6-InE-69A4N_KaRoFK0FUm0iuNp5gLc';
@@ -296,7 +310,7 @@
         let globalMatrix = [];
 
         // ==========================================
-        // 2. CORE UTILITIES & UI
+        // 2. CORE UTILITIES
         // ==========================================
         function showToast(msg, type = 'success') {
             const wrap = document.getElementById('alertMaster');
@@ -304,7 +318,7 @@
             toast.className = `toast ${type}`;
             toast.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-triangle'}"></i> ${msg}`;
             wrap.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
         }
 
         setInterval(() => { 
@@ -313,14 +327,16 @@
 
         async function sysLog(action) {
             if(!sessionActive) return;
-            try { await db.from('santex_logs').insert([{ username: sessionActive.username, action: action, created_at: new Date().toISOString() }]); } catch(e) {}
+            try { 
+                await db.from('santex_logs').insert([{ username: sessionActive.username, action: action, created_at: new Date().toISOString() }]); 
+            } catch(e) { console.warn("Log creation failed/table missing. Fails gracefully."); }
         }
 
         // ==========================================
         // 3. SECURE AUTH & WELCOME SEQUENCE
         // ==========================================
         document.addEventListener("DOMContentLoaded", () => {
-            const cached = localStorage.getItem('masterSess');
+            const cached = localStorage.getItem('execSess');
             if(cached) { sessionActive = JSON.parse(cached); triggerWelcomeSequence(); }
         });
 
@@ -328,25 +344,25 @@
             const u = document.getElementById('authUsername').value.trim();
             const p = document.getElementById('authPassword').value.trim();
             
-            if(!u || !p) return showToast('Input protocols empty.', 'error');
+            if(!u || !p) return showToast('Credentials empty.', 'error');
             
-            // Local Admin Override Fallback
+            // Developer Override
             if(u === 'master' && p === 'Master@2026') {
-                sessionActive = { id: 0, username: 'master_root', role: 'master', full_name: 'System Root' };
+                sessionActive = { id: 0, username: 'master_root', role: 'master', full_name: 'Master Architect' };
                 return processAuthSuccess();
             }
 
             try {
                 const { data, error } = await db.from('santex_users').select('*').eq('username', u).eq('password', p).single();
-                if(error || !data) throw new Error("Decryption Key Invalid.");
+                if(error || !data) throw new Error("Invalid Decryption Key.");
                 sessionActive = data;
                 processAuthSuccess();
             } catch(e) { showToast(e.message, 'error'); }
         }
 
         function processAuthSuccess() {
-            localStorage.setItem('masterSess', JSON.stringify(sessionActive));
-            sysLog("System Entry Authenticated.");
+            localStorage.setItem('execSess', JSON.stringify(sessionActive));
+            sysLog("Executive Session Initialized.");
             triggerWelcomeSequence();
         }
 
@@ -356,7 +372,7 @@
             const logText = document.getElementById('initLogText');
             welcome.style.display = 'flex';
             
-            const logs = ["> BYPASSING FIREWALLS...", "> SYNCING DATABASES...", "> LOADING UI MODULES...", "> ACCESS GRANTED."];
+            const logs = ["> AUTHENTICATING...", "> SYNCING MAINFRAME...", "> INITIALIZING UI...", "> ACCESS GRANTED."];
             let i = 0;
             const intv = setInterval(() => {
                 if(i < logs.length) logText.innerText = logs[i++];
@@ -365,29 +381,28 @@
                     welcome.style.display = 'none';
                     initMasterOS();
                 }
-            }, 800);
+            }, 700);
         }
 
         function terminateSession() {
-            sysLog("Session Terminated Intentionally.");
-            localStorage.removeItem('masterSess');
+            sysLog("Session Terminated.");
+            localStorage.removeItem('execSess');
             location.reload();
         }
 
         // ==========================================
-        // 4. OS INITIALIZATION & ROUTING
+        // 4. OS ROUTING
         // ==========================================
         async function initMasterOS() {
             document.getElementById('appCore').style.display = 'flex';
-            document.getElementById('sessUser').innerText = sessionActive.full_name.toUpperCase();
+            document.getElementById('sessUser').innerText = sessionActive.full_name;
             
-            // Permissions Layout
             const isMaster = sessionActive.role === 'master';
             document.getElementById('tab-crud').style.display = isMaster ? 'flex' : 'none';
             document.getElementById('tab-logs').style.display = isMaster ? 'flex' : 'none';
 
             await loadMatrixData();
-            switchPanel('dash');
+            switchPanel('boardroom');
         }
 
         function switchPanel(pid) {
@@ -404,7 +419,7 @@
         }
 
         // ==========================================
-        // 5. LIVE MATRIX (DASHBOARD)
+        // 5. LIVE MATRIX & EXECUTIVE BOARDROOM
         // ==========================================
         async function loadMatrixData() {
             try {
@@ -412,7 +427,7 @@
                 if(error) throw error;
                 globalMatrix = data || [];
                 renderMatrix();
-            } catch(e) { showToast("Failed to sync matrix: " + e.message, 'error'); }
+            } catch(e) { showToast("Failed to sync array data.", 'error'); }
         }
 
         function renderMatrix() {
@@ -429,27 +444,38 @@
                 let p = parseFloat(r.qty_p) || 0;
                 let v = parseFloat(r.val) || 0;
                 
-                vT += v; sT++; uT += (c * 24) + p; // Auto 24 mult fallback
+                vT += v; sT++; uT += (c * 24) + p;
 
                 tb.innerHTML += `<tr>
-                    <td style="color:var(--accent-primary); font-family:'Syncopate',sans-serif; font-size:0.9rem;">${r.sku_code}</td>
+                    <td style="color:var(--accent-primary); font-family:'Syncopate',sans-serif; font-size:0.95rem;">${r.sku_code}</td>
                     <td>${r.name}</td>
-                    <td>${c} CTN / ${p} PCS</td>
-                    <td style="text-align:right; color:#fff;">Rs ${v.toLocaleString()}</td>
+                    <td><span style="color:var(--text-dim); margin-right:8px;">CTN:</span> ${c} <br> <span style="color:var(--text-dim); margin-right:8px; margin-top:5px; display:inline-block;">PCS:</span> ${p}</td>
+                    <td style="text-align:right; color:#fff; font-size:1.1rem;">Rs ${v.toLocaleString()}</td>
                 </tr>`;
             });
 
-            if(sT === 0) tb.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:3rem; color:var(--text-dim);">NO RECORDS MATCH QUERY</td></tr>`;
+            if(sT === 0) tb.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:4rem; color:var(--text-dim); letter-spacing:2px;">NO RECORDS MATCH QUERY</td></tr>`;
 
+            // Update Boardroom with Millions Formatting
             if(!q) {
-                document.getElementById('valTotal').innerText = `Rs ${vT.toLocaleString()}`;
+                const exactStr = `Rs ${vT.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                let milStr = "";
+                if(vT >= 1000000) {
+                    milStr = `RS ${(vT / 1000000).toFixed(2)} M`;
+                } else {
+                    milStr = `RS ${vT.toLocaleString(undefined, {maximumFractionDigits:0})}`;
+                }
+
+                document.getElementById('valTotalMillions').innerText = milStr;
+                document.getElementById('valTotalExact').innerText = `EXACT: ${exactStr}`;
+                
                 document.getElementById('skuTotal').innerText = sT.toLocaleString();
                 document.getElementById('unitTotal').innerText = uT.toLocaleString();
             }
         }
 
         // ==========================================
-        // 6. GOD MODE UPLINK (AUTO WIPE & SYNC)
+        // 6. GOD MODE UPLINK (NO PASSWORD)
         // ==========================================
         async function executeGodModeInjection() {
             const file = document.getElementById('filePayload').files[0];
@@ -462,7 +488,7 @@
             hud.style.display = 'block';
 
             try {
-                fill.style.width = '10%'; log.innerText = "> EXTRACTING BINARY DATA...";
+                fill.style.width = '10%'; log.innerText = "> DECOMPILING BINARY STREAM...";
                 
                 const reader = new FileReader();
                 reader.onload = async (e) => {
@@ -472,7 +498,7 @@
                         const sheet = workbook.Sheets[workbook.SheetNames[0]];
                         const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
 
-                        fill.style.width = '30%'; log.innerText = "> PARSING & AGGREGATING SKU DNA...";
+                        fill.style.width = '35%'; log.innerText = "> PARSING SKU DNA...";
                         let payloadMap = {};
                         
                         for(let i=0; i<rows.length; i++) {
@@ -494,31 +520,29 @@
                         const finalPayload = Object.values(payloadMap);
                         if(!finalPayload.length) throw new Error("Zero valid arrays located.");
 
-                        fill.style.width = '50%'; log.innerText = "> AUTONOMOUS WIPE OF OLD MAINFRAME IN PROGRESS...";
-                        await db.from('live_inventory').delete().neq('sku_code', 'UNBREAKABLE_LOCK'); // Absolute Wipe
+                        fill.style.width = '60%'; log.innerText = "> WIPING OLD MAINFRAME...";
+                        await db.from('live_inventory').delete().neq('sku_code', 'ABSOLUTE_LOCK'); 
 
-                        fill.style.width = '75%'; log.innerText = `> INJECTING ${finalPayload.length} NEW PACKETS...`;
-                        // Batch insert
+                        fill.style.width = '80%'; log.innerText = `> INJECTING ${finalPayload.length} PACKETS...`;
+                        
                         for(let i=0; i<finalPayload.length; i+=500) {
                             const { error } = await db.from('live_inventory').insert(finalPayload.slice(i, i+500));
                             if(error) throw error;
                         }
 
-                        fill.style.width = '100%'; log.innerText = "> UPLINK COMPLETE. REBOOTING MATRIX.";
-                        sysLog(`Master Injection Executed: ${finalPayload.length} SKUs`);
+                        fill.style.width = '100%'; log.innerText = "> UPLINK COMPLETE. REBOOTING.";
+                        sysLog(`Database Override Executed: ${finalPayload.length} SKUs`);
                         
                         setTimeout(() => {
                             document.getElementById('filePayload').value = '';
                             hud.style.display = 'none';
                             document.getElementById('uploadZone').style.display = 'block';
-                            showToast("Database Injection Absolute Success.", "success");
+                            showToast("Database Injection Success.", "success");
                             loadMatrixData();
-                            switchPanel('dash');
+                            switchPanel('boardroom');
                         }, 2000);
 
-                    } catch(err) {
-                        throw err;
-                    }
+                    } catch(err) { throw err; }
                 };
                 reader.readAsArrayBuffer(file);
             } catch(error) {
@@ -529,7 +553,7 @@
         }
 
         // ==========================================
-        // 7. OPERATIVE CRUD (USERS) ZERO ERROR
+        // 7. OPERATIVE CRUD
         // ==========================================
         async function fetchOperatives() {
             const tb = document.getElementById('operativesBody');
@@ -541,14 +565,14 @@
                     tb.innerHTML += `<tr>
                         <td><strong>${u.full_name}</strong></td>
                         <td style="color:var(--text-dim);">${u.username}</td>
-                        <td style="text-transform:uppercase; color:var(--accent-primary); font-size:0.8rem; letter-spacing:2px;">${u.role}</td>
+                        <td style="text-transform:uppercase; color:var(--accent-primary); font-size:0.85rem; letter-spacing:1px;">${u.role}</td>
                         <td>
-                            <button class="btn btn-outline" style="padding:0.5rem 1rem; font-size:0.8rem;" onclick='editOp(${JSON.stringify(u)})'><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-danger" style="padding:0.5rem 1rem; font-size:0.8rem; margin-left:0.5rem;" onclick="deleteOp('${u.id}', '${u.username}')"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-outline" style="padding:0.6rem 1rem; font-size:0.85rem;" onclick='editOp(${JSON.stringify(u)})'><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger" style="padding:0.6rem 1rem; font-size:0.85rem; margin-left:0.5rem;" onclick="deleteOp('${u.id}', '${u.username}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
                 });
-            } catch(e) { showToast(e.message, 'error'); }
+            } catch(e) { showToast("User fetch failed.", 'error'); }
         }
 
         function editOp(u) {
@@ -587,12 +611,12 @@
                 } else {
                     const { error } = await db.from('santex_users').insert([payload]);
                     if(error) throw error;
-                    sysLog(`Created Operative: ${payload.username}`);
+                    sysLog(`Provisioned Operative: ${payload.username}`);
                 }
-                showToast("Record Committed to Supabase.", "success");
+                showToast("Record Committed.", "success");
                 resetCrud();
                 fetchOperatives();
-            } catch(e) { showToast("Action Blocked: " + e.message, "error"); }
+            } catch(e) { showToast("Action Blocked.", "error"); }
         }
 
         async function deleteOp(id, user) {
@@ -604,30 +628,39 @@
                 sysLog(`Destroyed Operative: ${user}`);
                 showToast("Record Purged.", "success");
                 fetchOperatives();
-            } catch(e) { showToast("Error: " + e.message, "error"); }
+            } catch(e) { showToast("Error executing purge.", "error"); }
         }
 
         // ==========================================
-        // 8. LOGS ENGINE
+        // 8. LOGS ENGINE (GRACEFUL FAIL)
         // ==========================================
         async function fetchSystemLogs() {
             const tb = document.getElementById('logsBody');
             tb.innerHTML = '';
             try {
                 const { data, error } = await db.from('santex_logs').select('*').order('created_at', {ascending: false}).limit(100);
-                if(error) throw error;
+                
+                if(error) {
+                    tb.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:3rem; color:var(--text-dim); letter-spacing:2px;">LEDGER TABLE OFFLINE. SETUP REQUIRED.</td></tr>`;
+                    return;
+                }
+                if(data.length === 0) {
+                    tb.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:3rem; color:var(--text-dim); letter-spacing:2px;">NO RECORDS FOUND.</td></tr>`;
+                    return;
+                }
+
                 data.forEach(l => {
                     tb.innerHTML += `<tr>
-                        <td style="color:var(--text-dim); font-size:0.85rem;">${new Date(l.created_at).toLocaleString()}</td>
+                        <td style="color:var(--text-dim); font-size:0.9rem;">${new Date(l.created_at).toLocaleString()}</td>
                         <td style="color:var(--accent-primary); font-weight:800;">${l.username}</td>
                         <td>${l.action}</td>
                     </tr>`;
                 });
-            } catch(e) { showToast(e.message, 'error'); }
+            } catch(e) { console.warn("Logs offline."); }
         }
 
         // ==========================================
-        // 9. MASTER VIP PDF GENERATOR
+        // 9. MASTER VIP PDF
         // ==========================================
         function generateMasterPDF() {
             if(globalMatrix.length === 0) return showToast("No matrix data to extract.", "error");
@@ -646,48 +679,49 @@
             doc.autoTable({
                 head: [["SKU", "DNA IDENTIFIER", "CTN", "PCS", "VALUATION"]],
                 body: rows,
-                startY: 35, margin: { top: 35, left: 10, right: 10, bottom: 20 },
+                startY: 40, margin: { top: 40, left: 12, right: 12, bottom: 25 },
                 theme: 'grid',
-                styles: { fontSize: 8, cellPadding: 2, textColor: [255,255,255], fillColor: [15,15,15], lineColor: [0, 255, 204], lineWidth: 0.1 },
+                styles: { fontSize: 8, cellPadding: 3, textColor: [255,255,255], fillColor: [15,15,18], lineColor: [0, 255, 204], lineWidth: 0.1 },
                 headStyles: { fillColor: [0, 50, 150], fontStyle: 'bold' },
-                alternateRowStyles: { fillColor: [5, 5, 5] },
-                columnStyles: { 0:{cellWidth:25}, 1:{cellWidth:90}, 2:{halign:'center', cellWidth:15}, 3:{halign:'center', cellWidth:15}, 4:{halign:'right', fontStyle:'bold', textColor:[0,255,204]} },
+                alternateRowStyles: { fillColor: [8, 8, 12] },
+                columnStyles: { 0:{cellWidth:25}, 1:{cellWidth:85}, 2:{halign:'center', cellWidth:15}, 3:{halign:'center', cellWidth:15}, 4:{halign:'right', fontStyle:'bold', textColor:[0,255,204]} },
                 willDrawPage: function() {
-                    doc.setFillColor(0, 0, 0); doc.rect(0, 0, 210, 297, 'F');
-                    doc.setFillColor(10, 10, 10); doc.rect(0, 0, 210, 25, 'F');
-                    doc.setDrawColor(0, 255, 204); doc.setLineWidth(1); doc.line(0, 25, 210, 25);
+                    doc.setFillColor(3, 3, 5); doc.rect(0, 0, 210, 297, 'F');
+                    doc.setFillColor(10, 10, 15); doc.rect(0, 0, 210, 30, 'F');
+                    doc.setDrawColor(0, 255, 204); doc.setLineWidth(1); doc.line(0, 30, 210, 30);
                     
-                    doc.setTextColor(0, 255, 204); doc.setFontSize(16); doc.setFont("helvetica", "bold");
-                    doc.text("SANTEX MASTER OS", 10, 12);
-                    doc.setTextColor(255, 255, 255); doc.setFontSize(9);
-                    doc.text("ENTERPRISE VALUATION EXPORT", 10, 18);
+                    doc.setTextColor(0, 255, 204); doc.setFontSize(18); doc.setFont("helvetica", "bold");
+                    doc.text("SANTEX EXECUTIVE OS", 12, 16);
+                    doc.setTextColor(255, 255, 255); doc.setFontSize(10);
+                    doc.text("ENTERPRISE VALUATION EXPORT", 12, 23);
                     
                     doc.setTextColor(150, 150, 150); doc.setFontSize(8); doc.setFont("helvetica", "normal");
-                    doc.text(`ARCHITECT: ${sessionActive.full_name}`, 140, 18);
+                    doc.text(`ARCHITECT: ${sessionActive.full_name}`, 135, 23);
                 },
                 didDrawPage: function(data) {
-                    doc.setTextColor(100, 100, 100); doc.setFontSize(7);
-                    doc.text(`EXTRACTED: ${new Date().toLocaleString()}`, 10, 290);
-                    doc.text(`PAGE ${doc.internal.getNumberOfPages()}`, 190, 290);
+                    doc.setTextColor(100, 100, 100); doc.setFontSize(8);
+                    doc.text(`EXTRACTED: ${new Date().toLocaleString()}`, 12, 288);
+                    doc.text(`PAGE ${doc.internal.getNumberOfPages()}`, 190, 288);
                 }
             });
 
-            // Footer Summary
-            let fY = doc.lastAutoTable.finalY + 10;
-            if(fY > 260) { doc.addPage(); fY = 35; }
+            let fY = doc.lastAutoTable.finalY + 15;
+            if(fY > 255) { doc.addPage(); fY = 40; }
             
-            doc.setFillColor(10, 10, 10); doc.setDrawColor(0, 255, 204); doc.setLineWidth(0.5);
-            doc.rect(10, fY, 190, 25, 'FD');
-            doc.setTextColor(0, 255, 204); doc.setFontSize(11); doc.setFont("helvetica", "bold");
-            doc.text("GLOBAL METRICS OVERVIEW", 15, fY + 8);
-            doc.setTextColor(255, 255, 255); doc.setFontSize(9); doc.setFont("helvetica", "normal");
-            doc.text(`TOTAL CARTONS: ${gC}`, 15, fY + 18);
-            doc.text(`TOTAL PIECES: ${gP}`, 65, fY + 18);
+            doc.setFillColor(10, 10, 15); doc.setDrawColor(0, 255, 204); doc.setLineWidth(0.5);
+            doc.rect(12, fY, 186, 30, 'FD');
             doc.setTextColor(0, 255, 204); doc.setFontSize(12); doc.setFont("helvetica", "bold");
-            doc.text(`GRAND TOTAL: PKR ${gV.toLocaleString()}`, 125, fY + 18);
+            doc.text("GLOBAL METRICS OVERVIEW", 18, fY + 10);
+            
+            doc.setTextColor(255, 255, 255); doc.setFontSize(9); doc.setFont("helvetica", "normal");
+            doc.text(`TOTAL CARTONS: ${gC}`, 18, fY + 22);
+            doc.text(`TOTAL PIECES: ${gP}`, 70, fY + 22);
+            
+            doc.setTextColor(212, 175, 55); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+            doc.text(`GRAND TOTAL: PKR ${gV.toLocaleString()}`, 125, fY + 22);
 
-            doc.save(`SANTEX_MASTER_EXPORT_${Date.now()}.pdf`);
-            sysLog("Executed Master PDF Extraction");
+            doc.save(`SANTEX_EXEC_EXPORT_${Date.now()}.pdf`);
+            sysLog("Executed Executive PDF Extraction");
         }
     </script>
 </body>
