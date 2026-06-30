@@ -3,994 +3,691 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Authorized Master Operator Session -->
-    <title>SANTEX ENTERPRISE OS</title>
+    <title>SANTEX ENTERPRISE OS | MASTER GRADE</title>
     
     <!-- Core Engine Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- VIP PDF Generation Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* VIP High-End Theme Configuration - Santex Edition */
+        /* MASTER GRADE THEME CONFIGURATION */
         :root {
-            --bg-space: #030305; 
-            --bg-panel: rgba(12, 12, 18, 0.85);
-            --accent-navy: #0033aa;
-            --accent-pink: #00e5ff; 
-            --accent-pink-hover: #0099ff;
-            --gradient-brand: linear-gradient(135deg, #00e5ff 0%, #0033aa 100%);
-            --gradient-master: linear-gradient(135deg, #0033aa 0%, #000a1a 100%);
+            --bg-deep: #050507; 
+            --bg-panel: rgba(12, 12, 16, 0.6);
+            --accent-primary: #00ffcc; 
+            --accent-secondary: #0055ff;
+            --danger: #ff0055;
             
-            --text-main: #F8FAFC; 
-            --text-muted: #8B9BB4;
-            --glass-border: rgba(0, 229, 255, 0.25); 
-            --glass-bg: rgba(8, 8, 12, 0.75);
-            --danger: #FF0055; 
-            --input-bg: rgba(0,0,0,0.7);
-            --table-header: rgba(10, 10, 15, 0.98);
+            --text-light: #ffffff; 
+            --text-dim: #6c7a9c;
+            --glass-border: rgba(0, 255, 204, 0.15); 
+            --input-bg: rgba(0, 0, 0, 0.5);
+            
+            --gradient-master: linear-gradient(135deg, #00ffcc 0%, #002288 100%);
+            --glow-primary: 0 0 30px rgba(0, 255, 204, 0.2);
         }
 
-        .light-mode {
-            --bg-space: #F0F4F8; 
-            --bg-panel: #FFFFFF;
-            --accent-navy: #0044cc;
-            --accent-pink: #0088ff; 
-            --accent-pink-hover: #0044cc;
-            --gradient-brand: linear-gradient(135deg, #0044cc 0%, #00d2ff 100%);
-            --gradient-master: linear-gradient(135deg, #FFFFFF 0%, #E0E8F5 100%);
-            
-            --text-main: #0A1128; 
-            --text-muted: #475569;
-            --glass-border: rgba(0, 68, 204, 0.2); 
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --input-bg: #FFFFFF;
-            --table-header: #F8FAFC;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         
         body { 
-            background: var(--bg-space); 
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-x: hidden; 
-            transition: background 0.4s ease, color 0.4s ease;
+            background: var(--bg-deep); color: var(--text-light); min-height: 100vh; 
+            display: flex; flex-direction: column; overflow: hidden; 
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 85, 255, 0.05) 0%, transparent 70%);
         }
 
-        html, body { max-width: 100%; }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--accent-pink); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-navy); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
 
-        .glass-panel {
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 40px 0 rgba(0, 229, 255, 0.15);
+        /* ULTRA-SMOOTH ANIMATIONS */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseBorder { 0% { border-color: rgba(0,255,204,0.1); } 50% { border-color: rgba(0,255,204,0.5); } 100% { border-color: rgba(0,255,204,0.1); } }
+        @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+        @keyframes glitchText {
+            0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
+            14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
+            15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
+            49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
+            50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
+            99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
+            100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); }
         }
 
-        /* SANTEX LOGIN FIREWALL */
-        #globalLoginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-space); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .login-box { background: var(--glass-bg); border-radius: 20px; padding: 4rem; text-align: center; max-width: 480px; width: 90%; position: relative; overflow: hidden; transition: all 0.3s ease; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0, 229, 255, 0.1); }
-        .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--gradient-brand); }
-        .login-box h1 { font-size: 3.2rem; font-weight: 900; letter-spacing: 4px; margin-bottom: 0.5rem; color: var(--text-main); }
-        .login-box h1 span { color: var(--accent-pink); }
-        .login-box p { color: var(--text-muted); margin-bottom: 2.5rem; letter-spacing: 3px; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; }
-        .login-box input { width: 100%; padding: 1.2rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); font-size: 1.2rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s ease; text-align: center; letter-spacing: 2px;}
-        .login-box input:focus { border-color: var(--accent-pink); box-shadow: 0 0 25px rgba(0, 229, 255, 0.3); }
-        .login-box .btn { width: 100%; justify-content: center; font-size: 1.1rem; padding: 1.2rem; margin-top: 1rem; }
-        #loginError { color: var(--danger); font-weight: 800; margin-bottom: 1.5rem; min-height: 20px; font-size: 1rem; letter-spacing: 1px;}
+        /* --- 1. FIREWALL LOGIN --- */
+        #loginOverlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .login-card { background: rgba(10,10,15,0.8); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 4rem; border-radius: 24px; text-align: center; width: 100%; max-width: 500px; box-shadow: var(--glow-primary); animation: fadeUp 1s ease-out, pulseBorder 4s infinite; }
+        .login-card h1 { font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 2.5rem; letter-spacing: 4px; margin-bottom: 0.5rem; }
+        .login-card h1 span { color: var(--accent-primary); }
+        .login-card p { color: var(--text-dim); letter-spacing: 2px; font-weight: 600; font-size: 0.9rem; margin-bottom: 3rem; text-transform: uppercase; }
 
-        /* VIP WELCOME & 15-SEC GOD MODE OVERLAY */
-        #vipWelcomeOverlay, #syncOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3,3,5,0.98); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(30px); }
-        #vipWelcomeOverlay h1 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 300; letter-spacing: 6px; margin-top: 1.5rem; }
-        #vipWelcomeOverlay span { font-weight: 900; color: var(--accent-pink); }
+        input, select { width: 100%; padding: 1.2rem 1.5rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-light); font-size: 1.1rem; margin-bottom: 1.5rem; outline: none; transition: all 0.3s; font-weight: 600; letter-spacing: 1px; }
+        input:focus, select:focus { border-color: var(--accent-primary); box-shadow: inset 0 0 10px rgba(0,255,204,0.1); }
         
-        .sync-hud { width: 90%; max-width: 800px; text-align: center; position: relative; }
-        .sync-hud .liquid-orb {
-            width: 160px; height: 160px; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            background: var(--gradient-brand);
-            animation: liquidSpin 4s linear infinite;
-            margin: 0 auto 3rem auto;
-            box-shadow: 0 0 60px rgba(0, 229, 255, 0.5);
-            display: flex; justify-content: center; align-items: center;
-        }
-        .sync-hud .liquid-orb i { color: #fff; font-size: 3.5rem; animation: counterSpin 4s linear infinite; }
+        .btn { background: var(--gradient-master); color: #000; border: none; padding: 1.2rem 2rem; border-radius: 12px; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 1rem; transition: all 0.3s; width: 100%; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,255,204,0.3); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent-primary); color: var(--accent-primary); }
+        .btn-outline:hover { background: rgba(0,255,204,0.1); }
+        .btn-danger { background: rgba(255,0,85,0.1); border: 1px solid var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+
+        /* --- 2. CINEMATIC WELCOME SEQUENCE --- */
+        #welcomeSequence { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .cyber-circle { width: 200px; height: 200px; border: 2px dashed var(--accent-secondary); border-radius: 50%; display: flex; justify-content: center; align-items: center; animation: spinSlow 10s linear infinite; margin-bottom: 3rem; position: relative; }
+        .cyber-circle::before { content: ''; position: absolute; width: 160px; height: 160px; border: 2px solid var(--accent-primary); border-radius: 50%; border-top-color: transparent; border-bottom-color: transparent; animation: spinSlow 4s linear infinite reverse; }
+        .cyber-circle i { font-size: 4rem; color: var(--accent-primary); animation: spinSlow 10s linear infinite reverse; }
+        .glitch-text { font-family: 'Syncopate', sans-serif; font-size: 4rem; font-weight: 700; color: #fff; letter-spacing: 8px; animation: glitchText 3s infinite; }
+        .init-log { font-family: monospace; color: var(--accent-primary); font-size: 1.2rem; margin-top: 2rem; letter-spacing: 4px; height: 30px; font-weight: 800; }
+
+        /* --- 3. MASTER OS LAYOUT --- */
+        #appCore { display: none; flex-direction: column; height: 100vh; overflow: hidden; animation: fadeUp 1s ease-out; }
         
-        @keyframes liquidSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes counterSpin { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+        header { background: rgba(5,5,8,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-family: 'Syncopate', sans-serif; font-size: 1.8rem; letter-spacing: 3px; font-weight: 700; }
+        header h1 span { color: var(--accent-primary); }
+        .sys-clock { font-family: monospace; font-size: 1.2rem; font-weight: 800; color: var(--accent-primary); letter-spacing: 2px; }
 
-        .sync-title { font-size: clamp(1.5rem, 4vw, 2.8rem); font-weight: 900; color: var(--text-main); letter-spacing: 8px; margin-bottom: 1rem; text-transform: uppercase; }
-        .sync-status { font-size: 1.3rem; color: var(--accent-pink); font-weight: 800; letter-spacing: 4px; margin-bottom: 1rem; height: 30px; }
+        nav { background: rgba(10,10,15,0.9); padding: 0 3rem; border-bottom: 1px solid var(--glass-border); display: flex; gap: 1rem; overflow-x: auto; }
+        .nav-btn { padding: 1.5rem 2rem; background: transparent; border: none; color: var(--text-dim); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; display: flex; align-items: center; gap: 0.8rem; }
+        .nav-btn:hover, .nav-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background: rgba(0,255,204,0.05); }
+
+        main { flex: 1; padding: 3rem; overflow-y: auto; }
+        .panel { display: none; animation: fadeUp 0.5s ease-out; max-width: 1600px; margin: 0 auto; }
+        .panel.active { display: block; }
+
+        h2.panel-title { font-family: 'Syncopate', sans-serif; font-size: 2rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; color: #fff; letter-spacing: 2px; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; }
+        h2.panel-title i { color: var(--accent-primary); }
+
+        /* GRIDS & TABLES */
+        .boardroom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .stat-box { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 20px; padding: 3rem; text-align: center; backdrop-filter: blur(10px); transition: 0.3s; }
+        .stat-box:hover { border-color: var(--accent-primary); transform: translateY(-5px); box-shadow: var(--glow-primary); }
+        .stat-box h4 { color: var(--text-dim); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1rem; font-weight: 800; }
+        .stat-box .val { font-size: 3rem; font-weight: 900; color: #fff; font-family: 'Syncopate', sans-serif; }
+
+        .table-wrap { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(10px); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: rgba(0,0,0,0.5); padding: 1.5rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; }
+        td { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 1rem; }
+        tr:hover td { background: rgba(0,255,204,0.05); }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .glass-container { background: rgba(0,0,0,0.3); border: 1px dashed var(--glass-border); padding: 3rem; border-radius: 16px; margin-bottom: 3rem; }
+
+        /* ALERTS */
+        #alertMaster { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: rgba(10,10,15,0.95); border-left: 4px solid var(--accent-primary); padding: 1.5rem 2rem; border-radius: 8px; color: #fff; font-weight: 800; letter-spacing: 1px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 1rem; animation: fadeUp 0.3s forwards; }
+        .toast.error { border-left-color: var(--danger); color: var(--danger); }
         
-        /* New AI Log Box for 15s Animation */
-        #aiAnalysisLog { font-family: monospace; font-size: 1rem; color: #10B981; margin-bottom: 2.5rem; height: 20px; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
-
-        .progress-container { width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; height: 18px; overflow: hidden; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
-        .progress-bar { width: 0%; height: 100%; background: var(--gradient-brand); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;}
-        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.5s infinite; }
-        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        #appWrapper { display: none; flex-direction: column; min-height: 100vh; }
-
-        header { background: var(--glass-bg); backdrop-filter: blur(30px); border-bottom: 1px solid var(--glass-border); padding: 1.8rem 2.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 30px rgba(0,0,0,0.5); }
-        header h1 { font-size: clamp(1.5rem, 3vw, 2.4rem); letter-spacing: 4px; font-weight: 900; color: var(--text-main); text-transform: uppercase; }
-        header h1 span { color: var(--accent-pink); }
-        .header-meta { text-align: right; font-size: 1rem; color: var(--text-muted); }
-        
-        .theme-switch { cursor: pointer; background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 800; transition: all 0.3s; margin-left: 1.5rem; }
-        .theme-switch:hover { border-color: var(--accent-pink); color: var(--accent-pink); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
-
-        nav { background: var(--glass-bg); display: flex; padding: 0 2.5rem; border-bottom: 1px solid var(--glass-border); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
-        .nav-tab { padding: 1.5rem 1.8rem; border: none; background: none; font-size: 0.95rem; font-weight: 900; color: var(--text-muted); cursor: pointer; border-bottom: 4px solid transparent; transition: all 0.3s ease; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 0.8rem; outline: none; }
-        .nav-tab:hover { color: var(--accent-pink); }
-        .nav-tab.active { color: var(--accent-pink); border-bottom-color: var(--accent-pink); background: rgba(0, 229, 255, 0.08); }
-        .nav-right-group { margin-left: auto; display: flex; align-items: center; }
-
-        .executive-banner { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 3rem 4.5rem; border-radius: 20px; display: inline-flex; flex-direction: column; margin-bottom: 3rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); border-left: 8px solid var(--accent-pink); position: relative; overflow: hidden; }
-        .executive-banner::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%); animation: pulseBG 6s infinite alternate; }
-        @keyframes pulseBG { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-        .executive-banner h3 { color: var(--accent-pink); margin: 0 0 1rem 0; font-weight: 900; letter-spacing: 4px; font-size: 1rem; text-transform: uppercase; position: relative; z-index: 2; }
-        .executive-banner h2 { color: var(--text-main); margin: 0; font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 900; letter-spacing: 3px; position: relative; z-index: 2;}
-
-        main { flex: 1; padding: 3rem; max-width: 1920px; width: 100%; margin: 0 auto; }
-        .panel { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 24px; padding: 3.5rem; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2); display: none; backdrop-filter: blur(25px); }
-        .panel.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        h2.panel-title { margin-bottom: 3rem; color: var(--text-main); font-size: clamp(1.8rem, 3vw, 2.2rem); display: flex; align-items: center; gap: 1.2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
-        h2.panel-title i { color: var(--accent-pink); }
-
-        .filter-bar { display: flex; gap: 1.5rem; margin-bottom: 3rem; flex-wrap: wrap; }
-        .search-wrapper { position: relative; flex: 2; min-width: 350px; }
-        .search-wrapper i { position: absolute; left: 1.8rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem;}
-        .search-input, .filter-select { padding: 1.5rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.1rem; font-weight: 800; outline: none; transition: all 0.3s; }
-        .search-input { width: 100%; padding-left: 4.5rem; letter-spacing: 1px; }
-        .filter-select { flex: 1; min-width: 250px; cursor: pointer; }
-        .search-input:focus, .filter-select:focus { border-color: var(--accent-pink); box-shadow: 0 0 25px rgba(0, 229, 255, 0.2); }
-
-        .table-container { border-radius: 16px; border: 1px solid var(--glass-border); background: var(--bg-panel); max-height: 65vh; overflow-y: auto; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; min-width: 1000px; }
-        th { background: var(--table-header); color: var(--text-muted); font-weight: 900; padding: 1.8rem; border-bottom: 1px solid var(--glass-border); text-transform: uppercase; font-size: 1rem; position: sticky; top: 0; z-index: 10; letter-spacing: 2px; white-space: nowrap; }
-        td { padding: 1.8rem; border-bottom: 1px solid var(--glass-border); color: var(--text-main); vertical-align: middle; transition: background 0.2s; }
-        tr:hover td { background: rgba(0, 229, 255, 0.05); }
-        
-        .desc-cell { min-width: 350px; word-wrap: break-word; line-height: 1.6; font-weight: 700; font-size: 1.2rem; }
-        .qty-text { font-size: 1.2rem; font-weight: 900; margin-bottom: 0.6rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; }
-        .qty-text::before { content: '\f4d2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--accent-pink); font-size: 1rem; }
-        
-        .val-box { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); padding: 1rem 1.5rem; border-radius: 10px; font-weight: 900; display: inline-block; min-width: 180px; text-align: right; letter-spacing: 2px; font-variant-numeric: tabular-nums; font-size: 1.2rem; }
-        .val-box.master-val { border-color: var(--accent-pink); color: var(--accent-pink); background: rgba(0, 229, 255, 0.1); font-size: 1.4rem; min-width: 220px; font-weight: 900; box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);}
-        
-        .size-badge, .brand-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 900; margin-top: 0.8rem; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--glass-border); }
-        .size-badge { background: var(--input-bg); color: var(--text-muted); }
-        .brand-badge { background: rgba(0, 51, 170, 0.2); color: var(--accent-pink); border-color: var(--accent-pink); margin-right: 0.8rem; }
-
-        .btn { background: var(--gradient-brand); color: #FFF; border: none; padding: 1.5rem 3rem; border-radius: 12px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 3px; transition: all 0.3s; box-shadow: 0 6px 20px rgba(0, 229, 255, 0.25); }
-        .btn:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 229, 255, 0.4); }
-        .btn-outline { background: transparent; border: 2px solid var(--accent-pink); color: var(--accent-pink); box-shadow: none; }
-        .btn-outline:hover { background: rgba(0, 229, 255, 0.1); box-shadow: 0 0 25px rgba(0, 229, 255, 0.25); }
-        
-        #alertBox { padding: 1.8rem 3rem; border-radius: 14px; margin-bottom: 3rem; display: none; font-weight: 900; font-size: 1.2rem; border-left: 8px solid; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .alert-good { background: rgba(16, 185, 129, 0.15); color: #10B981; border-color: #10B981; }
-        .alert-bad { background: rgba(239, 68, 68, 0.15); color: #EF4444; border-color: #EF4444; }
-
-        .boardroom-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 3rem; }
-        .stat-box { background: var(--glass-bg); padding: 4rem; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; }
-        .stat-box:hover { border-color: var(--accent-pink); transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0, 229, 255, 0.15); }
-        .stat-box h4 { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 1.5rem; font-weight: 900; }
-        .stat-box .value { font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--text-main); font-weight: 900; letter-spacing: 3px; font-variant-numeric: tabular-nums; }
-        
-        .master-box { background: var(--gradient-master); border-color: var(--accent-pink); padding: 5rem; transform: none !important; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0, 229, 255, 0.15); }
-        .master-box::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transform: skewX(-20deg); animation: shine 5s infinite; }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-        .master-box h4 { color: #FFF; opacity: 0.9; font-size: 1.4rem; }
-        .master-box .value { color: #FFF; font-size: clamp(3.5rem, 7vw, 5.5rem); text-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-
-        .upload-card { background: var(--glass-bg); border: 2px dashed var(--glass-border); padding: 5rem 4rem; border-radius: 20px; text-align: center; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); margin: 0 auto; max-width: 700px; }
-        .upload-card:hover { border-color: var(--accent-pink); background: rgba(0, 229, 255, 0.05); }
-        .upload-card input[type="file"] { width: 100%; padding: 1.8rem; background: var(--input-bg); border-radius: 12px; color: var(--text-main); margin-bottom: 2.5rem; font-weight: 800; font-size: 1.2rem; border: 1px solid transparent; cursor: pointer; }
-        
-        #kpoAuthWall { background: var(--glass-bg); border: 2px solid var(--accent-pink); border-radius: 24px; padding: 6rem 5rem; text-align: center; max-width: 700px; margin: 0 auto 3rem auto; box-shadow: 0 0 50px rgba(0, 229, 255, 0.15); }
-        #kpoAuthWall input { width: 100%; padding: 1.8rem; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-size: 1.8rem; margin-bottom: 3rem; text-align: center; letter-spacing: 6px; font-weight: 900; }
-
-        @media (max-width: 768px) {
-            header { flex-direction: column; text-align: center; gap: 1.5rem; padding: 1.5rem; }
-            .header-meta { text-align: center; }
-            .theme-switch { margin: 1.5rem auto 0 auto; }
-            nav { padding: 0.5rem; }
-            .nav-tab { padding: 1.2rem; font-size: 0.85rem; }
-            main { padding: 1.5rem; }
-            .panel { padding: 2rem; }
-            .executive-banner { padding: 2rem; width: 100%; text-align: center; }
-            .btn { width: 100%; justify-content: center; }
-            .boardroom-grid { grid-template-columns: 1fr !important; }
-        }
+        /* DATA UPLOAD HUD */
+        #syncHUD { display: none; text-align: center; padding: 4rem 0; }
+        .progress-track { width: 100%; max-width: 600px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin: 2rem auto; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: var(--gradient-master); transition: width 0.3s; }
     </style>
 </head>
 <body>
 
-    <!-- SECURE LOGIN FIREWALL -->
-    <div id="globalLoginOverlay">
-        <div class="login-box">
+    <!-- SYSTEM ALERTS -->
+    <div id="alertMaster"></div>
+
+    <!-- 1. LOGIN FIREWALL -->
+    <div id="loginOverlay">
+        <div class="login-card">
             <h1>SANTEX <span>OS</span></h1>
-            <p>Leaders in Personal Hygiene</p>
-            <div id="loginError"></div>
-            <input type="text" id="loginUsername" placeholder="Agent Identification" autocomplete="off">
-            <input type="password" id="loginPassword" placeholder="Security Protocol Key" onkeypress="if(event.key === 'Enter') executeLogin()">
-            <button class="btn" onclick="executeLogin()"><i class="fas fa-fingerprint"></i> Initialize VIP Session</button>
+            <p>Master Grade Executive Node</p>
+            <input type="text" id="authUsername" placeholder="Agent Designation" autocomplete="off">
+            <input type="password" id="authPassword" placeholder="Decryption Key" onkeypress="if(event.key==='Enter') executeAuth()">
+            <button class="btn" onclick="executeAuth()"><i class="fas fa-fingerprint"></i> Initialize Connect</button>
         </div>
     </div>
 
-    <!-- VIP WELCOME ANIMATION -->
-    <div id="vipWelcomeOverlay">
-        <i class="fas fa-shield-check fa-5x" style="color:var(--accent-pink); margin-bottom: 1.5rem; text-shadow: 0 0 40px var(--accent-pink);"></i>
-        <h1>WELCOME, <span id="vipNameDisplay"></span></h1>
-        <p style="color:var(--text-muted); font-size:1.4rem; margin-top:1.5rem; letter-spacing:6px; font-weight: 900; text-transform: uppercase;">Establishing VIP Encrypted Connection...</p>
+    <!-- 2. CINEMATIC WELCOME SEQUENCE -->
+    <div id="welcomeSequence">
+        <div class="cyber-circle"><i class="fas fa-shield-alt"></i></div>
+        <div class="glitch-text">ACCESS GRANTED</div>
+        <div class="init-log" id="initLogText">> UPLINK ESTABLISHED...</div>
     </div>
 
-    <!-- 15 SEC GOD MODE ANIMATION OVERLAY W/ AI ANALYSIS -->
-    <div id="syncOverlay">
-        <div class="sync-hud">
-            <div class="liquid-orb">
-                <i class="fas fa-microchip"></i>
-            </div>
-            <div class="sync-title">GOD MODE EXTRACTION</div>
-            <div class="sync-status" id="syncStatusText">ENGAGING 100X MULTIPLIER...</div>
-            
-            <div id="aiAnalysisLog">> INIT SYSTEM...</div>
-
-            <div class="progress-container">
-                <div class="progress-bar" id="syncProgressBar"></div>
-            </div>
-            <p style="color: var(--text-muted); font-size: 1rem; margin-top: 3rem; letter-spacing: 3px; font-weight: 800;">MAINTAIN TERMINAL CONNECTION. DEEP PACKET INSPECTION ACTIVE.</p>
-        </div>
-    </div>
-
-    <div id="appWrapper">
+    <!-- 3. MASTER OS CORE -->
+    <div id="appCore">
         <header>
             <div>
-                <h1>SANTEX <span>INVENTORY REPORT</span></h1>
-                <div style="color: var(--text-muted); font-size: 1rem; margin-top: 0.8rem; letter-spacing: 4px; font-weight: 900; text-transform: uppercase;">VIP Enterprise OS Framework</div>
+                <h1>SANTEX <span>MASTER</span></h1>
+                <div style="color: var(--text-dim); font-size: 0.8rem; letter-spacing: 4px; font-weight: 800; margin-top:0.3rem;">Automated Enterprise Framework</div>
             </div>
-            <div class="header-meta">
-                <div id="liveClock" style="font-weight: 900; font-family: monospace; font-size: 1.4rem; color: var(--text-main); letter-spacing: 1px;"></div>
-                <div id="syncStatus" style="margin-top: 0.6rem; font-size: 0.9rem; color: var(--accent-pink); font-weight: 900; letter-spacing: 3px;"><i class="fas fa-lock"></i> SECURE NODE ACTIVE</div>
-                <button class="theme-switch" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i> <span id="themeText">Dark Theme</span></button>
+            <div style="text-align: right;">
+                <div class="sys-clock" id="liveClock">00:00:00 PKT</div>
+                <div style="color: var(--text-dim); font-size: 0.8rem; font-weight: 800; letter-spacing: 2px; margin-top:0.3rem;">SESSION: <span id="sessUser" style="color:var(--accent-primary);"></span></div>
             </div>
         </header>
 
         <nav>
-            <button id="tab-dashboard" class="nav-tab active" onclick="switchPanel('dashboard')"><i class="fas fa-network-wired"></i> Master Stock</button>
-            <button id="tab-executive" class="nav-tab" onclick="switchPanel('executive')"><i class="fas fa-briefcase"></i> Boardroom</button>
-            <button id="tab-reports" class="nav-tab" onclick="switchPanel('reports')"><i class="fas fa-file-invoice"></i> Data Extraction</button>
-            <button id="tab-upload" class="nav-tab" onclick="switchPanel('upload')"><i class="fas fa-satellite-dish"></i> God Mode Uplink</button>
-            <button id="tab-users" class="nav-tab" onclick="switchPanel('users')" style="display:none;"><i class="fas fa-user-shield"></i> Security</button>
+            <button class="nav-btn active" id="tab-dash" onclick="switchPanel('dash')"><i class="fas fa-cube"></i> Live Matrix</button>
+            <button class="nav-btn" id="tab-extract" onclick="switchPanel('extract')"><i class="fas fa-file-pdf"></i> Master PDF</button>
+            <button class="nav-btn" id="tab-uplink" onclick="switchPanel('uplink')"><i class="fas fa-satellite-dish"></i> God Mode Uplink</button>
             
-            <div class="nav-right-group">
-                <button class="nav-tab" onclick="executeLogout()" style="color: var(--danger); border-bottom: none;"><i class="fas fa-power-off"></i> Terminate Link</button>
-            </div>
+            <!-- MASTER ONLY TABS -->
+            <button class="nav-btn" id="tab-crud" onclick="switchPanel('crud')" style="display:none;"><i class="fas fa-user-shield"></i> Operatives</button>
+            <button class="nav-btn" id="tab-logs" onclick="switchPanel('logs')" style="display:none;"><i class="fas fa-terminal"></i> Sys Logs</button>
+            
+            <button class="nav-btn" onclick="terminateSession()" style="margin-left:auto; color:var(--danger);"><i class="fas fa-power-off"></i> Terminate</button>
         </nav>
 
         <main>
-            <div id="alertBox"></div>
-
-            <div class="executive-banner">
-                <h3><i class="fas fa-crown"></i> Chief Executive Command</h3>
-                <h2>NOUMAN AHMED SB</h2>
-            </div>
-
-            <div id="dashboard" class="panel active">
-                <h2 class="panel-title"><i class="fas fa-network-wired"></i> Master Valuation Control</h2>
-                
-                <div class="filter-bar">
-                    <div class="search-wrapper">
-                        <input type="text" id="masterSearch" class="search-input" placeholder="Search SKU, Brand, or Desc..." autocomplete="off" oninput="executeSearch()">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <select id="filterBrand" class="filter-select" onchange="executeSearch()">
-                        <option value="">All Brands</option>
-                    </select>
-                </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>SKU Identifier</th>
-                                <th>Product DNA</th>
-                                <th>Volume (CTN/UNITS)</th>
-                                <th style="text-align: right;">Global LMT Valuation</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryBody">
-                            <tr><td colspan="4" style="text-align:center; padding:6rem; color:var(--text-muted);"><i class="fas fa-circle-notch fa-spin fa-4x" style="color: var(--accent-pink); margin-bottom: 2rem;"></i><br><br><span style="letter-spacing: 3px; font-weight: 900; font-size: 1.4rem;">Syncing Central DB...</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="executive" class="panel">
-                <h2 class="panel-title"><i class="fas fa-briefcase"></i> Executive Overview</h2>
+            <!-- DASHBOARD PANEL -->
+            <div id="dash" class="panel active">
+                <h2 class="panel-title"><i class="fas fa-cube"></i> Master Inventory Matrix</h2>
                 
                 <div class="boardroom-grid">
-                    <div class="stat-box master-box">
-                        <h4>Grand Total Enterprise Value</h4>
-                        <div class="value" id="execGrandTotal">Rs 0.00</div>
+                    <div class="stat-box" style="background: rgba(0, 255, 204, 0.05); border-color: var(--accent-primary);">
+                        <h4>Global Enterprise Valuation</h4>
+                        <div class="val" id="valTotal" style="color: var(--accent-primary);">Rs 0</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem;">
-                        <div class="stat-box">
-                            <h4>Total Active SKUs</h4>
-                            <div class="value" id="execTotalSkus" style="color: var(--accent-pink);">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <h4>Physical Units Logged</h4>
-                            <div class="value" id="execTotalUnits" style="color: var(--accent-pink);">0</div>
-                        </div>
+                    <div class="stat-box">
+                        <h4>Active SKU Variants</h4>
+                        <div class="val" id="skuTotal">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Total Physical Units</h4>
+                        <div class="val" id="unitTotal">0</div>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <div style="padding: 1.5rem; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--glass-border);">
+                        <input type="text" id="searchMatrix" placeholder="Search Matrix (SKU / Name)..." oninput="renderMatrix()" style="margin:0;">
+                    </div>
+                    <div style="max-height: 50vh; overflow-y: auto;">
+                        <table>
+                            <thead><tr><th>DNA Identifier</th><th>SKU Description</th><th>Volume Layout</th><th style="text-align:right;">Calculated Val</th></tr></thead>
+                            <tbody id="matrixBody"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div id="reports" class="panel">
-                <h2 class="panel-title"><i class="fas fa-file-invoice"></i> Financial Extraction Module</h2>
+            <!-- PDF EXTRACTION PANEL -->
+            <div id="extract" class="panel">
+                <h2 class="panel-title"><i class="fas fa-file-pdf"></i> A4 Executive Extraction</h2>
+                <div class="glass-container" style="text-align:center; max-width: 800px; margin: 0 auto;">
+                    <i class="fas fa-print fa-4x" style="color: var(--accent-primary); margin-bottom: 2rem;"></i>
+                    <h3 style="font-family:'Syncopate',sans-serif; font-size:1.5rem; margin-bottom:1rem;">GENERATE VIP REPORT</h3>
+                    <p style="color:var(--text-dim); line-height: 1.8; margin-bottom: 3rem; font-weight:600;">System will automatically format data into a highly secured, pagination-perfected A4 portrait PDF utilizing Dark Grid architecture.</p>
+                    <button class="btn" style="width: auto; padding: 1.5rem 4rem;" onclick="generateMasterPDF()"><i class="fas fa-download"></i> EXPORT TO PDF</button>
+                </div>
+            </div>
+
+            <!-- GOD MODE UPLINK (UPLOAD) -->
+            <div id="uplink" class="panel">
+                <h2 class="panel-title"><i class="fas fa-satellite-dish"></i> Mainframe Injection</h2>
                 
-                <div class="boardroom-grid" style="grid-template-columns: 1fr 1fr;">
-                    <div class="stat-box" style="text-align: center; padding: 5rem 3rem;">
-                        <i class="fas fa-file-csv fa-5x" style="color: var(--accent-pink); margin-bottom: 2.5rem;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 900;">God Mode CSV</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; line-height: 1.8;">
-                            Generates the ultimate structural CSV ledger perfectly formatted to match the native system architecture.
-                        </p>
-                        <button class="btn" style="width: 100%; justify-content: center;" onclick="exportEnterpriseCSV()"><i class="fas fa-download"></i> Extract CSV</button>
-                    </div>
+                <div id="uploadZone" class="glass-container" style="text-align:center; max-width: 800px; margin: 0 auto;">
+                    <i class="fas fa-cloud-upload-alt fa-4x" style="color: var(--text-dim); margin-bottom: 2rem;"></i>
+                    <p style="color:var(--text-dim); margin-bottom: 2rem; font-weight:600;">Inject raw LMT source arrays (.csv, .xlsx). The system will autonomously parse, compute valuations, wipe the old database, and deploy the new payload.</p>
+                    <input type="file" id="filePayload" accept=".csv, .xlsx" style="max-width: 400px; margin: 0 auto 2rem auto; display:block;">
+                    <button class="btn" style="width: auto;" onclick="executeGodModeInjection()"><i class="fas fa-bolt"></i> ENGAGE OVERRIDE</button>
+                </div>
 
-                    <div class="stat-box" style="text-align: center; padding: 5rem 3rem;">
-                        <i class="fas fa-file-pdf fa-5x" style="color: var(--accent-pink); margin-bottom: 2.5rem;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; font-weight: 900;">VIP Enterprise PDF</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1.1rem; line-height: 1.8;">
-                            Auto-paginated A4 Portrait document. 100% Dark Theme. Contains Master Architect stamp, timestamps, and full sumations.
-                        </p>
-                        <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="exportEnterprisePDF()"><i class="fas fa-file-pdf"></i> Generate VIP PDF</button>
-                    </div>
+                <div id="syncHUD">
+                    <h3 style="font-family:'Syncopate',sans-serif; font-size:2rem; color:var(--accent-primary); margin-bottom: 1rem;">UPLINK IN PROGRESS</h3>
+                    <div class="init-log" id="syncLog">> PARSING EXCEL BUNDLE...</div>
+                    <div class="progress-track"><div class="progress-fill" id="syncFill"></div></div>
                 </div>
             </div>
 
-            <div id="users" class="panel">
-                <h2 class="panel-title"><i class="fas fa-user-shield"></i> Security Management</h2>
-                <div class="table-container">
-                    <table style="min-width: 800px;">
-                        <thead><tr><th>Operative Name</th><th>Identifier</th><th>Role</th><th>Actions</th></tr></thead>
-                        <tbody id="usersTableBody"></tbody>
+            <!-- MASTER CRUD (USERS) -->
+            <div id="crud" class="panel">
+                <h2 class="panel-title"><i class="fas fa-user-shield"></i> Operative Authority Control</h2>
+                
+                <div class="glass-container">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--accent-primary); font-family:'Syncopate',sans-serif;">PROVISION / MODIFY</h3>
+                    <input type="hidden" id="crudId">
+                    <div class="form-grid">
+                        <input type="text" id="crudName" placeholder="Full Designation (Name)">
+                        <input type="text" id="crudUser" placeholder="System ID (Username)">
+                        <input type="password" id="crudPass" placeholder="Decryption Key (Password)">
+                        <select id="crudRole">
+                            <option value="user">Standard (Read/Print)</option>
+                            <option value="kpo">Key Punch (Upload Access)</option>
+                            <option value="master">Master Architect (Full Access)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; gap:1rem;">
+                        <button class="btn" style="width:auto;" onclick="commitOperative()"><i class="fas fa-save"></i> COMMIT RECORD</button>
+                        <button class="btn btn-outline" style="width:auto;" onclick="resetCrud()"><i class="fas fa-eraser"></i> RESET</button>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Designation</th><th>System ID</th><th>Clearance Level</th><th>Execute</th></tr></thead>
+                        <tbody id="operativesBody"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="upload" class="panel">
-                <h2 class="panel-title"><i class="fas fa-satellite-dish"></i> Master Channel Uplink</h2>
-                <div id="kpoAuthWall">
-                    <h3 style="color: var(--accent-pink); margin-bottom: 2rem; font-size: 2.5rem;"><i class="fas fa-shield-alt"></i> Auth Required</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 4rem; font-size: 1.2rem; line-height: 1.6;">God Mode database injection restricted to highly cleared personnel.</p>
-                    <input type="password" id="kpoPass" placeholder="Enter Secure Passcode" onkeypress="if(event.key === 'Enter') authKPO()">
-                    <button class="btn" onclick="authKPO()" style="width: 100%; justify-content: center; padding: 1.8rem; font-size: 1.3rem;"><i class="fas fa-unlock"></i> Disengage Firewall</button>
-                </div>
-                
-                <div id="kpoWorkspace" style="display: none;">
-                    <div class="upload-card">
-                        <h3 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 3px;"><i class="fas fa-upload" style="color: var(--accent-pink);"></i> LMT Source File</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1.1rem;">Formats accepted: CSV, XLS, XLSX</p>
-                        <input type="file" id="fileLMT" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                        <div id="badge-lmt" class="size-badge" style="display:none; margin-bottom: 2.5rem; font-size: 1.1rem; padding: 1rem 2rem;"></div>
-                        <button id="syncApiBtn" class="btn" style="width: 100%; justify-content: center; padding: 1.8rem;" onclick="processGodModeUpload()"><i class="fas fa-bolt"></i> Execute God Mode Sync</button>
-                    </div>
+            <!-- SYSTEM LOGS -->
+            <div id="logs" class="panel">
+                <h2 class="panel-title"><i class="fas fa-terminal"></i> Immutable Security Ledger</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Timestamp (PKT)</th><th>Operative ID</th><th>Action Logged</th></tr></thead>
+                        <tbody id="logsBody"></tbody>
+                    </table>
                 </div>
             </div>
 
         </main>
-        
-        <footer style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; letter-spacing: 3px; border-top: 1px solid var(--glass-border); margin-top: auto; font-weight: 800;">
-            SANTEX ENTERPRISE OS &copy; 2026 | TERMINAL SECURED
-        </footer>
     </div>
 
     <script>
-        // Supabase Integration - Santex 100x God Mode
-        const supabaseUrl = 'https://cbitdlpopyujgdobddlg.supabase.co'; 
+        // ==========================================
+        // 1. SUPABASE AUTOMATION INIT (ZERO MANUAL)
+        // ==========================================
+        const supabaseUrl = 'https://cbitdlpopyujgdobddlg.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaXRkbHBvcHl1amdkb2JkZGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MTM3MzAsImV4cCI6MjA5ODA4OTczMH0.FytEGLweoYV-6-InE-69A4N_KaRoFK0FUm0iuNp5gLc';
         const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let masterDB = {}; 
-        let currentSessionUser = null;
-        let isLightMode = false;
-        let isSyncing = false; 
+        let sessionActive = null;
+        let globalMatrix = [];
 
-        // AUTO-LOGOUT FIX: Restores active session on F5 Refresh perfectly
+        // ==========================================
+        // 2. CORE UTILITIES & UI
+        // ==========================================
+        function showToast(msg, type = 'success') {
+            const wrap = document.getElementById('alertMaster');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-triangle'}"></i> ${msg}`;
+            wrap.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
+        }
+
+        setInterval(() => { 
+            document.getElementById('liveClock').innerText = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' }); 
+        }, 1000);
+
+        async function sysLog(action) {
+            if(!sessionActive) return;
+            try { await db.from('santex_logs').insert([{ username: sessionActive.username, action: action, created_at: new Date().toISOString() }]); } catch(e) {}
+        }
+
+        // ==========================================
+        // 3. SECURE AUTH & WELCOME SEQUENCE
+        // ==========================================
         document.addEventListener("DOMContentLoaded", () => {
-            startClock();
-            try {
-                const storedSession = localStorage.getItem('santexSessionVIP');
-                if(storedSession) {
-                    currentSessionUser = JSON.parse(storedSession);
-                    if(currentSessionUser && currentSessionUser.username) {
-                        document.getElementById('globalLoginOverlay').style.display = 'none';
-                        unlockApplication();
-                    }
-                }
-            } catch(e) {
-                console.error("Session Cache clear.");
-            }
+            const cached = localStorage.getItem('masterSess');
+            if(cached) { sessionActive = JSON.parse(cached); triggerWelcomeSequence(); }
         });
 
-        function startClock() {
-            setInterval(() => { 
-                document.getElementById('liveClock').innerText = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' }); 
-            }, 1000);
-        }
-
-        function toggleTheme() {
-            isLightMode = !isLightMode;
-            document.documentElement.classList.toggle('light-mode', isLightMode);
+        async function executeAuth() {
+            const u = document.getElementById('authUsername').value.trim();
+            const p = document.getElementById('authPassword').value.trim();
             
-            const icon = document.getElementById('themeIcon');
-            const text = document.getElementById('themeText');
+            if(!u || !p) return showToast('Input protocols empty.', 'error');
             
-            if (isLightMode) {
-                icon.className = 'fas fa-sun';
-                text.innerText = 'Light Theme';
-            } else {
-                icon.className = 'fas fa-moon';
-                text.innerText = 'Dark Theme';
-            }
-        }
-
-        async function executeLogin() {
-            const u = document.getElementById('loginUsername').value.trim();
-            const p = document.getElementById('loginPassword').value.trim();
-            const errBox = document.getElementById('loginError');
-            
-            if(!u || !p) { errBox.innerText = "SECURITY ALERT: Credentials Required."; return; }
-
-            if(u === 'admin' && p === 'NurAdmin@2026') {
-                currentSessionUser = { username: 'admin', role: 'master', full_name: 'Master Architect' };
-                localStorage.setItem('santexSessionVIP', JSON.stringify(currentSessionUser));
-                triggerVIPWelcome();
-                return;
+            // Local Admin Override Fallback
+            if(u === 'master' && p === 'Master@2026') {
+                sessionActive = { id: 0, username: 'master_root', role: 'master', full_name: 'System Root' };
+                return processAuthSuccess();
             }
 
             try {
                 const { data, error } = await db.from('santex_users').select('*').eq('username', u).eq('password', p).single();
-                if (data) {
-                    currentSessionUser = data;
-                    localStorage.setItem('santexSessionVIP', JSON.stringify(currentSessionUser));
-                    triggerVIPWelcome();
-                } else { errBox.innerText = "ACCESS DENIED: Invalid Signature."; }
-            } catch (err) { errBox.innerText = "DB FAULT: Mainframe unreachable. Use Master Override."; }
+                if(error || !data) throw new Error("Decryption Key Invalid.");
+                sessionActive = data;
+                processAuthSuccess();
+            } catch(e) { showToast(e.message, 'error'); }
         }
 
-        function triggerVIPWelcome() {
-            document.getElementById('globalLoginOverlay').style.display = 'none';
-            document.getElementById('loginError').innerText = '';
-            
-            const welcomeLayer = document.getElementById('vipWelcomeOverlay');
-            const displayName = currentSessionUser.full_name || currentSessionUser.username;
-            document.getElementById('vipNameDisplay').innerText = displayName.toUpperCase();
-            
-            welcomeLayer.style.display = 'flex';
-            
-            setTimeout(() => {
-                welcomeLayer.style.display = 'none';
-                unlockApplication();
-            }, 3000); 
+        function processAuthSuccess() {
+            localStorage.setItem('masterSess', JSON.stringify(sessionActive));
+            sysLog("System Entry Authenticated.");
+            triggerWelcomeSequence();
         }
 
-        async function unlockApplication() {
-            document.getElementById('appWrapper').style.display = 'flex';
-            document.getElementById('tab-users').style.display = currentSessionUser.role === 'master' ? 'flex' : 'none';
+        function triggerWelcomeSequence() {
+            document.getElementById('loginOverlay').style.display = 'none';
+            const welcome = document.getElementById('welcomeSequence');
+            const logText = document.getElementById('initLogText');
+            welcome.style.display = 'flex';
             
-            await loadLiveServerData();
-            switchPanel('dashboard');
+            const logs = ["> BYPASSING FIREWALLS...", "> SYNCING DATABASES...", "> LOADING UI MODULES...", "> ACCESS GRANTED."];
+            let i = 0;
+            const intv = setInterval(() => {
+                if(i < logs.length) logText.innerText = logs[i++];
+                else {
+                    clearInterval(intv);
+                    welcome.style.display = 'none';
+                    initMasterOS();
+                }
+            }, 800);
         }
 
-        function executeLogout() {
-            currentSessionUser = null;
-            localStorage.removeItem('santexSessionVIP'); 
-            document.getElementById('appWrapper').style.display = 'none';
-            document.getElementById('globalLoginOverlay').style.display = 'flex';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('tab-users').style.display = 'none';
-            
-            document.getElementById('kpoAuthWall').style.display = 'block';
-            document.getElementById('kpoWorkspace').style.display = 'none';
-            document.getElementById('kpoPass').value = '';
+        function terminateSession() {
+            sysLog("Session Terminated Intentionally.");
+            localStorage.removeItem('masterSess');
+            location.reload();
         }
 
-        window.switchPanel = function(panelId) {
-            if(panelId === 'upload' && currentSessionUser.role !== 'master') {
-                return showAlert('CLEARANCE DENIED: Master Access Required.', 'bad');
-            }
+        // ==========================================
+        // 4. OS INITIALIZATION & ROUTING
+        // ==========================================
+        async function initMasterOS() {
+            document.getElementById('appCore').style.display = 'flex';
+            document.getElementById('sessUser').innerText = sessionActive.full_name.toUpperCase();
+            
+            // Permissions Layout
+            const isMaster = sessionActive.role === 'master';
+            document.getElementById('tab-crud').style.display = isMaster ? 'flex' : 'none';
+            document.getElementById('tab-logs').style.display = isMaster ? 'flex' : 'none';
+
+            await loadMatrixData();
+            switchPanel('dash');
+        }
+
+        function switchPanel(pid) {
+            if(pid === 'uplink' && sessionActive.role === 'user') return showToast("Clearance level insufficient.", 'error');
 
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-            document.getElementById('tab-' + panelId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(pid).classList.add('active');
+            document.getElementById(`tab-${pid}`).classList.add('active');
 
-            if(panelId === 'dashboard') executeSearch();
-            if(panelId === 'executive') buildExecutiveBoardroom();
-            if(panelId === 'users') loadUsers();
-        };
-
-        function showAlert(msg, type='good') {
-            const box = document.getElementById('alertBox');
-            box.className = `alert-${type}`;
-            box.innerHTML = `<i class="fas ${type === 'good' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> &nbsp; ${msg}`;
-            box.style.display = 'block';
-            window.scrollTo({top: 0, behavior: 'smooth'});
-            setTimeout(() => box.style.display = 'none', 6000);
+            if(pid === 'crud') fetchOperatives();
+            if(pid === 'logs') fetchSystemLogs();
         }
 
-        function formatCurrency(val) { return "Rs " + val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
-        function formatQty(c, p) { return (c === 0 && p === 0) ? "0/0" : `${c}/${p}`; }
-
-        function extractBrand(desc) {
-            if(!desc) return "SANTEX";
-            let parts = desc.split(' ');
-            if(parts.length > 0) return parts[0].toUpperCase();
-            return "SANTEX";
-        }
-
-        async function loadLiveServerData() {
+        // ==========================================
+        // 5. LIVE MATRIX (DASHBOARD)
+        // ==========================================
+        async function loadMatrixData() {
             try {
-                const { data: liveData, error } = await db.from('live_inventory').select('*');
-                if (error) throw error;
+                const { data, error } = await db.from('live_inventory').select('*');
+                if(error) throw error;
+                globalMatrix = data || [];
+                renderMatrix();
+            } catch(e) { showToast("Failed to sync matrix: " + e.message, 'error'); }
+        }
+
+        function renderMatrix() {
+            const q = document.getElementById('searchMatrix').value.toLowerCase();
+            const tb = document.getElementById('matrixBody');
+            tb.innerHTML = '';
+            
+            let vT = 0, sT = 0, uT = 0;
+
+            globalMatrix.forEach(r => {
+                if(q && !r.sku_code.toLowerCase().includes(q) && !r.name.toLowerCase().includes(q)) return;
                 
-                masterDB = {};
-                const brands = new Set();
+                let c = parseFloat(r.qty_c) || 0;
+                let p = parseFloat(r.qty_p) || 0;
+                let v = parseFloat(r.val) || 0;
                 
-                if (liveData) {
-                    liveData.forEach(item => { 
-                        masterDB[item.sku_code] = item; 
-                        brands.add(extractBrand(item.name));
-                    });
-                }
-                
-                const brandSelect = document.getElementById('filterBrand');
-                brandSelect.innerHTML = '<option value="">All Brands</option>';
-                [...brands].sort().forEach(b => {
-                    brandSelect.innerHTML += `<option value="${b}">${b}</option>`;
-                });
-                
-            } catch (err) { 
-                console.error("Database connection fault:", err); 
-                showAlert("DB READ FAULT: " + err.message, "bad");
-            } finally { 
-                executeSearch(); 
-                buildExecutiveBoardroom(); 
+                vT += v; sT++; uT += (c * 24) + p; // Auto 24 mult fallback
+
+                tb.innerHTML += `<tr>
+                    <td style="color:var(--accent-primary); font-family:'Syncopate',sans-serif; font-size:0.9rem;">${r.sku_code}</td>
+                    <td>${r.name}</td>
+                    <td>${c} CTN / ${p} PCS</td>
+                    <td style="text-align:right; color:#fff;">Rs ${v.toLocaleString()}</td>
+                </tr>`;
+            });
+
+            if(sT === 0) tb.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:3rem; color:var(--text-dim);">NO RECORDS MATCH QUERY</td></tr>`;
+
+            if(!q) {
+                document.getElementById('valTotal').innerText = `Rs ${vT.toLocaleString()}`;
+                document.getElementById('skuTotal').innerText = sT.toLocaleString();
+                document.getElementById('unitTotal').innerText = uT.toLocaleString();
             }
         }
 
-        function authKPO() {
-            const pass = document.getElementById('kpoPass').value;
-            if (pass === 'Aa135135%') {
-                document.getElementById('kpoAuthWall').style.display = 'none';
-                document.getElementById('kpoWorkspace').style.display = 'block';
-                showAlert('God Mode Firewall Bypassed.', 'good');
-            } else { showAlert('ACCESS DENIED: Incorrect Security Key.', 'bad'); }
-        }
+        // ==========================================
+        // 6. GOD MODE UPLINK (AUTO WIPE & SYNC)
+        // ==========================================
+        async function executeGodModeInjection() {
+            const file = document.getElementById('filePayload').files[0];
+            if(!file) return showToast("Upload bay empty.", 'error');
 
-        const sleep = ms => new Promise(res => setTimeout(res, ms));
-
-        // 1000% WORKING - PERFECTED 15-SEC GOD MODE UPLOAD W/ AUTO-VANISH ALGORITHM
-        async function processGodModeUpload() {
-            if(isSyncing) return showAlert("Transaction actively processing.", "bad");
-            
-            const fileInput = document.getElementById('fileLMT');
-            const file = fileInput.files[0];
-            
-            if(!file) return showAlert("Awaiting target file injection.", "bad");
-
-            isSyncing = true;
-            const overlay = document.getElementById('syncOverlay');
-            const pBar = document.getElementById('syncProgressBar');
-            const pText = document.getElementById('syncStatusText');
-            const aiLog = document.getElementById('aiAnalysisLog');
-            
-            overlay.style.display = 'flex';
-            pBar.style.width = '2%';
-            pText.innerText = 'INITIALIZING GOD MODE PROTOCOL...';
-
-            const aiPhrases = [
-                "> AI INGESTING RAW LMT DATA MATRIX...",
-                "> ISOLATING MASTER SKU DNA STRANDS...",
-                "> BYPASSING DUAL-HEADER ARCHITECTURE...",
-                "> ANALYZING CTN/UNIT VOLUMETRICS...",
-                "> APPLYING HEURISTIC VALUATION ALGORITHMS...",
-                "> PURGING ORPHAN RECORDS & ANOMALIES...",
-                "> STRUCTURING 100X GOD MODE PAYLOAD..."
-            ];
-            
-            let aiPhraseIdx = 0;
-            const aiInterval = setInterval(() => {
-                aiLog.innerText = aiPhrases[aiPhraseIdx % aiPhrases.length];
-                aiPhraseIdx++;
-            }, 1800);
+            document.getElementById('uploadZone').style.display = 'none';
+            const hud = document.getElementById('syncHUD');
+            const log = document.getElementById('syncLog');
+            const fill = document.getElementById('syncFill');
+            hud.style.display = 'block';
 
             try {
+                fill.style.width = '10%'; log.innerText = "> EXTRACTING BINARY DATA...";
+                
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     try {
                         const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, {type: 'array'});
                         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                        
-                        const rawRows = XLSX.utils.sheet_to_json(sheet, {header: 1, raw: false, defval: ""});
-                        let aggregatedData = {};
-                        
-                        // Robust Data Extraction Loop bypassing Headers completely
-                        for(let i = 0; i < rawRows.length; i++) {
-                            let row = rawRows[i];
-                            if(!row) continue;
-                            
-                            let skuIndex = -1;
-                            for(let c=0; c<row.length; c++) {
-                                if(String(row[c]).trim().match(/^SKU\d{4,}/i)) {
-                                    skuIndex = c; 
-                                    break;
-                                }
-                            }
-                            
-                            if(skuIndex !== -1) {
-                                let code = String(row[skuIndex]).trim().toUpperCase();
-                                let desc = String(row[skuIndex+1] || "").trim(); 
-                                
-                                // Standard Fallback offsets for Current End Stock(1).csv
-                                let c = parseFloat(String(row[skuIndex+13] || "0").replace(/,/g, '')) || 0;
-                                let p = parseFloat(String(row[skuIndex+14] || "0").replace(/,/g, '')) || 0;
-                                let tp = parseFloat(String(row[skuIndex+15] || "0").replace(/,/g, '')) || 0;
-                                let v = parseFloat(String(row[skuIndex+17] || "0").replace(/,/g, '')) || 0;
-                                
-                                if(v === 0 && tp > 0) {
-                                    v = (c * 24 * tp) + (p * tp);
-                                }
+                        const rows = XLSX.utils.sheet_to_json(sheet, {header: 1});
 
-                                if (aggregatedData[code]) {
-                                    aggregatedData[code].qty_c += c;
-                                    aggregatedData[code].qty_p += p;
-                                    aggregatedData[code].val += v;
-                                } else {
-                                    aggregatedData[code] = { 
-                                        sku_code: code, 
-                                        name: desc, 
-                                        size: 'LMT-STD', 
-                                        qty_c: c, 
-                                        qty_p: p, 
-                                        val: v 
-                                    };
-                                }
+                        fill.style.width = '30%'; log.innerText = "> PARSING & AGGREGATING SKU DNA...";
+                        let payloadMap = {};
+                        
+                        for(let i=0; i<rows.length; i++) {
+                            let r = rows[i]; if(!r || r.length < 5) continue;
+                            let idx = r.findIndex(cell => String(cell).match(/^SKU\d+/i));
+                            if(idx !== -1) {
+                                let code = String(r[idx]).trim().toUpperCase();
+                                let c = parseFloat(r[idx+13]) || 0;
+                                let p = parseFloat(r[idx+14]) || 0;
+                                let tp = parseFloat(r[idx+15]) || 0;
+                                let v = parseFloat(r[idx+17]) || 0;
+                                if(v === 0) v = (c * 24 * tp) + (p * tp);
+
+                                if(payloadMap[code]) { payloadMap[code].qty_c += c; payloadMap[code].qty_p += p; payloadMap[code].val += v; }
+                                else { payloadMap[code] = { sku_code: code, name: String(r[idx+1]||""), qty_c: c, qty_p: p, val: v }; }
                             }
                         }
 
-                        let finalPayload = Object.values(aggregatedData);
+                        const finalPayload = Object.values(payloadMap);
+                        if(!finalPayload.length) throw new Error("Zero valid arrays located.");
 
-                        if(finalPayload.length === 0) throw new Error("Zero valid DNA strands found. Please verify file integrity.");
+                        fill.style.width = '50%'; log.innerText = "> AUTONOMOUS WIPE OF OLD MAINFRAME IN PROGRESS...";
+                        await db.from('live_inventory').delete().neq('sku_code', 'UNBREAKABLE_LOCK'); // Absolute Wipe
 
-                        // 15-SEC HIGH END ANIMATION SEQUENCE
-                        await sleep(3500); 
-                        pBar.style.width = '30%';
-                        pText.innerText = `AI EXTRACTED & AGGREGATED ${finalPayload.length} UNIQUE SKUS. DECRYPTING...`;
-
-                        await sleep(4000); 
-                        pBar.style.width = '65%';
-                        pText.innerText = 'AUTO-VANISHING OLD DATA. PREPARING CLEAN SLATE...';
-                        
-                        // PERMANENT AUTO-VANISH SYSTEM: Wipes database clean for new injection
-                        const { error: delErr } = await db.from('live_inventory').delete().neq('sku_code', 'ABSOLUTE_ZERO_WIPE_BYPASS');
-                        if (delErr) throw new Error("Database Wipe Blocked: " + delErr.message);
-
-                        await sleep(4500); 
-                        pBar.style.width = '85%';
-                        pText.innerText = 'INJECTING NEW 100X PAYLOAD TO MAINFRAME...';
-                        
-                        const chunkSize = 500;
-                        for (let i = 0; i < finalPayload.length; i += chunkSize) {
-                            const chunk = finalPayload.slice(i, i + chunkSize);
-                            const { error: insErr } = await db.from('live_inventory').insert(chunk);
-                            if(insErr) throw new Error("Payload Rejection: " + insErr.message);
+                        fill.style.width = '75%'; log.innerText = `> INJECTING ${finalPayload.length} NEW PACKETS...`;
+                        // Batch insert
+                        for(let i=0; i<finalPayload.length; i+=500) {
+                            const { error } = await db.from('live_inventory').insert(finalPayload.slice(i, i+500));
+                            if(error) throw error;
                         }
 
-                        await sleep(3000); 
-                        clearInterval(aiInterval);
-                        aiLog.innerText = "> OLD DATA PURGED. NEW DATABASE INJECTION COMPLETE.";
-                        pBar.style.width = '100%';
-                        pText.innerText = '100X GOD MODE SYNC SUCCESSFUL. REBOOTING...';
+                        fill.style.width = '100%'; log.innerText = "> UPLINK COMPLETE. REBOOTING MATRIX.";
+                        sysLog(`Master Injection Executed: ${finalPayload.length} SKUs`);
                         
-                        fileInput.value = '';
-                        await loadLiveServerData(); 
-                        await sleep(1500);
-                        
-                        overlay.style.display = 'none';
-                        switchPanel('dashboard');
-                        showAlert(`Upload Complete! Old data vanished. Injected ${finalPayload.length} new SKUs.`, 'good');
-                        isSyncing = false;
+                        setTimeout(() => {
+                            document.getElementById('filePayload').value = '';
+                            hud.style.display = 'none';
+                            document.getElementById('uploadZone').style.display = 'block';
+                            showToast("Database Injection Absolute Success.", "success");
+                            loadMatrixData();
+                            switchPanel('dash');
+                        }, 2000);
 
-                    } catch (x) { 
-                        clearInterval(aiInterval);
-                        overlay.style.display = 'none';
-                        isSyncing = false;
-                        showAlert('AI EXTRACTION FAULT: ' + x.message, 'bad'); 
+                    } catch(err) {
+                        throw err;
                     }
                 };
                 reader.readAsArrayBuffer(file);
-
-            } catch (err) { 
-                clearInterval(aiInterval);
-                overlay.style.display = 'none';
-                isSyncing = false;
-                showAlert('CRITICAL FAIL: ' + err.message, 'bad'); 
+            } catch(error) {
+                showToast(error.message, 'error');
+                hud.style.display = 'none';
+                document.getElementById('uploadZone').style.display = 'block';
             }
         }
 
-        // AUTO-RENDERS DASHBOARD DATA
-        function executeSearch() {
-            const filterText = document.getElementById('masterSearch').value.toLowerCase();
-            const filterBrand = document.getElementById('filterBrand').value;
-            
-            const tbody = document.getElementById('inventoryBody');
-            if(!tbody) return; tbody.innerHTML = '';
-            
-            let hasResults = false;
-
-            Object.values(masterDB).forEach(item => {
-                const brand = extractBrand(item.name);
-                const matchesSearch = item.sku_code.toLowerCase().includes(filterText) || item.name.toLowerCase().includes(filterText) || brand.toLowerCase().includes(filterText);
-                const matchesBrand = filterBrand === "" || brand === filterBrand;
-                
-                if(matchesSearch && matchesBrand) {
-                    hasResults = true;
-                    const tr = document.createElement('tr');
-                    
-                    let qtyC = parseFloat(item.qty_c) || 0;
-                    let qtyP = parseFloat(item.qty_p) || 0;
-                    let val = parseFloat(item.val) || 0;
-
-                    tr.innerHTML = `
-                        <td><strong style="color:var(--text-main); font-size: 1.2rem;">${item.sku_code}</strong></td>
-                        <td class="desc-cell">
-                            <span class="brand-badge">${brand}</span><br>
-                            <div style="margin-top:0.8rem; letter-spacing: 1px;">${item.name}</div>
-                        </td>
-                        <td><div class="qty-text">${formatQty(qtyC, qtyP)}</div></td>
-                        <td style="text-align: right;"><div class="val-box master-val">${formatCurrency(val)}</div></td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            });
-
-            if(!hasResults) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:4rem; color:var(--text-muted); font-size: 1.2rem; font-weight: 800;">No criteria match found in Database. Upload DNA Payload to Populate.</td></tr>`;
-            }
-        }
-
-        function buildExecutiveBoardroom() {
-            let gTotal = 0, tSkus = 0, tUnits = 0;
-            Object.values(masterDB).forEach(i => {
-                gTotal += (parseFloat(i.val) || 0);
-                tSkus++;
-                tUnits += ((parseFloat(i.qty_c) || 0) * 24) + (parseFloat(i.qty_p) || 0); 
-            });
-
-            document.getElementById('execGrandTotal').innerText = formatCurrency(gTotal);
-            document.getElementById('execTotalSkus').innerText = tSkus.toLocaleString();
-            document.getElementById('execTotalUnits').innerText = tUnits.toLocaleString();
-        }
-
-        async function loadUsers() {
-            if(currentSessionUser.role !== 'master') return;
-            const { data, error } = await db.from('santex_users').select('*').order('username');
-            const tbody = document.getElementById('usersTableBody');
-            tbody.innerHTML = '';
-            
-            if(error) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--danger);">DB Error.</td></tr>`; return; }
-
-            if(data) {
+        // ==========================================
+        // 7. OPERATIVE CRUD (USERS) ZERO ERROR
+        // ==========================================
+        async function fetchOperatives() {
+            const tb = document.getElementById('operativesBody');
+            tb.innerHTML = '';
+            try {
+                const { data, error } = await db.from('santex_users').select('*').order('username');
+                if(error) throw error;
                 data.forEach(u => {
-                    tbody.innerHTML += `<tr>
-                        <td><strong style="font-size: 1.1rem;">${u.full_name || '-'}</strong></td>
-                        <td style="color:var(--text-muted); font-weight: 700; letter-spacing: 1px;">${u.username}</td>
-                        <td><span class="brand-badge">${u.role.toUpperCase()}</span></td>
+                    tb.innerHTML += `<tr>
+                        <td><strong>${u.full_name}</strong></td>
+                        <td style="color:var(--text-dim);">${u.username}</td>
+                        <td style="text-transform:uppercase; color:var(--accent-primary); font-size:0.8rem; letter-spacing:2px;">${u.role}</td>
                         <td>
-                            <button class="btn btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; border-color:var(--danger); color:var(--danger);" onclick="alert('Destruction restricted in God Mode UI')"><i class="fas fa-trash-alt"></i></button>
+                            <button class="btn btn-outline" style="padding:0.5rem 1rem; font-size:0.8rem;" onclick='editOp(${JSON.stringify(u)})'><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger" style="padding:0.5rem 1rem; font-size:0.8rem; margin-left:0.5rem;" onclick="deleteOp('${u.id}', '${u.username}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
                 });
-            }
+            } catch(e) { showToast(e.message, 'error'); }
         }
 
-        function exportEnterpriseCSV() {
-            if(Object.keys(masterDB).length === 0) return showAlert('No data available in Mainframe.', 'bad');
-            showAlert('Packaging 100X God Mode CSV...', 'good');
+        function editOp(u) {
+            document.getElementById('crudId').value = u.id;
+            document.getElementById('crudName').value = u.full_name;
+            document.getElementById('crudUser').value = u.username;
+            document.getElementById('crudPass').value = u.password;
+            document.getElementById('crudRole').value = u.role;
+            window.scrollTo(0, 0);
+        }
+
+        function resetCrud() {
+            document.getElementById('crudId').value = '';
+            document.getElementById('crudName').value = '';
+            document.getElementById('crudUser').value = '';
+            document.getElementById('crudPass').value = '';
+            document.getElementById('crudRole').value = 'user';
+        }
+
+        async function commitOperative() {
+            const id = document.getElementById('crudId').value;
+            const payload = {
+                full_name: document.getElementById('crudName').value.trim(),
+                username: document.getElementById('crudUser').value.trim(),
+                password: document.getElementById('crudPass').value.trim(),
+                role: document.getElementById('crudRole').value
+            };
+
+            if(!payload.username || !payload.password) return showToast("Core data missing.", "error");
+
+            try {
+                if(id) {
+                    const { error } = await db.from('santex_users').update(payload).eq('id', id);
+                    if(error) throw error;
+                    sysLog(`Modified Operative: ${payload.username}`);
+                } else {
+                    const { error } = await db.from('santex_users').insert([payload]);
+                    if(error) throw error;
+                    sysLog(`Created Operative: ${payload.username}`);
+                }
+                showToast("Record Committed to Supabase.", "success");
+                resetCrud();
+                fetchOperatives();
+            } catch(e) { showToast("Action Blocked: " + e.message, "error"); }
+        }
+
+        async function deleteOp(id, user) {
+            if(user === sessionActive.username) return showToast("Self-termination blocked.", "error");
+            if(!confirm(`Authorize destruction of ${user}?`)) return;
+            try {
+                const { error } = await db.from('santex_users').delete().eq('id', id);
+                if(error) throw error;
+                sysLog(`Destroyed Operative: ${user}`);
+                showToast("Record Purged.", "success");
+                fetchOperatives();
+            } catch(e) { showToast("Error: " + e.message, "error"); }
+        }
+
+        // ==========================================
+        // 8. LOGS ENGINE
+        // ==========================================
+        async function fetchSystemLogs() {
+            const tb = document.getElementById('logsBody');
+            tb.innerHTML = '';
+            try {
+                const { data, error } = await db.from('santex_logs').select('*').order('created_at', {ascending: false}).limit(100);
+                if(error) throw error;
+                data.forEach(l => {
+                    tb.innerHTML += `<tr>
+                        <td style="color:var(--text-dim); font-size:0.85rem;">${new Date(l.created_at).toLocaleString()}</td>
+                        <td style="color:var(--accent-primary); font-weight:800;">${l.username}</td>
+                        <td>${l.action}</td>
+                    </tr>`;
+                });
+            } catch(e) { showToast(e.message, 'error'); }
+        }
+
+        // ==========================================
+        // 9. MASTER VIP PDF GENERATOR
+        // ==========================================
+        function generateMasterPDF() {
+            if(globalMatrix.length === 0) return showToast("No matrix data to extract.", "error");
             
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Distributor Name,SKU Code,Master SKU Name2,SKU STATUS2,TP/W TAX,MRP,SKU BAR CODE,CTN SIZE,CLOSING TOTAL UNITS,CLOSING QTY CRTN,CLOSING QTY UNITS\n";
-
-            Object.values(masterDB).forEach(item => {
-                let qtyC = parseFloat(item.qty_c) || 0;
-                let qtyP = parseFloat(item.qty_p) || 0;
-
-                let row = [
-                    "LMT", item.sku_code, `"${item.name.replace(/"/g, '""')}"`, "CURRENT", "0", "0", "", "24",
-                    ((qtyC * 24) + qtyP).toString(), qtyC, qtyP
-                ];
-                csvContent += row.join(",") + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `CURRENT_END_STOCK_LMT_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // ============================================================================
-        // FULL FLEDGE ENTERPRISE PDF EXPORT - VIP DARK THEME (PORTRAIT) NO OVERFLOW
-        // ============================================================================
-        function exportEnterprisePDF() {
-            if(Object.keys(masterDB).length === 0) return showAlert('No data available to export.', 'bad');
-            showAlert('Generating Enterprise A4 PDF...', 'good');
-
+            showToast("Compiling Master A4 Extract...", "success");
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4'); // 'p' explicitly forces Portrait Shape A4
-            
-            const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Karachi' });
-            const architectName = currentSessionUser && currentSessionUser.full_name ? currentSessionUser.full_name : "Master Architect";
+            const doc = new jsPDF('p', 'mm', 'a4'); 
 
-            // Prepare Data Table
-            const tableColumn = ["SKU", "Product DNA Description", "CTN", "PCS", "Valuation (PKR)"];
-            const tableRows = [];
-            
-            let grandTotal = 0;
-            let totalCartons = 0;
-            let totalLoosePcs = 0;
-            let totalPcsOverall = 0;
-
-            Object.values(masterDB).forEach(item => {
-                let qtyC = parseFloat(item.qty_c) || 0;
-                let qtyP = parseFloat(item.qty_p) || 0;
-                let val = parseFloat(item.val) || 0;
-                
-                grandTotal += val;
-                totalCartons += qtyC;
-                totalLoosePcs += qtyP;
-                totalPcsOverall += (qtyC * 24) + qtyP; // 24 Multiplier Fallback
-
-                tableRows.push([
-                    item.sku_code, 
-                    item.name, 
-                    qtyC.toString(), 
-                    qtyP.toString(), 
-                    formatCurrency(val).replace('Rs ', '')
-                ]);
+            let rows = [], gV = 0, gC = 0, gP = 0;
+            globalMatrix.forEach(r => {
+                let c = parseFloat(r.qty_c)||0; let p = parseFloat(r.qty_p)||0; let v = parseFloat(r.val)||0;
+                gV += v; gC += c; gP += p;
+                rows.push([r.sku_code, r.name, c.toString(), p.toString(), v.toLocaleString()]);
             });
 
-            const pageWidth = doc.internal.pageSize.width; // 210mm
-            const pageHeight = doc.internal.pageSize.height; // 297mm
-
-            // AutoTable Engine configured for Dark Theme VIP
             doc.autoTable({
-                head: [tableColumn],
-                body: tableRows,
-                startY: 45,
-                margin: { top: 45, right: 14, bottom: 25, left: 14 },
+                head: [["SKU", "DNA IDENTIFIER", "CTN", "PCS", "VALUATION"]],
+                body: rows,
+                startY: 35, margin: { top: 35, left: 10, right: 10, bottom: 20 },
                 theme: 'grid',
-                styles: { 
-                    fontSize: 8, 
-                    cellPadding: 3, 
-                    textColor: [240, 240, 240], 
-                    fillColor: [15, 15, 20],
-                    lineColor: [0, 80, 180], // Dark blue grid
-                    lineWidth: 0.1,
-                    font: "helvetica", 
-                    overflow: 'linebreak' 
-                },
-                headStyles: { 
-                    fillColor: [0, 68, 204], 
-                    textColor: [255, 255, 255], 
-                    fontStyle: 'bold', 
-                    textTransform: 'uppercase' 
-                },
-                alternateRowStyles: { fillColor: [8, 8, 12] },
-                columnStyles: { 
-                    // Strictly controlling widths prevents any text overflow off the page
-                    0: { cellWidth: 22 }, // SKU
-                    1: { cellWidth: 80 }, // Desc
-                    2: { halign: 'center', cellWidth: 15 }, // CTN
-                    3: { halign: 'center', cellWidth: 15 }, // PCS
-                    4: { halign: 'right', fontStyle: 'bold', textColor: [0, 229, 255], cellWidth: 40 } // VAL
-                },
-                willDrawPage: function (data) {
-                    // Absolute Dark VIP Background Fill
-                    doc.setFillColor(5, 5, 5); 
-                    doc.rect(0, 0, pageWidth, pageHeight, 'F');
+                styles: { fontSize: 8, cellPadding: 2, textColor: [255,255,255], fillColor: [15,15,15], lineColor: [0, 255, 204], lineWidth: 0.1 },
+                headStyles: { fillColor: [0, 50, 150], fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [5, 5, 5] },
+                columnStyles: { 0:{cellWidth:25}, 1:{cellWidth:90}, 2:{halign:'center', cellWidth:15}, 3:{halign:'center', cellWidth:15}, 4:{halign:'right', fontStyle:'bold', textColor:[0,255,204]} },
+                willDrawPage: function() {
+                    doc.setFillColor(0, 0, 0); doc.rect(0, 0, 210, 297, 'F');
+                    doc.setFillColor(10, 10, 10); doc.rect(0, 0, 210, 25, 'F');
+                    doc.setDrawColor(0, 255, 204); doc.setLineWidth(1); doc.line(0, 25, 210, 25);
                     
-                    // VIP Header Background Strip
-                    doc.setFillColor(15, 15, 20);
-                    doc.rect(0, 0, pageWidth, 35, 'F');
+                    doc.setTextColor(0, 255, 204); doc.setFontSize(16); doc.setFont("helvetica", "bold");
+                    doc.text("SANTEX MASTER OS", 10, 12);
+                    doc.setTextColor(255, 255, 255); doc.setFontSize(9);
+                    doc.text("ENTERPRISE VALUATION EXPORT", 10, 18);
                     
-                    // Accent Line
-                    doc.setDrawColor(0, 229, 255);
-                    doc.setLineWidth(1);
-                    doc.line(0, 35, pageWidth, 35);
-
-                    // VIP COMPANY HEADER 
-                    doc.setTextColor(0, 229, 255); 
-                    doc.setFont("helvetica", "bold");
-                    doc.setFontSize(22);
-                    doc.text("SANTEX ENTERPRISES", 14, 16);
-                    
-                    doc.setTextColor(255, 255, 255); 
-                    doc.setFontSize(12);
-                    doc.text("MASTER INVENTORY REPORT", 14, 24);
-                    
-                    doc.setTextColor(150, 150, 150);
-                    doc.setFontSize(8);
-                    doc.text(`MASTER ARCHITECT: ${architectName.toUpperCase()}`, 14, 30);
+                    doc.setTextColor(150, 150, 150); doc.setFontSize(8); doc.setFont("helvetica", "normal");
+                    doc.text(`ARCHITECT: ${sessionActive.full_name}`, 140, 18);
                 },
-                didDrawPage: function (data) {
-                    // VIP Footer Details
-                    doc.setTextColor(100, 100, 100);
-                    doc.setFontSize(8);
-                    doc.setFont("helvetica", "normal");
-                    doc.text(`Timestamp: ${timestamp}`, 14, pageHeight - 10);
-                    doc.text(`Page ${doc.internal.getNumberOfPages()}`, pageWidth - 25, pageHeight - 10);
+                didDrawPage: function(data) {
+                    doc.setTextColor(100, 100, 100); doc.setFontSize(7);
+                    doc.text(`EXTRACTED: ${new Date().toLocaleString()}`, 10, 290);
+                    doc.text(`PAGE ${doc.internal.getNumberOfPages()}`, 190, 290);
                 }
             });
 
-            // VIP Summary Block at the End of the Report
-            let finalY = doc.lastAutoTable.finalY + 10;
+            // Footer Summary
+            let fY = doc.lastAutoTable.finalY + 10;
+            if(fY > 260) { doc.addPage(); fY = 35; }
             
-            // Check if there is enough space at the bottom for the summary block, if not add page
-            if(finalY > pageHeight - 45) {
-                doc.addPage();
-                finalY = 45; 
-            }
-            
-            // Summary Block Background
-            doc.setFillColor(15, 15, 20);
-            doc.setDrawColor(0, 229, 255);
-            doc.setLineWidth(0.5);
-            doc.rect(14, finalY, pageWidth - 28, 32, 'FD'); // Filled Rectangle with border
+            doc.setFillColor(10, 10, 10); doc.setDrawColor(0, 255, 204); doc.setLineWidth(0.5);
+            doc.rect(10, fY, 190, 25, 'FD');
+            doc.setTextColor(0, 255, 204); doc.setFontSize(11); doc.setFont("helvetica", "bold");
+            doc.text("GLOBAL METRICS OVERVIEW", 15, fY + 8);
+            doc.setTextColor(255, 255, 255); doc.setFontSize(9); doc.setFont("helvetica", "normal");
+            doc.text(`TOTAL CARTONS: ${gC}`, 15, fY + 18);
+            doc.text(`TOTAL PIECES: ${gP}`, 65, fY + 18);
+            doc.setTextColor(0, 255, 204); doc.setFontSize(12); doc.setFont("helvetica", "bold");
+            doc.text(`GRAND TOTAL: PKR ${gV.toLocaleString()}`, 125, fY + 18);
 
-            // Summary Block Text
-            doc.setTextColor(0, 229, 255);
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text("ENTERPRISE INVENTORY TOTALS", 20, finalY + 9);
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(9);
-            doc.setFont("helvetica", "normal");
-            doc.text(`TOTAL CARTON QTY: ${totalCartons}`, 20, finalY + 18);
-            doc.text(`LOOSE PCS QTY: ${totalLoosePcs}`, 80, finalY + 18);
-            doc.text(`TOTAL PCS QTY: ${totalPcsOverall}`, 140, finalY + 18);
-            
-            doc.setTextColor(0, 229, 255);
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text(`GRAND VALUATION: PKR ${formatCurrency(grandTotal).replace('Rs ', '')}`, 20, finalY + 28);
-
-            doc.save(`SANTEX_VIP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+            doc.save(`SANTEX_MASTER_EXPORT_${Date.now()}.pdf`);
+            sysLog("Executed Master PDF Extraction");
         }
     </script>
 </body>
